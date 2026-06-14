@@ -375,6 +375,56 @@ function AdminView({
                   <option value="Niña">Niña</option>
                 </select>
               </div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+              >
+                <label
+                  htmlFor="txt-marca"
+                  style={{ fontSize: "12px", fontWeight: "700" }}
+                >
+                  MARCA:
+                </label>
+
+                <input
+                  type="text"
+                  id="txt-marca"
+                  name="marca"
+                  placeholder="Ej: Puma"
+                  value={articulo.marca}
+                  onChange={handleChange}
+                  style={{
+                    background: "#171717",
+                    border: "1px solid #404040",
+                    color: "#ffffff",
+                    padding: "10px",
+                  }}
+                />
+              </div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+              >
+                <label
+                  htmlFor="txt-size"
+                  style={{ fontSize: "12px", fontWeight: "700" }}
+                >
+                  TALLAS DISPONIBLES:
+                </label>
+
+                <input
+                  type="text"
+                  id="txt-size"
+                  name="size"
+                  placeholder="Ej: 39,40,41,42"
+                  value={articulo.size || ""}
+                  onChange={handleChange}
+                  style={{
+                    background: "#171717",
+                    border: "1px solid #404040",
+                    color: "#ffffff",
+                    padding: "10px",
+                  }}
+                />
+              </div>
             </div>
           )}
 
