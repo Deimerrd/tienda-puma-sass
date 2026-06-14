@@ -82,6 +82,18 @@ function Shop() {
     return savedClave ? savedClave : "Admin1234"; // Clave inicial por defecto
   });
 
+  function eliminarProducto(id) {
+    const confirmacion = window.confirm(
+      "¿Seguro que deseas eliminar este producto?",
+    );
+
+    if (!confirmacion) return;
+
+    setProducts((prev) =>
+      prev.filter((prod) => prod.id?.trim() !== id?.trim()),
+    );
+  }
+
   useEffect(() => {
     localStorage.setItem("company_admin_clave", claveMaestra);
   }, [claveMaestra]);
@@ -335,6 +347,7 @@ function Shop() {
           categories={categories}
           agregarCategoria={agregarCategoria}
           cancelarPedidoAdmin={cancelarPedidoAdmin}
+          eliminarProducto={eliminarProducto} // 👈 AQUÍ ESTABA EL ERROR
           marcarPedidoEntregado={marcarPedidoEntregado} // 👈 CORRIENTAZO: Agrega esta prop aquíww
           modoIngenieroActivo={modoIngenieroActivo}
           forzarDesbloqueoDev={forzarDesbloqueoDev} // 👈 INYECTA ESTA NUEVA PROP AQUÍ
