@@ -719,8 +719,18 @@ function AdminView({
             }}
           >
             <p>
-              <strong>Pedido:</strong> {vst.idVenta}
+              <strong>Fecha:</strong>{" "}
+              {new Date(vst.fecha).toLocaleDateString("es-CO")}
             </p>
+
+            <p>
+              <strong>Hora:</strong>{" "}
+              {new Date(vst.fecha).toLocaleTimeString("es-CO", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+
             <div
               style={{
                 background: "#fff",

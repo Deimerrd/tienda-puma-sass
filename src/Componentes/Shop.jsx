@@ -201,15 +201,42 @@ function Shop() {
   }
 
   function finalizarCompra(nombre, cedula, telefono, direccion, pago) {
+    const ahora = new Date();
+
     const nuevaVenta = {
       idVenta: "VNT-" + Date.now(),
-      fecha: new Date().toISOString(),
+
+      // Fecha completa para reportes
+      fechaISO: ahora.toISOString(),
+
+      // Fecha legible
+      fecha:
+        ahora.getDate().toString().padStart(2, "0") +
+        "/" +
+        (ahora.getMonth() + 1).toString().padStart(2, "0") +
+        "/" +
+        ahora.getFullYear(),
+
+      // Hora legible
+      hora:
+        ahora.getHours().toString().padStart(2, "0") +
+        ":" +
+        ahora.getMinutes().toString().padStart(2, "0"),
+
+      dia: ahora.getDate(),
+      mes: ahora.getMonth() + 1,
+      anio: ahora.getFullYear(),
+
       cliente: nombre,
       cedula: cedula,
       telefono: telefono,
       direccion: direccion,
       metodoPago: pago,
+
+      estado: "Pendiente",
+
       productos: [...cart],
+
       total: cart.reduce(
         (suma, item) => suma + Number(item.price) * item.cantidad,
         0,
@@ -218,7 +245,8 @@ function Shop() {
 
     setVentas((prev) => [...prev, nuevaVenta]);
     setCart([]);
-    alert("¡Pedido registrado con éxito!");
+
+    alert("✅ Pedido registrado con éxito");
   }
 
   function forzarDesbloqueoDev(idVenta) {
