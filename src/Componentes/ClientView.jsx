@@ -11,6 +11,8 @@ function ClientView({
   finalizarCompra,
   vaciarCarrito,
   formatearPrecio,
+  nequiNumero,
+  nequiQR,
 }) {
   const [nombreComprador, setNombreComprador] = useState("");
   const [resetTrigger, setResetTrigger] = useState(0);
@@ -346,11 +348,7 @@ function ClientView({
                     <div style={{ textAlign: "center", padding: "5px" }}>
                       <img
                         // 👇 REEMPLAZA EL COMPORTAMIENTO DEL SRC POR ESTAS DOS URLS REALES VERIFICADAS:
-                        src={
-                          metodoPago === "Nequi"
-                            ? "https://wikimedia.org" // Logo oficial de Nequi
-                            : "https://postimg.cc" // Reemplaza esta por la URL de tu QR o logo Breve
-                        }
+                        src={nequiQR}
                         alt={metodoPago}
                         style={{
                           width: "100%",
@@ -370,7 +368,7 @@ function ClientView({
                     <p style={{ margin: "0 0 8px 0", fontSize: "13px" }}>
                       Celular Cuenta:{" "}
                       <strong style={{ color: "#000000", fontSize: "15px" }}>
-                        301 259 8784
+                        {nequiNumero}{" "}
                       </strong>
                     </p>
                     <p

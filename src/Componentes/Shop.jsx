@@ -40,6 +40,22 @@ function Shop() {
     localStorage.setItem("company_Ventas", JSON.stringify(ventas));
   }, [ventas]);
 
+  const [nequiNumero, setNequiNumero] = useState(() => {
+    return localStorage.getItem("company_nequi_numero") || "";
+  });
+
+  const [nequiQR, setNequiQR] = useState(() => {
+    return localStorage.getItem("company_nequi_qr") || "";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("company_nequi_numero", nequiNumero);
+  }, [nequiNumero]);
+
+  useEffect(() => {
+    localStorage.setItem("company_nequi_qr", nequiQR);
+  }, [nequiQR]);
+
   // B. Memoria de Productos
   const [products, setProducts] = useState(() => {
     try {
@@ -338,6 +354,8 @@ function Shop() {
           finalizarCompra={finalizarCompra}
           vaciarCarrito={vaciarCarrito}
           formatearPrecio={formatearPrecio}
+          nequiNumero={nequiNumero}
+          nequiQR={nequiQR}
         />
       ) : (
         <AdminView
@@ -353,6 +371,10 @@ function Shop() {
           forzarDesbloqueoDev={forzarDesbloqueoDev} // 👈 INYECTA ESTA NUEVA PROP AQUÍ
           cambiarClave={cambiarClave} // 👈 PASAMOS LA FUNCIÓN PARA QUE EL ADMIN LA USE
           formatearPrecio={formatearPrecio}
+          nequiNumero={nequiNumero}
+          setNequiNumero={setNequiNumero}
+          nequiQR={nequiQR}
+          setNequiQR={setNequiQR}
         />
       )}
     </div>

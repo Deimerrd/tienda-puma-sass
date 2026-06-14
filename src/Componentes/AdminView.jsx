@@ -13,6 +13,10 @@ function AdminView({
   cambiarClave, // 👈 RECIBIMOS LA HERRAMIENTA DE CAMBIO DE CLAVE
   formatearPrecio,
   forzarDesbloqueoDev,
+  nequiNumero,
+  setNequiNumero,
+  nequiQR,
+  setNequiQR,
 }) {
   const [articulo, setArticulo] = useState({
     id: "",
@@ -142,6 +146,44 @@ function AdminView({
         >
           🔐 Actualizar Clave
         </button>
+      </div>
+
+      <div
+        style={{
+          background: "#e0f2fe",
+          padding: "15px",
+          borderRadius: "8px",
+          marginBottom: "25px",
+        }}
+      >
+        <h3>💳 Configuración Nequi</h3>
+
+        <div style={{ marginBottom: "10px" }}>
+          <label>Número Nequi:</label>
+
+          <input
+            type="text"
+            value={nequiNumero}
+            onChange={(e) => setNequiNumero(e.target.value)}
+            placeholder="3001234567"
+            style={{ marginLeft: "10px" }}
+          />
+        </div>
+
+        <div>
+          <label>URL QR Nequi:</label>
+
+          <input
+            type="text"
+            value={nequiQR}
+            onChange={(e) => setNequiQR(e.target.value)}
+            placeholder="https://..."
+            style={{
+              width: "100%",
+              padding: "8px",
+            }}
+          />
+        </div>
       </div>
 
       {/* 🛠️ 2. CREADOR DE CATEGORÍAS DINÁMICAS */}
