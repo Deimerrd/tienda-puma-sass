@@ -19,6 +19,7 @@ function ClientView({
   const [cedulaComprador, setCedulaComprador] = useState("");
   const [telefonoComprador, setTelefonoComprador] = useState("");
   const [direccionComprador, setDireccionComprador] = useState("");
+  const [correo, setCorreo] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("todos");
   const [generoSeleccionado, setGeneroSeleccionado] = useState("todos");
@@ -278,6 +279,17 @@ function ClientView({
               value={direccionComprador}
               onChange={(e) => setDireccionComprador(e.target.value)}
             />
+            <br />
+            <br />
+            <label htmlFor="email">correo electronico</label>
+
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+            />
+
             <br />
             <br />
             <div

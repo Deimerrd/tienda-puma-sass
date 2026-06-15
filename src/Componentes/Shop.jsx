@@ -200,7 +200,7 @@ function Shop() {
     });
   }
 
-  function finalizarCompra(nombre, cedula, telefono, direccion, pago) {
+  function finalizarCompra(nombre, cedula, telefono, direccion, correo, pago) {
     const ahora = new Date();
 
     const nuevaVenta = {
@@ -231,6 +231,7 @@ function Shop() {
       cedula: cedula,
       telefono: telefono,
       direccion: direccion,
+      correo: correo,
       metodoPago: pago,
 
       estado: "Pendiente",

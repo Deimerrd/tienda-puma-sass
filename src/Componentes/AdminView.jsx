@@ -114,6 +114,35 @@ function AdminView({
     });
   }
 
+  const pedidosEntregados = ventas.filter((v) => v.estado === "Entregado");
+
+  const pedidosPendientes = ventas.filter((v) => v.estado !== "Entregado");
+
+  const totalVendido = ventas.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+
+  const totalEntregado = pedidosEntregados.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+  const hoy = new Date();
+
+  const ventasHoy = ventas.filter((v) => {
+    const fechaVenta = new Date(v.fechaISO);
+
+    return (
+      fechaVenta.getDate() === hoy.getDate() &&
+      fechaVenta.getMonth() === hoy.getMonth() &&
+      fechaVenta.getFullYear() === hoy.getFullYear()
+    );
+  });
+
+  const totalHoy = ventasHoy.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -703,6 +732,58 @@ function AdminView({
       >
         📋 Historial de Pedidos
       </h3>
+
+      <div
+        style={{
+          background: "#f4f4f4",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>💰 Caja General</h2>
+
+        <p>
+          <strong>Pedidos Totales:</strong> {ventas.length}
+        </p>
+
+        <p>
+          <strong>Entregados:</strong> {pedidosEntregados.length}
+        </p>
+
+        <p>
+          <strong>Pendientes:</strong> {pedidosPendientes.length}
+        </p>
+
+        <p>
+          <strong>Total Vendido:</strong> {formatearPrecio(totalVendido)}
+        </p>
+
+        <p>
+          <strong>Total Entregado:</strong> {formatearPrecio(totalEntregado)}
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: "#dbeafe",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>📅 Caja de Hoy</h2>
+        <p>
+          <strong>Pedidos Hoy:</strong> {ventasHoy.length}
+        </p>
+
+        <p>
+          <strong>Ventas Hoy:</strong> {formatearPrecio(totalHoy)}
+        </p>
+      </div>
+
+      {/* 📋 HISTORIAL DE VENTAS */}
+
       {ventas.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>No hay ventas registradas.</p>
       ) : (
@@ -719,18 +800,12 @@ function AdminView({
             }}
           >
             <p>
-              <strong>Fecha:</strong>{" "}
-              {new Date(vst.fecha).toLocaleDateString("es-CO")}
+              <strong>Fecha:</strong> {vst.fecha}
             </p>
 
             <p>
-              <strong>Hora:</strong>{" "}
-              {new Date(vst.fecha).toLocaleTimeString("es-CO", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              <strong>Hora:</strong> {vst.hora}
             </p>
-
             <div
               style={{
                 background: "#fff",
@@ -745,6 +820,7 @@ function AdminView({
               <br />
               📞 <strong>Teléfono:</strong> {vst.telefono} <br />
               📍 <strong>Dirección:</strong> {vst.direccion} <br />
+              📧 <strong>Correo:</strong> {vst.correo}
               💰 <strong>Método:</strong> {vst.metodoPago}
             </div>
             <h4 style={{ color: "#333" }}>Compró:</h4>
@@ -942,7 +1018,7 @@ function AdminView({
                       "💻 MÓDULO INGENIERO: Ingrese la clave de desarrollador para romper el candado:",
                     );
 
-                    if (passDev === "DevPass2026") {
+                    if (passDev === "Admin2021") {
                       // 👇 REEMPLAZO LOGÍSTICO COMPACTO: Llamamos a la función legal prop pasándole el ID
                       forzarDesbloqueoDev(vst.idVenta);
                     } else if (passDev !== null) {
