@@ -1,4 +1,5 @@
 import { useState } from "react";
+import jsPDF from "jspdf";
 
 function AdminView({
   modoIngenieroActivo,
@@ -29,6 +30,64 @@ function AdminView({
     gender: "",
     description: "",
   });
+
+  function generarFacturaPDF(vst) {
+    const doc = new jsPDF();
+
+    let y = 20;
+
+    doc.setFontSize(18);
+    doc.text("FACTURA DE VENTA", 20, y);
+
+    y += 15;
+
+    doc.setFontSize(12);
+
+    doc.text(`Factura: ${vst.idVenta}`, 20, y);
+    y += 10;
+
+    doc.text(`Fecha: ${vst.fecha}`, 20, y);
+    y += 10;
+
+    doc.text(`Hora: ${vst.hora}`, 20, y);
+    y += 10;
+
+    doc.text(`Cliente: ${vst.cliente}`, 20, y);
+    y += 10;
+
+    doc.text(`Cedula: ${vst.cedula}`, 20, y);
+    y += 10;
+
+    doc.text(`Telefono: ${vst.telefono}`, 20, y);
+    y += 10;
+
+    doc.text(`Correo: ${vst.correo}`, 20, y);
+    y += 10;
+
+    doc.text(`Direccion: ${vst.direccion}`, 20, y);
+
+    y += 20;
+
+    doc.text("PRODUCTOS", 20, y);
+
+    y += 10;
+
+    vst.productos.forEach((item) => {
+      doc.text(`${item.name} x${item.cantidad} - $${item.price}`, 20, y);
+
+      y += 10;
+    });
+
+    y += 10;
+
+    doc.text(`Metodo de pago: ${vst.metodoPago}`, 20, y);
+
+    y += 10;
+
+    doc.text(`TOTAL: $${vst.total}`, 20, y);
+
+    doc.save(`Factura-${vst.idVenta}.pdf`);
+  }
 
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState(""); // 👈 ESTADO PARA CAPTURAR LA NUEVA CLAVE
@@ -835,6 +894,20 @@ function AdminView({
                 gap: "10px",
               }}
             >
+              <button
+                onClick={() => generarFacturaPDF(vst)}
+                style={{
+                  padding: "10px",
+                  background: "#2563eb",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                📄 Descargar Factura
+              </button>
               {vst.productos.map((item, idx) => {
                 // Tomamos la primera URL de la lista por si el administrador registró varias imágenes separadas por comas
                 const fotoProducto = item.image
