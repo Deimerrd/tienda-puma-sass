@@ -70,6 +70,10 @@ function Shop() {
     localStorage.setItem("company_products", JSON.stringify(products));
   }, [products]);
 
+  const productosStockCritico = products.filter(
+    (prod) => Number(prod.stock) <= 5,
+  );
+
   // C. Memoria de Categorías
   const [categories, setCategories] = useState(() => {
     try {
@@ -427,6 +431,7 @@ function Shop() {
       ) : (
         <AdminView
           products={products}
+          productosStockCritico={productosStockCritico}
           setProducts={setProducts}
           ventas={ventas}
           categories={categories}

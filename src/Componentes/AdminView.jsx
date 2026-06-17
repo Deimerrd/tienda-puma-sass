@@ -5,6 +5,7 @@ function AdminView({
   modoIngenieroActivo,
   marcarPedidoEntregado,
   products,
+  productosStockCritico,
   setProducts,
   ventas,
   categories,
@@ -544,14 +545,14 @@ function AdminView({
                   htmlFor="txt-stock"
                   style={{ fontSize: "12px", fontWeight: "700" }}
                 >
-                  stock
+                  📦 STOCK DISPONIBLE:
                 </label>
 
                 <input
                   type="text"
                   id="txt-stock"
                   name="stock"
-                  placeholder="cantidad"
+                  placeholder="Cantidad disponible en inventario"
                   value={articulo.stock}
                   onChange={handleChange}
                   style={{
@@ -750,6 +751,39 @@ function AdminView({
       {/* 🚫 A PARTIR DE AQUÍ ABAJO COMIENZA TU HISTORIAL Y TU INVENTARIO ROJO DE SIEMPRE (No los borres, déjalos quietos abajo) */}
 
       {/* 📦 SECCIÓN A: INVENTARIO DE LA TIENDA CON BOTONES LOGÍSTICOS */}
+      {productosStockCritico.length > 0 && (
+        <div
+          style={{
+            background: "#fff3cd",
+            border: "2px solid #f59e0b",
+            borderRadius: "10px",
+            padding: "15px",
+            marginBottom: "20px",
+          }}
+        >
+          <h3 style={{ marginTop: 0 }}>⚠️ Productos por reabastecer</h3>
+
+          {productosStockCritico.map((prod) => (
+            <div
+              key={prod.id}
+              style={{
+                padding: "5px 0",
+                borderBottom: "1px solid #ddd",
+              }}
+            >
+              {Number(prod.stock) === 0 ? (
+                <span>
+                  🔴 <strong>{prod.name}</strong> - AGOTADO
+                </span>
+              ) : (
+                <span>
+                  🟡 <strong>{prod.name}</strong> - Stock: {prod.stock}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <h3 style={{ fontFamily: "sans-serif", marginTop: "30px" }}>
         Inventario de la tienda
       </h3>
@@ -774,10 +808,34 @@ function AdminView({
             }}
           >
             {/* Detalles técnicos rápidos del producto */}
-            <p style={{ margin: 0 }}>
-              <strong>[{prod.id}]</strong> {prod.name} - {prod.marca} (
-              {formatearPrecio(Number(prod.price))})
-            </p>
+            <div>
+              <p style={{ margin: 0 }}>
+                <strong>[{prod.id}]</strong> {prod.name} - {prod.marca}
+              </p>
+
+              <p style={{ margin: "5px 0 0 0" }}>
+                💲 {formatearPrecio(Number(prod.price))}
+              </p>
+
+              <p
+                style={{
+                  margin: "5px 0 0 0",
+                  fontWeight: "bold",
+                  color:
+                    Number(prod.stock) === 0
+                      ? "red"
+                      : Number(prod.stock) <= 5
+                        ? "orange"
+                        : "#22c55e",
+                }}
+              >
+                {Number(prod.stock) === 0
+                  ? `🔴 Agotado`
+                  : Number(prod.stock) <= 5
+                    ? `🟡 Stock Bajo: ${prod.stock}`
+                    : `🟢 Stock: ${prod.stock}`}
+              </p>
+            </div>
 
             {/* Botonera comercial de administración */}
             <div style={{ display: "flex", gap: "10px" }}>
