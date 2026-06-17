@@ -507,6 +507,30 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidadDeseada, setCantidadDeseada] = useState(1);
 
+  function obtenerEstadoStock(stock) {
+    const cantidad = Number(stock);
+
+    if (cantidad <= 0) {
+      return {
+        texto: "🔴 Agotado",
+        color: "red",
+      };
+    }
+
+    if (cantidad <= 5) {
+      return {
+        texto: "🟡 Últimas unidades",
+        color: "orange",
+      };
+    }
+
+    return {
+      texto: "🟢 Disponible",
+      color: "green",
+    };
+  }
+  const estadoStock = obtenerEstadoStock(prod.stock);
+
   return (
     <div
       style={{
@@ -719,6 +743,14 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           marginBottom: "15px",
         }}
       >
+        <p
+          style={{
+            color: estadoStock.color,
+            fontWeight: "bold",
+          }}
+        >
+          {estadoStock.texto} ({prod.stock})
+        </p>
         <button
           type="button"
           onClick={() =>
@@ -729,18 +761,21 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
         </button>
 
         <strong>{cantidadDeseada}</strong>
-
         <button
           type="button"
-          onClick={() => setCantidadDeseada((prev) => prev + 1)}
+          onClick={() => {
+            if (cantidadDeseada < Number(prod.stock)) {
+              setCantidadDeseada((prev) => prev + 1);
+            }
+          }}
         >
           +
         </button>
       </div>
 
       <button
+        disabled={Number(prod.stock) <= 0}
         onClick={() => {
-          // 1. Candado de seguridad: No deja avanzar si el cliente olvidó elegir talla o color
           if (!colorElegido || !tallaElegida) {
             alert(
               "⚠️ Por favor, selecciona un Color y una Talla antes de agregar al carrito.",
@@ -748,7 +783,6 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
             return;
           }
 
-          // 2. Candado logístico: Si la talla seleccionada es la 38 (agotada), bloquea la compra
           if (tallaElegida === "38") {
             alert(
               "❌ No puedes agregar este artículo porque la talla seleccionada está agotada.",
@@ -756,7 +790,11 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
             return;
           }
 
-          // 3. Empaquetado comercial: Clonamos el producto inyectándole la talla y color exactos que eligió
+          if (Number(prod.stock) <= 0) {
+            alert("❌ Este producto está agotado.");
+            return;
+          }
+
           const productoConVariantes = {
             ...prod,
             id: `${prod.id}-${colorElegido}-${tallaElegida}`,
@@ -765,14 +803,21 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
             cantidad: cantidadDeseada,
           };
 
-          // 4. Despachamos el paquete modificado al carrito general de la tienda
           AgregarAlCarrito(productoConVariantes);
-          alert(
-            "🛒 ¡Artículo agregado al carrito con tu talla y color favoritos!",
-          );
+
+          alert(`🛒 Se agregaron ${cantidadDeseada} unidades al carrito.`);
+        }}
+        style={{
+          width: "100%",
+          padding: "10px",
+          background: Number(prod.stock) <= 0 ? "#9ca3af" : "#000",
+          color: "#fff",
+          border: "none",
+          cursor: Number(prod.stock) <= 0 ? "not-allowed" : "pointer",
+          fontWeight: "bold",
         }}
       >
-        Agregar al carrito
+        {Number(prod.stock) <= 0 ? "❌ AGOTADO" : "🛒 AGREGAR AL CARRITO"}
       </button>
     </div>
   );

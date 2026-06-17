@@ -211,15 +211,24 @@ function Shop() {
   }
 
   function finalizarCompra(nombre, cedula, telefono, direccion, correo, pago) {
+    for (const item of cart) {
+      const producto = products.find((p) => item.id.startsWith(p.id));
+
+      if (!producto) continue;
+
+      if (item.cantidad > Number(producto.stock)) {
+        alert(`❌ No hay suficiente stock para ${producto.name}`);
+        return;
+      }
+    }
+
     const ahora = new Date();
 
     const nuevaVenta = {
       idVenta: "VNT-" + Date.now(),
 
-      // Fecha completa para reportes
       fechaISO: ahora.toISOString(),
 
-      // Fecha legible
       fecha:
         ahora.getDate().toString().padStart(2, "0") +
         "/" +
@@ -227,7 +236,6 @@ function Shop() {
         "/" +
         ahora.getFullYear(),
 
-      // Hora legible
       hora:
         ahora.getHours().toString().padStart(2, "0") +
         ":" +
@@ -255,6 +263,26 @@ function Shop() {
     };
 
     setVentas((prev) => [...prev, nuevaVenta]);
+
+    // DESCONTAR INVENTARIO
+    setProducts((prevProducts) =>
+      prevProducts.map((prod) => {
+        const vendidos = cart.filter((item) => item.id.startsWith(prod.id));
+
+        if (vendidos.length === 0) return prod;
+
+        const cantidadVendida = vendidos.reduce(
+          (total, item) => total + item.cantidad,
+          0,
+        );
+
+        return {
+          ...prod,
+          stock: Math.max(0, Number(prod.stock) - cantidadVendida),
+        };
+      }),
+    );
+
     setCart([]);
 
     alert("✅ Pedido registrado con éxito");
