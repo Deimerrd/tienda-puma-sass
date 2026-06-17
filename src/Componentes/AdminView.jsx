@@ -26,6 +26,7 @@ function AdminView({
     color: "",
     price: "",
     marca: "",
+    stock: "",
     image: "",
     gender: "",
     description: "",
@@ -104,10 +105,11 @@ function AdminView({
       !articulo.category.trim() ||
       !articulo.price.trim() ||
       !articulo.marca.trim() ||
+      !articulo.stock.trim() ||
       !articulo.image.trim()
     ) {
       alert(
-        "⚠️ Error: Los campos ID, Nombre, Categoría, Precio, Marca e Imagen son obligatorios.",
+        "⚠️ Error: Los campos ID, Nombre, Categoría, Precio, Marca, Stock e Imagen son obligatorios.",
       );
       return;
     }
@@ -142,6 +144,9 @@ function AdminView({
         );
         alert("🔒 ¡La edición se ha guardado con éxito!");
         // Limpiamos el formulario
+        alert("🔒 ¡La edición se ha guardado con éxito!");
+
+        // Limpiamos el formulario
         setArticulo({
           id: "",
           name: "",
@@ -149,6 +154,7 @@ function AdminView({
           color: "",
           price: "",
           marca: "",
+          stock: "",
           image: "",
           gender: "",
           description: "",
@@ -167,6 +173,7 @@ function AdminView({
       color: "",
       price: "",
       marca: "",
+      stock: "",
       image: "",
       gender: "",
       description: "",
@@ -530,6 +537,32 @@ function AdminView({
                   }}
                 />
               </div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+              >
+                <label
+                  htmlFor="txt-stock"
+                  style={{ fontSize: "12px", fontWeight: "700" }}
+                >
+                  stock
+                </label>
+
+                <input
+                  type="text"
+                  id="txt-stock"
+                  name="stock"
+                  placeholder="cantidad"
+                  value={articulo.stock}
+                  onChange={handleChange}
+                  style={{
+                    background: "#171717",
+                    border: "1px solid #404040",
+                    color: "#ffffff",
+                    padding: "10px",
+                  }}
+                />
+              </div>
+
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "5px" }}
               >

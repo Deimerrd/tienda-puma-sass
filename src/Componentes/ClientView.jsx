@@ -505,6 +505,7 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
   const [mensajeTalla, setMensajeTalla] = useState("");
   const [colorElegido, setColorElegido] = useState("");
   const [tallaElegida, setTallaElegida] = useState("");
+  const [cantidadDeseada, setCantidadDeseada] = useState(1);
 
   return (
     <div
@@ -709,6 +710,34 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       <p style={{ fontWeight: "bold" }}>
         Precio: {formatearPrecio(Number(prod.price))}
       </p>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "15px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() =>
+            setCantidadDeseada((prev) => (prev > 1 ? prev - 1 : 1))
+          }
+        >
+          -
+        </button>
+
+        <strong>{cantidadDeseada}</strong>
+
+        <button
+          type="button"
+          onClick={() => setCantidadDeseada((prev) => prev + 1)}
+        >
+          +
+        </button>
+      </div>
+
       <button
         onClick={() => {
           // 1. Candado de seguridad: No deja avanzar si el cliente olvidó elegir talla o color
@@ -730,9 +759,10 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           // 3. Empaquetado comercial: Clonamos el producto inyectándole la talla y color exactos que eligió
           const productoConVariantes = {
             ...prod,
-            id: `${prod.id}-${colorElegido}-${tallaElegida}`, // Crea un ID único (Ej: PUMA01-Rojo-40)
+            id: `${prod.id}-${colorElegido}-${tallaElegida}`,
             color: colorElegido,
             size: tallaElegida,
+            cantidad: cantidadDeseada,
           };
 
           // 4. Despachamos el paquete modificado al carrito general de la tienda

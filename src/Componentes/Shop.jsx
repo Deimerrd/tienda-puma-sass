@@ -161,17 +161,27 @@ function Shop() {
   function AgregarAlCarrito(productoElegido) {
     setCart((prevCart) => {
       const existe = prevCart.find((item) => item.id === productoElegido.id);
+
       if (existe) {
         return prevCart.map((item) =>
           item.id === productoElegido.id
-            ? { ...item, cantidad: item.cantidad + 1 }
+            ? {
+                ...item,
+                cantidad: item.cantidad + (productoElegido.cantidad || 1),
+              }
             : item,
         );
       }
-      return [...prevCart, { ...productoElegido, cantidad: 1 }];
+
+      return [
+        ...prevCart,
+        {
+          ...productoElegido,
+          cantidad: productoElegido.cantidad || 1,
+        },
+      ];
     });
   }
-
   function eliminarDelCarrito(idProducto) {
     setCart((prevCart) => prevCart.filter((item) => item.id !== idProducto));
   }
