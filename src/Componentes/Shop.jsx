@@ -40,6 +40,22 @@ function Shop() {
     localStorage.setItem("company_Ventas", JSON.stringify(ventas));
   }, [ventas]);
 
+  const [nequiNumero, setNequiNumero] = useState(() => {
+    return localStorage.getItem("company_nequi_numero") || "";
+  });
+
+  const [nequiQR, setNequiQR] = useState(() => {
+    return localStorage.getItem("company_nequi_qr") || "";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("company_nequi_numero", nequiNumero);
+  }, [nequiNumero]);
+
+  useEffect(() => {
+    localStorage.setItem("company_nequi_qr", nequiQR);
+  }, [nequiQR]);
+
   // B. Memoria de Productos
   const [products, setProducts] = useState(() => {
     try {
@@ -184,16 +200,44 @@ function Shop() {
     });
   }
 
-  function finalizarCompra(nombre, cedula, telefono, direccion, pago) {
+  function finalizarCompra(nombre, cedula, telefono, direccion, correo, pago) {
+    const ahora = new Date();
+
     const nuevaVenta = {
       idVenta: "VNT-" + Date.now(),
-      fecha: new Date().toISOString(),
+
+      // Fecha completa para reportes
+      fechaISO: ahora.toISOString(),
+
+      // Fecha legible
+      fecha:
+        ahora.getDate().toString().padStart(2, "0") +
+        "/" +
+        (ahora.getMonth() + 1).toString().padStart(2, "0") +
+        "/" +
+        ahora.getFullYear(),
+
+      // Hora legible
+      hora:
+        ahora.getHours().toString().padStart(2, "0") +
+        ":" +
+        ahora.getMinutes().toString().padStart(2, "0"),
+
+      dia: ahora.getDate(),
+      mes: ahora.getMonth() + 1,
+      anio: ahora.getFullYear(),
+
       cliente: nombre,
       cedula: cedula,
       telefono: telefono,
       direccion: direccion,
+      correo: correo,
       metodoPago: pago,
+
+      estado: "Pendiente",
+
       productos: [...cart],
+
       total: cart.reduce(
         (suma, item) => suma + Number(item.price) * item.cantidad,
         0,
@@ -202,7 +246,8 @@ function Shop() {
 
     setVentas((prev) => [...prev, nuevaVenta]);
     setCart([]);
-    alert("¡Pedido registrado con éxito!");
+
+    alert("✅ Pedido registrado con éxito");
   }
 
   function forzarDesbloqueoDev(idVenta) {
@@ -338,6 +383,8 @@ function Shop() {
           finalizarCompra={finalizarCompra}
           vaciarCarrito={vaciarCarrito}
           formatearPrecio={formatearPrecio}
+          nequiNumero={nequiNumero}
+          nequiQR={nequiQR}
         />
       ) : (
         <AdminView
@@ -353,6 +400,10 @@ function Shop() {
           forzarDesbloqueoDev={forzarDesbloqueoDev} // 👈 INYECTA ESTA NUEVA PROP AQUÍ
           cambiarClave={cambiarClave} // 👈 PASAMOS LA FUNCIÓN PARA QUE EL ADMIN LA USE
           formatearPrecio={formatearPrecio}
+          nequiNumero={nequiNumero}
+          setNequiNumero={setNequiNumero}
+          nequiQR={nequiQR}
+          setNequiQR={setNequiQR}
         />
       )}
     </div>

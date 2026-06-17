@@ -1,4 +1,5 @@
 import { useState } from "react";
+import jsPDF from "jspdf";
 
 function AdminView({
   modoIngenieroActivo,
@@ -13,6 +14,10 @@ function AdminView({
   cambiarClave, // 👈 RECIBIMOS LA HERRAMIENTA DE CAMBIO DE CLAVE
   formatearPrecio,
   forzarDesbloqueoDev,
+  nequiNumero,
+  setNequiNumero,
+  nequiQR,
+  setNequiQR,
 }) {
   const [articulo, setArticulo] = useState({
     id: "",
@@ -25,6 +30,64 @@ function AdminView({
     gender: "",
     description: "",
   });
+
+  function generarFacturaPDF(vst) {
+    const doc = new jsPDF();
+
+    let y = 20;
+
+    doc.setFontSize(18);
+    doc.text("FACTURA DE VENTA", 20, y);
+
+    y += 15;
+
+    doc.setFontSize(12);
+
+    doc.text(`Factura: ${vst.idVenta}`, 20, y);
+    y += 10;
+
+    doc.text(`Fecha: ${vst.fecha}`, 20, y);
+    y += 10;
+
+    doc.text(`Hora: ${vst.hora}`, 20, y);
+    y += 10;
+
+    doc.text(`Cliente: ${vst.cliente}`, 20, y);
+    y += 10;
+
+    doc.text(`Cedula: ${vst.cedula}`, 20, y);
+    y += 10;
+
+    doc.text(`Telefono: ${vst.telefono}`, 20, y);
+    y += 10;
+
+    doc.text(`Correo: ${vst.correo}`, 20, y);
+    y += 10;
+
+    doc.text(`Direccion: ${vst.direccion}`, 20, y);
+
+    y += 20;
+
+    doc.text("PRODUCTOS", 20, y);
+
+    y += 10;
+
+    vst.productos.forEach((item) => {
+      doc.text(`${item.name} x${item.cantidad} - $${item.price}`, 20, y);
+
+      y += 10;
+    });
+
+    y += 10;
+
+    doc.text(`Metodo de pago: ${vst.metodoPago}`, 20, y);
+
+    y += 10;
+
+    doc.text(`TOTAL: $${vst.total}`, 20, y);
+
+    doc.save(`Factura-${vst.idVenta}.pdf`);
+  }
 
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState(""); // 👈 ESTADO PARA CAPTURAR LA NUEVA CLAVE
@@ -110,6 +173,35 @@ function AdminView({
     });
   }
 
+  const pedidosEntregados = ventas.filter((v) => v.estado === "Entregado");
+
+  const pedidosPendientes = ventas.filter((v) => v.estado !== "Entregado");
+
+  const totalVendido = ventas.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+
+  const totalEntregado = pedidosEntregados.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+  const hoy = new Date();
+
+  const ventasHoy = ventas.filter((v) => {
+    const fechaVenta = new Date(v.fechaISO);
+
+    return (
+      fechaVenta.getDate() === hoy.getDate() &&
+      fechaVenta.getMonth() === hoy.getMonth() &&
+      fechaVenta.getFullYear() === hoy.getFullYear()
+    );
+  });
+
+  const totalHoy = ventasHoy.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -142,6 +234,44 @@ function AdminView({
         >
           🔐 Actualizar Clave
         </button>
+      </div>
+
+      <div
+        style={{
+          background: "#e0f2fe",
+          padding: "15px",
+          borderRadius: "8px",
+          marginBottom: "25px",
+        }}
+      >
+        <h3>💳 Configuración Nequi</h3>
+
+        <div style={{ marginBottom: "10px" }}>
+          <label>Número Nequi:</label>
+
+          <input
+            type="text"
+            value={nequiNumero}
+            onChange={(e) => setNequiNumero(e.target.value)}
+            placeholder="3001234567"
+            style={{ marginLeft: "10px" }}
+          />
+        </div>
+
+        <div>
+          <label>URL QR Nequi:</label>
+
+          <input
+            type="text"
+            value={nequiQR}
+            onChange={(e) => setNequiQR(e.target.value)}
+            placeholder="https://..."
+            style={{
+              width: "100%",
+              padding: "8px",
+            }}
+          />
+        </div>
       </div>
 
       {/* 🛠️ 2. CREADOR DE CATEGORÍAS DINÁMICAS */}
@@ -661,6 +791,58 @@ function AdminView({
       >
         📋 Historial de Pedidos
       </h3>
+
+      <div
+        style={{
+          background: "#f4f4f4",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>💰 Caja General</h2>
+
+        <p>
+          <strong>Pedidos Totales:</strong> {ventas.length}
+        </p>
+
+        <p>
+          <strong>Entregados:</strong> {pedidosEntregados.length}
+        </p>
+
+        <p>
+          <strong>Pendientes:</strong> {pedidosPendientes.length}
+        </p>
+
+        <p>
+          <strong>Total Vendido:</strong> {formatearPrecio(totalVendido)}
+        </p>
+
+        <p>
+          <strong>Total Entregado:</strong> {formatearPrecio(totalEntregado)}
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: "#dbeafe",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>📅 Caja de Hoy</h2>
+        <p>
+          <strong>Pedidos Hoy:</strong> {ventasHoy.length}
+        </p>
+
+        <p>
+          <strong>Ventas Hoy:</strong> {formatearPrecio(totalHoy)}
+        </p>
+      </div>
+
+      {/* 📋 HISTORIAL DE VENTAS */}
+
       {ventas.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>No hay ventas registradas.</p>
       ) : (
@@ -677,7 +859,11 @@ function AdminView({
             }}
           >
             <p>
-              <strong>Pedido:</strong> {vst.idVenta}
+              <strong>Fecha:</strong> {vst.fecha}
+            </p>
+
+            <p>
+              <strong>Hora:</strong> {vst.hora}
             </p>
             <div
               style={{
@@ -693,6 +879,7 @@ function AdminView({
               <br />
               📞 <strong>Teléfono:</strong> {vst.telefono} <br />
               📍 <strong>Dirección:</strong> {vst.direccion} <br />
+              📧 <strong>Correo:</strong> {vst.correo}
               💰 <strong>Método:</strong> {vst.metodoPago}
             </div>
             <h4 style={{ color: "#333" }}>Compró:</h4>
@@ -707,6 +894,20 @@ function AdminView({
                 gap: "10px",
               }}
             >
+              <button
+                onClick={() => generarFacturaPDF(vst)}
+                style={{
+                  padding: "10px",
+                  background: "#2563eb",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                📄 Descargar Factura
+              </button>
               {vst.productos.map((item, idx) => {
                 // Tomamos la primera URL de la lista por si el administrador registró varias imágenes separadas por comas
                 const fotoProducto = item.image
@@ -890,7 +1091,7 @@ function AdminView({
                       "💻 MÓDULO INGENIERO: Ingrese la clave de desarrollador para romper el candado:",
                     );
 
-                    if (passDev === "DevPass2026") {
+                    if (passDev === "Admin2021") {
                       // 👇 REEMPLAZO LOGÍSTICO COMPACTO: Llamamos a la función legal prop pasándole el ID
                       forzarDesbloqueoDev(vst.idVenta);
                     } else if (passDev !== null) {

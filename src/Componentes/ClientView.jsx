@@ -11,12 +11,15 @@ function ClientView({
   finalizarCompra,
   vaciarCarrito,
   formatearPrecio,
+  nequiNumero,
+  nequiQR,
 }) {
   const [nombreComprador, setNombreComprador] = useState("");
   const [resetTrigger, setResetTrigger] = useState(0);
   const [cedulaComprador, setCedulaComprador] = useState("");
   const [telefonoComprador, setTelefonoComprador] = useState("");
   const [direccionComprador, setDireccionComprador] = useState("");
+  const [correo, setCorreo] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("todos");
   const [generoSeleccionado, setGeneroSeleccionado] = useState("todos");
@@ -278,6 +281,17 @@ function ClientView({
             />
             <br />
             <br />
+            <label htmlFor="email">correo electronico</label>
+
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+            />
+
+            <br />
+            <br />
             <div
               style={{
                 padding: "10px",
@@ -346,11 +360,7 @@ function ClientView({
                     <div style={{ textAlign: "center", padding: "5px" }}>
                       <img
                         // 👇 REEMPLAZA EL COMPORTAMIENTO DEL SRC POR ESTAS DOS URLS REALES VERIFICADAS:
-                        src={
-                          metodoPago === "Nequi"
-                            ? "https://wikimedia.org" // Logo oficial de Nequi
-                            : "https://postimg.cc" // Reemplaza esta por la URL de tu QR o logo Breve
-                        }
+                        src={nequiQR}
                         alt={metodoPago}
                         style={{
                           width: "100%",
@@ -370,7 +380,7 @@ function ClientView({
                     <p style={{ margin: "0 0 8px 0", fontSize: "13px" }}>
                       Celular Cuenta:{" "}
                       <strong style={{ color: "#000000", fontSize: "15px" }}>
-                        301 259 8784
+                        {nequiNumero}{" "}
                       </strong>
                     </p>
                     <p
