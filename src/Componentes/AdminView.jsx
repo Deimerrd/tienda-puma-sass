@@ -93,6 +93,7 @@ function AdminView({
 
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState(""); // 👈 ESTADO PARA CAPTURAR LA NUEVA CLAVE
+  const [busquedaProducto, setBusquedaProducto] = useState("");
 
   function handleChange(e) {
     setArticulo({ ...articulo, [e.target.name]: e.target.value });
@@ -210,6 +211,16 @@ function AdminView({
     (acc, venta) => acc + Number(venta.total),
     0,
   );
+
+  const productosFiltrados = products.filter((prod) => {
+    const texto = busquedaProducto.toLowerCase();
+
+    return (
+      prod.name?.toLowerCase().includes(texto) ||
+      prod.id?.toLowerCase().includes(texto) ||
+      prod.marca?.toLowerCase().includes(texto)
+    );
+  });
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -787,12 +798,29 @@ function AdminView({
       <h3 style={{ fontFamily: "sans-serif", marginTop: "30px" }}>
         Inventario de la tienda
       </h3>
-      {products.length === 0 ? (
+
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="🔍 Buscar por nombre, referencia o marca..."
+          value={busquedaProducto}
+          onChange={(e) => setBusquedaProducto(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            fontSize: "14px",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+      {productosFiltrados.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>
-          No hay artículos registrados.
+          🔍 No se encontraron productos.
         </p>
       ) : (
-        products.map((prod) => (
+        productosFiltrados.map((prod) => (
           <div
             key={prod.id}
             style={{
