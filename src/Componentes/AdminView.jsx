@@ -221,6 +221,89 @@ function AdminView({
       prod.marca?.toLowerCase().includes(texto)
     );
   });
+
+  function agregarStock(idProducto) {
+    const cantidad = window.prompt(
+      "📦 ¿Cuántas unidades deseas agregar al inventario?",
+    );
+
+    if (cantidad === null) return;
+
+    const cantidadNumerica = Number(cantidad);
+
+    if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+      alert("❌ Debe ingresar una cantidad válida.");
+      return;
+    }
+
+    setProducts((prev) =>
+      prev.map((prod) =>
+        prod.id === idProducto
+          ? {
+              ...prod,
+              stock: Number(prod.stock) + cantidadNumerica,
+            }
+          : prod,
+      ),
+    );
+
+    alert(`✅ Se agregaron ${cantidadNumerica} unidades al inventario.`);
+  }
+
+  function restarStock(idProducto) {
+    const cantidad = window.prompt("📉 ¿Cuántas unidades deseas descontar?");
+
+    if (cantidad === null) return;
+
+    const cantidadNumerica = Number(cantidad);
+
+    if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+      alert("❌ Debe ingresar una cantidad válida.");
+      return;
+    }
+
+    setProducts((prev) =>
+      prev.map((prod) => {
+        if (prod.id !== idProducto) return prod;
+
+        const nuevoStock = Number(prod.stock) - cantidadNumerica;
+
+        return {
+          ...prod,
+          stock: Math.max(0, nuevoStock),
+        };
+      }),
+    );
+    const producto = products.find((p) => p.id === idProducto);
+
+    if (producto) {
+      alert(
+        `✅ Nuevo stock de ${producto.name}: ${Math.max(
+          0,
+          Number(producto.stock) - cantidadNumerica,
+        )} unidades`,
+      );
+    }
+  }
+  const rankingProductos = {};
+
+  ventas.forEach((venta) => {
+    venta.productos.forEach((producto) => {
+      const clave = `${producto.name} | ${producto.color || "Sin color"} | ${
+        producto.size || "Sin talla"
+      }`;
+
+      if (!rankingProductos[clave]) {
+        rankingProductos[clave] = 0;
+      }
+
+      rankingProductos[clave] += Number(producto.cantidad || 1);
+    });
+  });
+
+  const topProductos = Object.entries(rankingProductos)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -887,6 +970,33 @@ function AdminView({
               </button>
 
               <button
+                onClick={() => agregarStock(prod.id)}
+                style={{
+                  background: "#16a34a",
+                  color: "white",
+                  border: "none",
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                }}
+              >
+                ➕ Stock
+              </button>
+              <button
+                onClick={() => restarStock(prod.id)}
+                style={{
+                  background: "#ea580c",
+                  color: "white",
+                  border: "none",
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                }}
+              >
+                📉 Stock
+              </button>
+
+              <button
                 onClick={() => eliminarProducto(prod.id)}
                 style={{
                   background: "#ef4444",
@@ -958,6 +1068,49 @@ function AdminView({
         <p>
           <strong>Ventas Hoy:</strong> {formatearPrecio(totalHoy)}
         </p>
+      </div>
+      <div
+        style={{
+          background: "#fef3c7",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>🏆 Top Productos Más Vendidos</h2>
+
+        {topProductos.length === 0 ? (
+          <p>No hay ventas registradas todavía.</p>
+        ) : (
+          topProductos.map(([nombre, cantidad], index) => (
+            <div
+              key={nombre}
+              style={{
+                padding: "8px 0",
+                borderBottom: "1px solid #ddd",
+              }}
+            >
+              <strong>#{index + 1}</strong>{" "}
+              <div>
+                <div>
+                  <strong>#{index + 1}</strong>
+                </div>
+
+                <div>{nombre}</div>
+
+                <div
+                  style={{
+                    color: "#16a34a",
+                    fontWeight: "bold",
+                    marginTop: "4px",
+                  }}
+                >
+                  {cantidad} unidades vendidas
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* 📋 HISTORIAL DE VENTAS */}
@@ -1128,6 +1281,7 @@ function AdminView({
             >
               Total: {formatearPrecio(vst.total)}
             </p>
+
             <button
               // 🔒 CANDADO DE AUDITORÍA: Si ya se entregó, este botón también se congela solo
               disabled={vst.estado === "Entregado"}
@@ -1144,6 +1298,7 @@ function AdminView({
             >
               🗑️ Cancelar / Eliminar Pedido
             </button>
+
             {/* 🔒 REEMPLAZA TU BLOQUE DE BOTONES EN EL HISTORIAL POR ESTE COMPORTAMIENTO SEGURO */}
             <div
               style={{
