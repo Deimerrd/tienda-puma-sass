@@ -156,6 +156,34 @@ function ClientView({
           >
             ✨ Ver Todas
           </button>
+
+          {productosFiltrados.some((prod) => Number(prod.descuento) > 0) && (
+            <>
+              <h2
+                style={{
+                  textAlign: "center",
+                  margin: "30px 0 20px",
+                  fontSize: "28px",
+                  fontWeight: "bold",
+                }}
+              >
+                🔥 OFERTAS DEL MES
+              </h2>
+
+              <div style={{ display: "block" }}>
+                {productosFiltrados
+                  .filter((prod) => Number(prod.descuento) > 0)
+                  .map((prod) => (
+                    <TarjetaProducto
+                      key={`oferta-${prod.id}`}
+                      prod={prod}
+                      AgregarAlCarrito={AgregarAlCarrito}
+                      formatearPrecio={formatearPrecio}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -181,6 +209,34 @@ function ClientView({
           ))}
         </div>
       </div>
+
+      {productosFiltrados.some((prod) => Number(prod.descuento) > 0) && (
+        <>
+          <h2
+            style={{
+              textAlign: "center",
+              margin: "30px 0 20px",
+              fontSize: "28px",
+              fontWeight: "bold",
+            }}
+          >
+            🔥 OFERTAS DEL MES
+          </h2>
+
+          <div style={{ display: "block" }}>
+            {productosFiltrados
+              .filter((prod) => Number(prod.descuento) > 0)
+              .map((prod) => (
+                <TarjetaProducto
+                  key={`oferta-${prod.id}`}
+                  prod={prod}
+                  AgregarAlCarrito={AgregarAlCarrito}
+                  formatearPrecio={formatearPrecio}
+                />
+              ))}
+          </div>
+        </>
+      )}
 
       <div style={{ display: "block" }}>
         {productosFiltrados.length === 0 ? (
@@ -216,10 +272,38 @@ function ClientView({
               <h4>
                 [{item.id}] - {item.name}
               </h4>
-              <p>
-                Precio Unitario: {formatearPrecio(Number(item.price))} | Talla:{" "}
-                {item.size}
-              </p>
+              <div>
+                <strong>Precio Unitario:</strong>
+
+                {item.precioOriginal && item.precioOriginal > item.price ? (
+                  <>
+                    <div
+                      style={{
+                        textDecoration: "line-through",
+                        color: "#888",
+                        fontSize: "13px",
+                      }}
+                    >
+                      {formatearPrecio(item.precioOriginal)}
+                    </div>
+
+                    <div
+                      style={{
+                        color: "#dc2626",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {formatearPrecio(item.price)}
+                    </div>
+                  </>
+                ) : (
+                  <div>{formatearPrecio(Number(item.price))}</div>
+                )}
+
+                <div>
+                  <strong>Talla:</strong> {item.size}
+                </div>
+              </div>
               <p>
                 Cantidad:
                 <button onClick={() => disminuirCantidad(item.id)}> - </button>
@@ -506,7 +590,6 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
   const [colorElegido, setColorElegido] = useState("");
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidadDeseada, setCantidadDeseada] = useState(1);
-
   function obtenerEstadoStock(stock) {
     const cantidad = Number(stock);
 
@@ -530,6 +613,11 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
     };
   }
   const estadoStock = obtenerEstadoStock(prod.stock);
+
+  const precioOriginal = Number(prod.price);
+
+  const precioFinal =
+    precioOriginal - (precioOriginal * Number(prod.descuento || 0)) / 100;
 
   return (
     <div
@@ -556,6 +644,24 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       ) : (
         <div style={{ color: "#94a3b8", fontSize: "13px" }}></div>
       )}
+
+      {prod.promocion && (
+        <div
+          style={{
+            background: "#dc2626",
+            color: "white",
+            padding: "5px 10px",
+            borderRadius: "20px",
+            display: "inline-block",
+            fontSize: "12px",
+            fontWeight: "bold",
+            marginBottom: "10px",
+          }}
+        >
+          {prod.promocion}
+        </div>
+      )}
+
       <h3>{prod.name}</h3>
 
       {prod.description && (
@@ -731,9 +837,39 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       <p>
         Género: <strong>{prod.gender || "Unisex"}</strong>
       </p>
-      <p style={{ fontWeight: "bold" }}>
-        Precio: {formatearPrecio(Number(prod.price))}
-      </p>
+      <div style={{ marginBottom: "10px" }}>
+        {Number(prod.descuento) > 0 ? (
+          <>
+            <div
+              style={{
+                textDecoration: "line-through",
+                color: "#888",
+                fontSize: "14px",
+              }}
+            >
+              {formatearPrecio(precioOriginal)}
+            </div>
+
+            <div
+              style={{
+                color: "#dc2626",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              {formatearPrecio(precioFinal)}
+            </div>
+          </>
+        ) : (
+          <div
+            style={{
+              fontWeight: "bold",
+            }}
+          >
+            {formatearPrecio(precioOriginal)}
+          </div>
+        )}
+      </div>
 
       <div
         style={{
@@ -794,6 +930,11 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
             alert("❌ Este producto está agotado.");
             return;
           }
+          const precioOriginal = Number(prod.price);
+
+          const precioFinal =
+            precioOriginal -
+            (precioOriginal * Number(prod.descuento || 0)) / 100;
 
           const productoConVariantes = {
             ...prod,
@@ -801,6 +942,10 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
             color: colorElegido,
             size: tallaElegida,
             cantidad: cantidadDeseada,
+
+            precioOriginal,
+            precioFinal,
+            price: precioFinal,
           };
 
           AgregarAlCarrito(productoConVariantes);

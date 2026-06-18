@@ -31,6 +31,9 @@ function AdminView({
     image: "",
     gender: "",
     description: "",
+
+    promocion: "",
+    descuento: 0,
   });
 
   function generarFacturaPDF(vst) {
@@ -160,6 +163,9 @@ function AdminView({
           image: "",
           gender: "",
           description: "",
+
+          promocion: "",
+          descuento: 0,
         });
       }
       return; // Detiene la función aquí para que no intente duplicarlo abajo
@@ -179,6 +185,8 @@ function AdminView({
       image: "",
       gender: "",
       description: "",
+      promocion: "",
+      descuento: 0,
     });
   }
 
@@ -752,6 +760,78 @@ function AdminView({
                     padding: "10px",
                   }}
                 />
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                  }}
+                >
+                  <label
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    🔥 TIPO DE PROMOCIÓN:
+                  </label>
+
+                  <select
+                    name="promocion"
+                    value={articulo.promocion}
+                    onChange={handleChange}
+                    style={{
+                      background: "#171717",
+                      border: "1px solid #404040",
+                      color: "#ffffff",
+                      padding: "10px",
+                    }}
+                  >
+                    <option value="">Sin promoción</option>
+                    <option value="🔥 Promoción del Mes">
+                      🔥 Promoción del Mes
+                    </option>
+                    <option value="⭐ Destacado">⭐ Destacado</option>
+                    <option value="💥 Oferta Especial">
+                      💥 Oferta Especial
+                    </option>
+                    <option value="🆕 Nuevo Ingreso">🆕 Nuevo Ingreso</option>
+                  </select>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                  }}
+                >
+                  <label
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    📉 DESCUENTO (%):
+                  </label>
+
+                  <input
+                    type="number"
+                    name="descuento"
+                    min="0"
+                    max="90"
+                    value={articulo.descuento}
+                    onChange={handleChange}
+                    placeholder="Ej: 20"
+                    style={{
+                      background: "#171717",
+                      border: "1px solid #404040",
+                      color: "#ffffff",
+                      padding: "10px",
+                    }}
+                  />
+                </div>
               </div>
 
               <div
