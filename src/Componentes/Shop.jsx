@@ -99,7 +99,7 @@ function Shop() {
   // 👇 D. NUEVA MEMORIA: CONTRASEÑA DINÁMICA DE ADMINISTRADOR
   const [claveMaestra, setClaveMaestra] = useState(() => {
     const savedClave = localStorage.getItem("company_admin_clave");
-    return savedClave ? savedClave : "Admin1234"; // Clave inicial por defecto
+    return savedClave ? savedClave : "Admin2021"; // Clave inicial por defecto
   });
 
   function eliminarProducto(id) {
