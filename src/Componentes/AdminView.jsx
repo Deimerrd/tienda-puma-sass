@@ -340,6 +340,66 @@ function AdminView({
   const topColores = Object.entries(rankingColores)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
+
+  const productosReponer = products
+    .map((prod) => {
+      let vendidos = 0;
+
+      ventas.forEach((venta) => {
+        venta.productos.forEach((item) => {
+          if (
+            item.name === prod.name &&
+            item.color === prod.color &&
+            item.size === prod.size
+          ) {
+            vendidos += Number(item.cantidad || 1);
+          }
+        });
+      });
+
+      return {
+        ...prod,
+        vendidos,
+      };
+    })
+    .filter((prod) => prod.vendidos > 0 && Number(prod.stock) <= 5)
+    .sort((a, b) => b.vendidos - a.vendidos)
+    .slice(0, 10);
+
+  const ventasPorMes = {};
+
+  ventas.forEach((venta) => {
+    if (!venta.fecha) return;
+
+    const fecha = new Date(venta.fecha);
+
+    const mes = fecha.toLocaleDateString("es-CO", {
+      month: "long",
+      year: "numeric",
+    });
+
+    if (!ventasPorMes[mes]) {
+      ventasPorMes[mes] = 0;
+    }
+
+    ventasPorMes[mes] += Number(venta.total || venta.totalCompra || 0);
+  });
+
+  const resumenMensual = Object.entries(ventasPorMes).map(([mes, total]) => ({
+    mes,
+    total,
+  }));
+
+  const ultimoMes = resumenMensual[resumenMensual.length - 1];
+
+  const mesAnterior = resumenMensual[resumenMensual.length - 2];
+
+  let crecimiento = 0;
+
+  if (ultimoMes && mesAnterior && mesAnterior.total > 0) {
+    crecimiento =
+      ((ultimoMes.total - mesAnterior.total) / mesAnterior.total) * 100;
+  }
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -1199,6 +1259,116 @@ function AdminView({
               #{index + 1} — {color} → {cantidad} ventas
             </div>
           ))
+        )}
+      </div>
+
+      <div
+        style={{
+          background: "#fee2e2",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+          border: "2px solid #ef4444",
+        }}
+      >
+        <h2>🚨 Reponer Urgente</h2>
+
+        {productosReponer.length === 0 ? (
+          <p>✅ No hay productos críticos para reabastecer.</p>
+        ) : (
+          productosReponer.map((prod) => (
+            <div
+              key={prod.id}
+              style={{
+                padding: "10px 0",
+                borderBottom: "1px solid #ddd",
+              }}
+            >
+              <div>
+                <strong>{prod.name}</strong>
+              </div>
+
+              <div>
+                🎨 {prod.color || "N/A"} | 📏 {prod.size || "N/A"}
+              </div>
+
+              <div>📦 Stock actual: {prod.stock}</div>
+
+              <div
+                style={{
+                  color: "#dc2626",
+                  fontWeight: "bold",
+                }}
+              >
+                🔥 Vendidos: {prod.vendidos}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div
+        style={{
+          background: "#dcfce7",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>📈 Ventas por Mes</h2>
+
+        {resumenMensual.length === 0 ? (
+          <p>No hay ventas registradas.</p>
+        ) : (
+          resumenMensual.map((item) => (
+            <div
+              key={item.mes}
+              style={{
+                padding: "8px 0",
+                borderBottom: "1px solid #ddd",
+              }}
+            >
+              <strong>{item.mes}</strong>
+
+              <div>💰 {formatearPrecio(item.total)}</div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div
+        style={{
+          background: "#e0f2fe",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>📊 Crecimiento del Negocio</h2>
+
+        {resumenMensual.length < 2 ? (
+          <p>Se necesitan al menos dos meses de ventas.</p>
+        ) : (
+          <>
+            <p>
+              Mes actual:
+              <strong> {formatearPrecio(ultimoMes.total)}</strong>
+            </p>
+
+            <p>
+              Mes anterior:
+              <strong> {formatearPrecio(mesAnterior.total)}</strong>
+            </p>
+
+            <p
+              style={{
+                color: crecimiento >= 0 ? "#16a34a" : "#dc2626",
+                fontWeight: "bold",
+                fontSize: "18px",
+              }}
+            >
+              {crecimiento >= 0 ? "⬆️" : "⬇️"} {crecimiento.toFixed(1)}%
+            </p>
+          </>
         )}
       </div>
 
