@@ -304,6 +304,42 @@ function AdminView({
   const topProductos = Object.entries(rankingProductos)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
+
+  const rankingTallas = {};
+
+  ventas.forEach((venta) => {
+    venta.productos.forEach((producto) => {
+      const talla = producto.size || "Sin talla";
+
+      if (!rankingTallas[talla]) {
+        rankingTallas[talla] = 0;
+      }
+
+      rankingTallas[talla] += Number(producto.cantidad || 1);
+    });
+  });
+
+  const topTallas = Object.entries(rankingTallas)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const rankingColores = {};
+
+  ventas.forEach((venta) => {
+    venta.productos.forEach((producto) => {
+      const color = producto.color || "Sin color";
+
+      if (!rankingColores[color]) {
+        rankingColores[color] = 0;
+      }
+
+      rankingColores[color] += Number(producto.cantidad || 1);
+    });
+  });
+
+  const topColores = Object.entries(rankingColores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -1108,6 +1144,59 @@ function AdminView({
                   {cantidad} unidades vendidas
                 </div>
               </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div
+        style={{
+          background: "#dbeafe",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>🔥 Tallas Más Vendidas</h2>
+
+        {topTallas.length === 0 ? (
+          <p>No hay datos disponibles.</p>
+        ) : (
+          topTallas.map(([talla, cantidad], index) => (
+            <div
+              key={talla}
+              style={{
+                padding: "8px 0",
+                borderBottom: "1px solid #ccc",
+              }}
+            >
+              #{index + 1} — Talla {talla} → {cantidad} ventas
+            </div>
+          ))
+        )}
+      </div>
+
+      <div
+        style={{
+          background: "#fce7f3",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>🎨 Colores Más Vendidos</h2>
+
+        {topColores.length === 0 ? (
+          <p>No hay datos disponibles.</p>
+        ) : (
+          topColores.map(([color, cantidad], index) => (
+            <div
+              key={color}
+              style={{
+                padding: "8px 0",
+                borderBottom: "1px solid #ccc",
+              }}
+            >
+              #{index + 1} — {color} → {cantidad} ventas
             </div>
           ))
         )}
