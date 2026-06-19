@@ -22,7 +22,7 @@ function AdminView({
   agregarCategoria,
   cancelarPedidoAdmin,
   eliminarProducto,
-  cambiarClave, // 👈 RECIBIMOS LA HERRAMIENTA DE CAMBIO DE CLAVE
+  cambiarClave,
   formatearPrecio,
   forzarDesbloqueoDev,
   nequiNumero,
@@ -45,6 +45,8 @@ function AdminView({
     promocion: "",
     descuento: 0,
   });
+
+  const [busquedaPedido, setBusquedaPedido] = useState("");
 
   function generarFacturaPDF(vst) {
     const doc = new jsPDF();
@@ -422,8 +424,6 @@ function AdminView({
   const ventasPorMesGrafica = {};
 
   ventas.forEach((venta) => {
-    console.log("VENTA:", venta);
-
     const fechaVenta = new Date(venta.fecha);
 
     const numeroMes = fechaVenta.getMonth() + 1;
@@ -451,7 +451,28 @@ function AdminView({
 
     ventas: ventasPorMesGrafica[mes],
   }));
-  console.log("PRIMERA VENTA:", ventas[0]);
+
+  const ventasFiltradas = ventas.filter((vst) => {
+    if (!busquedaPedido.trim()) return true;
+
+    const texto = busquedaPedido.toLowerCase();
+
+    return (
+      String(vst.cliente || "")
+        .toLowerCase()
+        .includes(texto) ||
+      String(vst.cedula || "")
+        .toLowerCase()
+        .includes(texto) ||
+      String(vst.telefono || "")
+        .toLowerCase()
+        .includes(texto) ||
+      String(vst.idVenta || "")
+        .toLowerCase()
+        .includes(texto)
+    );
+  });
+
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -1234,6 +1255,18 @@ function AdminView({
         ))
       )}
 
+      <input
+        type="text"
+        placeholder="🔍 Buscar pedido..."
+        value={busquedaPedido}
+        onChange={(e) => setBusquedaPedido(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px",
+          marginBottom: "20px",
+        }}
+      />
+
       {/* 📋 SECCIÓN B: HISTORIAL DE PEDIDOS CONTRAENTREGA */}
       <h3
         style={{ marginTop: "40px", color: "green", fontFamily: "sans-serif" }}
@@ -1533,12 +1566,12 @@ function AdminView({
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <p>Total de ventas: {ventas.length}</p>
 
-      {ventas.length === 0 ? (
+      <p>Total de ventas encontradas: {ventasFiltradas.length}</p>
+      {ventasFiltradas.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>No hay ventas registradas.</p>
       ) : (
-        ventas.map((vst) => (
+        ventasFiltradas.map((vst) => (
           <div
             key={vst.idVenta}
             style={{
@@ -1575,7 +1608,7 @@ function AdminView({
               💰 <strong>Método:</strong> {vst.metodoPago}
             </div>
             <h4 style={{ color: "#333" }}>Compró:</h4>
-            <h4>Compró:</h4>
+
             <ul
               style={{
                 listStyleType: "none",
@@ -1701,23 +1734,6 @@ function AdminView({
             >
               Total: {formatearPrecio(vst.total)}
             </p>
-
-            <button
-              // 🔒 CANDADO DE AUDITORÍA: Si ya se entregó, este botón también se congela solo
-              disabled={vst.estado === "Entregado"}
-              onClick={() => cancelarPedidoAdmin(vst.idVenta)}
-              style={{
-                background: vst.estado === "Entregado" ? "#404040" : "#ef4444", // Gris si está bloqueado, rojo si está activo
-                color: vst.estado === "Entregado" ? "#a3a3a3" : "white",
-                border: "none",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                cursor: vst.estado === "Entregado" ? "not-allowed" : "pointer", // Cursor de prohibido
-                fontWeight: "bold",
-              }}
-            >
-              🗑️ Cancelar / Eliminar Pedido
-            </button>
 
             {/* 🔒 REEMPLAZA TU BLOQUE DE BOTONES EN EL HISTORIAL POR ESTE COMPORTAMIENTO SEGURO */}
             <div
