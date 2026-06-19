@@ -1,5 +1,14 @@
 import { useState } from "react";
 import jsPDF from "jspdf";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 function AdminView({
   modoIngenieroActivo,
@@ -7,6 +16,7 @@ function AdminView({
   products,
   productosStockCritico,
   setProducts,
+  cambiarEstadoPedido,
   ventas,
   categories,
   agregarCategoria,
@@ -408,6 +418,40 @@ function AdminView({
     crecimiento =
       ((ultimoMes.total - mesAnterior.total) / mesAnterior.total) * 100;
   }
+
+  const ventasPorMesGrafica = {};
+
+  ventas.forEach((venta) => {
+    console.log("VENTA:", venta);
+
+    const fechaVenta = new Date(venta.fecha);
+
+    const numeroMes = fechaVenta.getMonth() + 1;
+
+    const nombreMes = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ][numeroMes - 1];
+
+    ventasPorMesGrafica[nombreMes] =
+      (ventasPorMesGrafica[nombreMes] || 0) + Number(venta.total);
+  });
+  const datosGrafica = Object.keys(ventasPorMesGrafica).map((mes) => ({
+    mes,
+
+    ventas: ventasPorMesGrafica[mes],
+  }));
+  console.log("PRIMERA VENTA:", ventas[0]);
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -1453,6 +1497,43 @@ function AdminView({
       </div>
 
       {/* 📋 HISTORIAL DE VENTAS */}
+      <h2
+        style={{
+          marginTop: "40px",
+          marginBottom: "20px",
+          fontFamily: "sans-serif",
+        }}
+      >
+        📈 Ventas por Mes
+      </h2>
+
+      <div
+        style={{
+          background: "white",
+          padding: "20px",
+          borderRadius: "10px",
+          marginBottom: "30px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={datosGrafica}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="mes" />
+            <YAxis />
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("es-CO", {
+                  style: "currency",
+                  currency: "COP",
+                }).format(value)
+              }
+            />
+            <Bar dataKey="ventas" maxBarSize={120} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <p>Total de ventas: {ventas.length}</p>
 
       {ventas.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>No hay ventas registradas.</p>
@@ -1647,6 +1728,28 @@ function AdminView({
                 marginTop: "15px",
               }}
             >
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Estado:</strong>
+
+                <select
+                  value={vst.estado}
+                  onChange={(e) =>
+                    cambiarEstadoPedido(vst.idVenta, e.target.value)
+                  }
+                  style={{
+                    marginLeft: "10px",
+                    padding: "5px",
+                    borderRadius: "4px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <option value="Pendiente">🟡 Pendiente</option>
+                  <option value="Preparando">🔵 Preparando</option>
+                  <option value="Enviado">🟣 Enviado</option>
+                  <option value="Entregado">🟢 Entregado</option>
+                  <option value="Cancelado">🔴 Cancelado</option>
+                </select>
+              </div>
               {vst.estado === "Entregado" ? (
                 <span
                   style={{

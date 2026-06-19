@@ -353,6 +353,14 @@ function Shop() {
     );
   }
 
+  function cambiarEstadoPedido(idVenta, nuevoEstado) {
+    setVentas((prevVentas) =>
+      prevVentas.map((venta) =>
+        venta.idVenta === idVenta ? { ...venta, estado: nuevoEstado } : venta,
+      ),
+    );
+  }
+
   return (
     <div style={{ position: "relative", minHeight: "100vh", padding: "20px" }}>
       {/* BARRA SUPERIOR ESQUINADA COMPACTA */}
@@ -447,6 +455,7 @@ function Shop() {
           setNequiNumero={setNequiNumero}
           nequiQR={nequiQR}
           setNequiQR={setNequiQR}
+          cambiarEstadoPedido={cambiarEstadoPedido}
         />
       )}
     </div>
