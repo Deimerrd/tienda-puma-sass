@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import jsPDF from "jspdf";
 import {
   BarChart,
@@ -202,16 +202,23 @@ function AdminView({
     });
   }
 
-  const pedidosEntregados = ventas.filter((v) => v.estado === "Entregado");
+  const estadisticasPedidos = useMemo(() => {
+    const entregados = ventas.filter((v) => v.estado === "Entregado");
 
-  const pedidosPendientes = ventas.filter((v) => v.estado !== "Entregado");
+    const pendientes = ventas.filter((v) => v.estado !== "Entregado");
+
+    return {
+      entregados,
+      pendientes,
+    };
+  }, [ventas]);
+  const { entregados, pendientes } = estadisticasPedidos;
 
   const totalVendido = ventas.reduce(
     (acc, venta) => acc + Number(venta.total),
     0,
   );
-
-  const totalEntregado = pedidosEntregados.reduce(
+  const totalEntregado = entregados.reduce(
     (acc, venta) => acc + Number(venta.total),
     0,
   );
@@ -232,16 +239,23 @@ function AdminView({
     0,
   );
 
-  const productosFiltrados = products.filter((prod) => {
+  const productosFiltrados = useMemo(() => {
     const texto = busquedaProducto.toLowerCase();
 
-    return (
-      prod.name?.toLowerCase().includes(texto) ||
-      prod.id?.toLowerCase().includes(texto) ||
-      prod.marca?.toLowerCase().includes(texto)
-    );
-  });
-
+    return products.filter((prod) => {
+      return (
+        String(prod.name || "")
+          .toLowerCase()
+          .includes(texto) ||
+        String(prod.id || "")
+          .toLowerCase()
+          .includes(texto) ||
+        String(prod.marca || "")
+          .toLowerCase()
+          .includes(texto)
+      );
+    });
+  }, [products, busquedaProducto]);
   function agregarStock(idProducto) {
     const cantidad = window.prompt(
       "📦 ¿Cuántas unidades deseas agregar al inventario?",
@@ -452,27 +466,28 @@ function AdminView({
     ventas: ventasPorMesGrafica[mes],
   }));
 
-  const ventasFiltradas = ventas.filter((vst) => {
-    if (!busquedaPedido.trim()) return true;
+  const ventasFiltradas = useMemo(() => {
+    if (!busquedaPedido.trim()) return ventas;
 
     const texto = busquedaPedido.toLowerCase();
 
-    return (
-      String(vst.cliente || "")
-        .toLowerCase()
-        .includes(texto) ||
-      String(vst.cedula || "")
-        .toLowerCase()
-        .includes(texto) ||
-      String(vst.telefono || "")
-        .toLowerCase()
-        .includes(texto) ||
-      String(vst.idVenta || "")
-        .toLowerCase()
-        .includes(texto)
-    );
-  });
-
+    return ventas.filter((vst) => {
+      return (
+        String(vst.cliente || "")
+          .toLowerCase()
+          .includes(texto) ||
+        String(vst.cedula || "")
+          .toLowerCase()
+          .includes(texto) ||
+        String(vst.telefono || "")
+          .toLowerCase()
+          .includes(texto) ||
+        String(vst.idVenta || "")
+          .toLowerCase()
+          .includes(texto)
+      );
+    });
+  }, [ventas, busquedaPedido]);
   return (
     <>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
@@ -995,6 +1010,23 @@ function AdminView({
                       padding: "10px",
                     }}
                   />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "5px",
+                    }}
+                  >
+                    <label>📦 STOCK DISPONIBLE:</label>
+
+                    <input
+                      type="text"
+                      name="stock"
+                      value={articulo.stock}
+                      onChange={handleChange}
+                      placeholder="Cantidad disponible"
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -1289,11 +1321,11 @@ function AdminView({
         </p>
 
         <p>
-          <strong>Entregados:</strong> {pedidosEntregados.length}
+          <strong>Entregados:</strong> {entregados.length}
         </p>
 
         <p>
-          <strong>Pendientes:</strong> {pedidosPendientes.length}
+          <strong>Pendientes:</strong> {pendientes.length}
         </p>
 
         <p>
