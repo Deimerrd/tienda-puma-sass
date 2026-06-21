@@ -182,34 +182,6 @@ function ClientView({
           ))}
         </div>
       </div>
-      {/*
-      {productosFiltrados.some((prod) => Number(prod.descuento) > 0) && (
-        <>
-          <h2
-            style={{
-              textAlign: "center",
-              margin: "30px 0 20px",
-              fontSize: "28px",
-              fontWeight: "bold",
-            }}
-          >
-            🔥 OFERTAS DEL MES
-          </h2>
-
-          <div style={{ display: "block" }}>
-            {productosFiltrados
-              .filter((prod) => Number(prod.descuento) > 0)
-              .map((prod) => (
-                <TarjetaProducto
-                  key={`oferta-${prod.id}`}
-                  prod={prod}
-                  AgregarAlCarrito={AgregarAlCarrito}
-                  formatearPrecio={formatearPrecio}
-                />
-              ))}
-          </div>
-        </>
-      )}*/}
 
       <div style={{ display: "block" }}>
         {productosFiltrados.length === 0 ? (
@@ -773,8 +745,8 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
                 {tal.trim()}
               </option>
             ))
-          ) : prod.marca ? (
-            prod.marca.split(",").map((tal, idx) => (
+          ) : prod.size ? (
+            prod.size.split(",").map((tal, idx) => (
               <option
                 key={idx}
                 value={tal.trim()}

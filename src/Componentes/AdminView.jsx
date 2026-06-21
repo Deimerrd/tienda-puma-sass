@@ -35,17 +35,16 @@ function AdminView({
     name: "",
     category: "",
     color: "",
-    price: "",
+    size: "", // ← IMPORTANTE
     marca: "",
+    price: "",
     stock: "",
     image: "",
     gender: "",
     description: "",
-
     promocion: "",
     descuento: 0,
   });
-
   const [busquedaPedido, setBusquedaPedido] = useState("");
 
   function generarFacturaPDF(vst) {
@@ -169,13 +168,13 @@ function AdminView({
           name: "",
           category: "",
           color: "",
+          size: "",
           price: "",
           marca: "",
           stock: "",
           image: "",
           gender: "",
           description: "",
-
           promocion: "",
           descuento: 0,
         });
@@ -191,6 +190,7 @@ function AdminView({
       name: "",
       category: "",
       color: "",
+      size: "",
       price: "",
       marca: "",
       stock: "",
@@ -724,6 +724,38 @@ function AdminView({
             color: "white",
           }}
         >
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "5px",
+              }}
+            >
+              <label
+                htmlFor="txt-marca"
+                style={{ fontSize: "12px", fontWeight: "700" }}
+              >
+                MARCA:
+              </label>
+            </div>
+
+            <input
+              type="text"
+              id="txt-marca"
+              name="marca"
+              placeholder="Ej: Puma"
+              value={articulo.marca || ""}
+              onChange={handleChange}
+              style={{
+                background: "#171717",
+                border: "1px solid #404040",
+                color: "#ffffff",
+                padding: "10px",
+              }}
+            />
+          </div>
+
           {/* Si es calzado (Zapatos), abre la matriz avanzada de tallas */}
           {articulo.category === "shoes" && (
             <div
@@ -745,7 +777,7 @@ function AdminView({
                   htmlFor="txt-color"
                   style={{ fontSize: "12px", fontWeight: "700" }}
                 >
-                  MATRIZ DE COLORES Y TALLAS:
+                  MATRIZ DE COLORES
                 </label>
                 <input
                   type="text"
@@ -762,60 +794,7 @@ function AdminView({
                   }}
                 />
               </div>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <label
-                  htmlFor="txt-gender"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  GÉNERO PÚBLICO:
-                </label>
-                <select
-                  name="gender"
-                  value={articulo.gender}
-                  id="txt-gender"
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                    width: "200px",
-                  }}
-                >
-                  <option value="Unisex">Unisex</option>
-                  <option value="Hombre">Hombre</option>
-                  <option value="Mujer">Mujer</option>
-                  <option value="Niño">Niño</option>
-                  <option value="Niña">Niña</option>
-                </select>
-              </div>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <label
-                  htmlFor="txt-marca"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  MARCA:
-                </label>
 
-                <input
-                  type="text"
-                  id="txt-marca"
-                  name="marca"
-                  placeholder="Ej: Puma"
-                  value={articulo.marca}
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                  }}
-                />
-              </div>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "5px" }}
               >
@@ -928,7 +907,7 @@ function AdminView({
                   type="text"
                   id="txt-size"
                   name="size"
-                  placeholder="Ej: 39,40,41,42"
+                  placeholder="Ej: S,M,L,XL"
                   value={articulo.size || ""}
                   onChange={handleChange}
                   style={{
@@ -947,6 +926,59 @@ function AdminView({
             <div
               style={{ display: "flex", flexDirection: "column", gap: "15px" }}
             >
+              <label
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+              >
+                🔥 TIPO DE PROMOCIÓN:
+              </label>
+
+              <select
+                name="promocion"
+                value={articulo.promocion}
+                onChange={handleChange}
+                style={{
+                  background: "#171717",
+                  border: "1px solid #404040",
+                  color: "#ffffff",
+                  padding: "10px",
+                }}
+              >
+                <option value="">Sin promoción</option>
+                <option value="🔥 Promoción del Mes">
+                  🔥 Promoción del Mes
+                </option>
+                <option value="⭐ Destacado">⭐ Destacado</option>
+                <option value="💥 Oferta Especial">💥 Oferta Especial</option>
+                <option value="🆕 Nuevo Ingreso">🆕 Nuevo Ingreso</option>
+              </select>
+              <label
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+              >
+                📉 DESCUENTO (%):
+              </label>
+
+              <input
+                type="number"
+                name="descuento"
+                min="0"
+                max="90"
+                value={articulo.descuento}
+                onChange={handleChange}
+                placeholder="Ej: 20"
+                style={{
+                  background: "#171717",
+                  border: "1px solid #404040",
+                  color: "#ffffff",
+                  padding: "10px",
+                }}
+              />
+
               <h4
                 style={{
                   margin: "0",
@@ -980,6 +1012,7 @@ function AdminView({
                   }}
                 />
               </div>
+
               {(articulo.category === "shirt" ||
                 articulo.category === "sweater" ||
                 articulo.category === "pants") && (
@@ -998,10 +1031,10 @@ function AdminView({
                   </label>
                   <input
                     type="text"
-                    name="marca"
-                    id="txt-marca"
+                    name="size"
+                    id="txt-size"
                     placeholder="Ej: S, M, L, XL"
-                    value={articulo.marca}
+                    value={articulo.size}
                     onChange={handleChange}
                     style={{
                       background: "#171717",
