@@ -756,6 +756,64 @@ function AdminView({
             />
           </div>
 
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "5px",
+            }}
+          >
+            <label
+              htmlFor="txt-gender"
+              style={{ fontSize: "12px", fontWeight: "700" }}
+            >
+              GÉNERO PÚBLICO:
+            </label>
+
+            <select
+              id="txt-gender"
+              name="gender"
+              value={articulo.gender}
+              onChange={handleChange}
+              style={{
+                background: "#171717",
+                border: "1px solid #404040",
+                color: "#ffffff",
+                padding: "10px",
+              }}
+            >
+              <option value="">Seleccionar</option>
+              <option value="Unisex">Unisex</option>
+              <option value="Hombre">Hombre</option>
+              <option value="Mujer">Mujer</option>
+              <option value="Niño">Niño</option>
+              <option value="Niña">Niña</option>
+            </select>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <label
+              htmlFor="txt-stock"
+              style={{ fontSize: "12px", fontWeight: "700" }}
+            >
+              📦 STOCK DISPONIBLE:
+            </label>
+
+            <input
+              type="text"
+              id="txt-stock"
+              name="stock"
+              placeholder="Cantidad disponible en inventario"
+              value={articulo.stock}
+              onChange={handleChange}
+              style={{
+                background: "#171717",
+                border: "1px solid #404040",
+                color: "#ffffff",
+                padding: "10px",
+              }}
+            />
+          </div>
+
           {/* Si es calzado (Zapatos), abre la matriz avanzada de tallas */}
           {articulo.category === "shoes" && (
             <div
@@ -798,28 +856,6 @@ function AdminView({
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "5px" }}
               >
-                <label
-                  htmlFor="txt-stock"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  📦 STOCK DISPONIBLE:
-                </label>
-
-                <input
-                  type="text"
-                  id="txt-stock"
-                  name="stock"
-                  placeholder="Cantidad disponible en inventario"
-                  value={articulo.stock}
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                  }}
-                />
-
                 <div
                   style={{
                     display: "flex",
@@ -1043,23 +1079,6 @@ function AdminView({
                       padding: "10px",
                     }}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
-                    <label>📦 STOCK DISPONIBLE:</label>
-
-                    <input
-                      type="text"
-                      name="stock"
-                      value={articulo.stock}
-                      onChange={handleChange}
-                      placeholder="Cantidad disponible"
-                    />
-                  </div>
                 </div>
               )}
             </div>
