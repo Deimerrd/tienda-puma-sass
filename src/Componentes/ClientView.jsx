@@ -609,43 +609,6 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
 
       <h3>{prod.name}</h3>
 
-      {prod.description && (
-        <div style={{ marginBottom: "10px" }}>
-          <button
-            onClick={() => setVerDescripcion(!verDescripcion)}
-            style={{
-              background: "none",
-              border: "none",
-              color: "blue",
-              cursor: "pointer",
-              textDecoration: "underline",
-              padding: "0",
-              fontSize: "13px",
-            }}
-          >
-            {verDescripcion
-              ? "🔼 Ocultar descripción"
-              : "👁️ Ver descripción persuasiva"}
-          </button>
-          {verDescripcion && (
-            <p
-              style={{
-                fontStyle: "italic",
-                color: "#475569",
-                fontSize: "13px",
-                background: "#f8fafc",
-                padding: "8px",
-                borderRadius: "4px",
-                marginTop: "5px",
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              📢 {prod.description}
-            </p>
-          )}
-        </div>
-      )}
-
       <p>Marca: {prod.marca}</p>
       <div>
         <label
@@ -853,6 +816,43 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           +
         </button>
       </div>
+
+      {prod.description && (
+        <div style={{ marginBottom: "10px" }}>
+          <button
+            onClick={() => setVerDescripcion(!verDescripcion)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "blue",
+              cursor: "pointer",
+              textDecoration: "underline",
+              padding: "0",
+              fontSize: "13px",
+            }}
+          >
+            {verDescripcion
+              ? "🔼 Ocultar descripción"
+              : "👁️ Ver descripción persuasiva"}
+          </button>
+          {verDescripcion && (
+            <p
+              style={{
+                fontStyle: "italic",
+                color: "#475569",
+                fontSize: "13px",
+                background: "#f8fafc",
+                padding: "8px",
+                borderRadius: "4px",
+                marginTop: "5px",
+                border: "1px solid #e2e8f0",
+              }}
+            >
+              📢 {prod.description}
+            </p>
+          )}
+        </div>
+      )}
 
       <button
         disabled={Number(prod.stock) <= 0}
