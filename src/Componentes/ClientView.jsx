@@ -32,14 +32,39 @@ function ClientView({
       generoSeleccionado === "todos" || prod.gender === generoSeleccionado;
     return pasaCategoria && pasaGenero;
   });
-
   return (
-    <>
-      <h1>Catálogo de la Tienda</h1>
-
+    <div
+      style={{
+        background: "#f8fafc",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      <h1
+        style={{
+          textAlign: "center",
+          fontSize: "48px",
+          fontWeight: "800",
+          color: "#111827",
+          marginBottom: "10px",
+          letterSpacing: "2px",
+        }}
+      >
+        FANTASTIC MODA DF
+      </h1>
+      <p
+        style={{
+          textAlign: "center",
+          color: "#6b7280",
+          fontSize: "18px",
+          marginBottom: "35px",
+        }}
+      >
+        Encuentra los mejores productos para tu estilo
+      </p>
       <div
         style={{
-          background: "#ffffff",
+          background: "#f8fafc",
           borderBottom: "2px solid #000000",
           padding: "15px 0px",
           marginBottom: "30px",
@@ -523,7 +548,7 @@ function ClientView({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -567,12 +592,16 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
   return (
     <div
       style={{
-        border: "1px solid black",
-        padding: "10px",
-        margin: "10px",
-        width: "220px",
+        background: "#ffffff",
+        border: "1px solid #e5e7eb",
+        borderRadius: "18px",
+        padding: "15px",
+        margin: "15px",
+        width: "280px",
         display: "inline-block",
         verticalAlign: "top",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        transition: "0.3s",
       }}
     >
       {prod.image ? (
@@ -584,7 +613,11 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
               : prod.image.split(",")[0].trim()
           }
           alt={prod.name}
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          style={{
+            width: "100%",
+            height: "250px",
+            objectFit: "contain",
+          }}
         />
       ) : (
         <div style={{ color: "#94a3b8", fontSize: "13px" }}></div>
@@ -750,28 +783,44 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           <>
             <div
               style={{
+                color: "#9ca3af",
                 textDecoration: "line-through",
-                color: "#888",
-                fontSize: "14px",
+                fontSize: "16px",
+                marginBottom: "5px",
               }}
             >
               {formatearPrecio(precioOriginal)}
             </div>
-
             <div
               style={{
-                color: "#dc2626",
-                fontWeight: "bold",
-                fontSize: "20px",
+                color: "#7c3aed",
+                fontSize: "30px",
+                fontWeight: "800",
+                marginBottom: "5px",
               }}
             >
               {formatearPrecio(precioFinal)}
             </div>
+            <div
+              style={{
+                background: "#ef4444",
+                color: "#ffffff",
+                display: "inline-block",
+                padding: "4px 10px",
+                borderRadius: "20px",
+                fontSize: "12px",
+                fontWeight: "700",
+              }}
+            >
+              {prod.descuento}% OFF
+            </div>{" "}
           </>
         ) : (
           <div
             style={{
-              fontWeight: "bold",
+              color: "#111827",
+              fontSize: "30px",
+              fontWeight: "800",
             }}
           >
             {formatearPrecio(precioOriginal)}
@@ -787,15 +836,38 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           marginBottom: "15px",
         }}
       >
-        <p
-          style={{
-            color: estadoStock.color,
-            fontWeight: "bold",
-          }}
-        >
-          {estadoStock.texto} ({prod.stock})
-        </p>
+        <div>
+          <div
+            style={{
+              color: estadoStock.color,
+              fontWeight: "700",
+              fontSize: "15px",
+            }}
+          >
+            {estadoStock.texto}
+          </div>
+
+          <div
+            style={{
+              color: "#6b7280",
+              fontSize: "13px",
+            }}
+          >
+            {prod.stock} unidades disponibles
+          </div>
+        </div>
         <button
+          style={{
+            width: "35px",
+            height: "35px",
+            borderRadius: "10px",
+            border: "1px solid #d1d5db",
+            background: "#ffffff",
+            color: "#111827",
+            fontSize: "20px",
+            fontWeight: "700",
+            cursor: "pointer",
+          }}
           type="button"
           onClick={() =>
             setCantidadDeseada((prev) => (prev > 1 ? prev - 1 : 1))
@@ -804,8 +876,32 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           -
         </button>
 
-        <strong>{cantidadDeseada}</strong>
+        <div
+          style={{
+            minWidth: "35px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "700",
+            fontSize: "16px",
+            color: "#111827",
+          }}
+        >
+          {cantidadDeseada}
+        </div>
+
         <button
+          style={{
+            width: "35px",
+            height: "35px",
+            borderRadius: "10px",
+            border: "1px solid #d1d5db",
+            background: "#ffffff",
+            color: "#111827",
+            fontSize: "20px",
+            fontWeight: "700",
+            cursor: "pointer",
+          }}
           type="button"
           onClick={() => {
             if (cantidadDeseada < Number(prod.stock)) {
