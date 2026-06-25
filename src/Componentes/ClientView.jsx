@@ -38,38 +38,67 @@ function ClientView({
         background: "#f8fafc",
         minHeight: "100vh",
         padding: "20px",
+        maxWidth: "1400px",
+        margin: "0 auto",
+        overflowX: "hidden",
       }}
     >
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: "48px",
-          fontWeight: "800",
-          color: "#111827",
-          marginBottom: "10px",
-          letterSpacing: "2px",
-        }}
-      >
-        FANTASTIC MODA DF
-      </h1>
-      <p
-        style={{
-          textAlign: "center",
-          color: "#6b7280",
-          fontSize: "18px",
-          marginBottom: "35px",
-        }}
-      >
-        Encuentra los mejores productos para tu estilo
-      </p>
       <div
         style={{
-          background: "#f8fafc",
-          borderBottom: "2px solid #000000",
-          padding: "15px 0px",
+          background: "#ffffff",
+          padding: "25px",
+          borderRadius: "20px",
           marginBottom: "30px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
         }}
       >
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "48px",
+            fontWeight: "800",
+            color: "#111827",
+            margin: "0",
+            letterSpacing: "2px",
+          }}
+        >
+          FANTASTIC MODA DF
+        </h1>
+
+        <p
+          style={{
+            textAlign: "center",
+            color: "#6b7280",
+            fontSize: "18px",
+            marginTop: "10px",
+            marginBottom: "20px",
+          }}
+        >
+          Moda, estilo y calidad para toda la familia
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="🔍 Buscar productos..."
+            style={{
+              width: "400px",
+              maxWidth: "100%",
+              padding: "14px",
+              border: "1px solid #d1d5db",
+              borderRadius: "12px",
+              fontSize: "15px",
+              outline: "none",
+            }}
+          />
+        </div>
+      </div>
+      <div>
         <div style={{ marginBottom: "15px" }}>
           <strong style={{ marginRight: "10px" }}>Sección:</strong>
           <button
@@ -196,9 +225,9 @@ function ClientView({
                 textTransform: "uppercase",
                 // Si está seleccionado se vuelve negro con letras blancas, si no, al revés 👇
                 background:
-                  categoriaSeleccionada === "todos" ? "#000000" : "#ffffff",
-                color:
-                  categoriaSeleccionada === "todos" ? "#ffffff" : "#000000",
+                  categoriaSeleccionada === cat.id ? "#000000" : "#ffffff",
+
+                color: categoriaSeleccionada === cat.id ? "#ffffff" : "#000000",
                 transition: "all 0.15s ease",
               }}
             >
@@ -208,7 +237,16 @@ function ClientView({
         </div>
       </div>
 
-      <div style={{ display: "block" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, 320px)",
+          justifyContent: "center",
+          gap: "30px",
+          marginTop: "30px",
+          width: "100%",
+        }}
+      >
         {productosFiltrados.length === 0 ? (
           <p style={{ color: "gray", fontStyle: "italic" }}>
             No hay artículos registrados que coincidan con esta búsqueda.
@@ -224,7 +262,6 @@ function ClientView({
           ))
         )}
       </div>
-
       <h2>Tu carrito de Compra</h2>
       {cart.length === 0 ? (
         <p>El carrito está vacío.</p>
@@ -594,14 +631,14 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       style={{
         background: "#ffffff",
         border: "1px solid #e5e7eb",
-        borderRadius: "18px",
-        padding: "15px",
-        margin: "15px",
-        width: "280px",
-        display: "inline-block",
-        verticalAlign: "top",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        borderRadius: "20px",
+        padding: "20px",
+        width: "320px",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
         transition: "0.3s",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
       }}
     >
       {prod.image ? (
@@ -615,8 +652,9 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           alt={prod.name}
           style={{
             width: "100%",
-            height: "250px",
+            height: "220px",
             objectFit: "contain",
+            marginBottom: "15px",
           }}
         />
       ) : (
@@ -918,18 +956,17 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
           <button
             onClick={() => setVerDescripcion(!verDescripcion)}
             style={{
-              background: "none",
-              border: "none",
-              color: "blue",
+              background: "#f3f4f6",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              padding: "8px 12px",
+              color: "#374151",
+              fontWeight: "600",
               cursor: "pointer",
-              textDecoration: "underline",
-              padding: "0",
               fontSize: "13px",
             }}
           >
-            {verDescripcion
-              ? "🔼 Ocultar descripción"
-              : "👁️ Ver descripción persuasiva"}
+            {verDescripcion ? "Ocultar ↑" : "Ver más →"}
           </button>
           {verDescripcion && (
             <p
@@ -995,15 +1032,22 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
         }}
         style={{
           width: "100%",
-          padding: "10px",
-          background: Number(prod.stock) <= 0 ? "#9ca3af" : "#000",
-          color: "#fff",
+          padding: "14px",
+          background: Number(prod.stock) <= 0 ? "#9ca3af" : "#7c3aed",
+          color: "#ffffff",
           border: "none",
+          borderRadius: "12px",
           cursor: Number(prod.stock) <= 0 ? "not-allowed" : "pointer",
-          fontWeight: "bold",
+          fontWeight: "700",
+          fontSize: "15px",
+          marginTop: "10px",
+          boxShadow:
+            Number(prod.stock) <= 0
+              ? "none"
+              : "0 4px 12px rgba(124, 58, 237, 0.35)",
         }}
       >
-        {Number(prod.stock) <= 0 ? "❌ AGOTADO" : "🛒 AGREGAR AL CARRITO"}
+        {Number(prod.stock) <= 0 ? "Producto agotado" : "Agregar al carrito"}
       </button>
     </div>
   );
