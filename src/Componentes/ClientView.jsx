@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./TarjetaProducto.css";
 
 function ClientView({
   products,
@@ -702,39 +703,85 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
         >
           Color
         </label>
-
-        <select
+        <div
           style={{
-            width: "100%",
-            padding: "5px",
-            border: "1px solid #cbd5e1",
-            borderRadius: "0px",
-            fontSize: "13px",
-          }}
-          onChange={(e) => {
-            setColorElegido(e.target.value);
-
-            // Conectamos la lógica para que cambie la foto según el color elegido 👇
-            const idxSeleccionado = prod.color
-              .split(",")
-              .map((c) => c.trim())
-              .indexOf(e.target.value);
-            if (idxSeleccionado !== -1) {
-              setFotoActivaIdx(idxSeleccionado);
-            }
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            marginBottom: "12px",
           }}
         >
-          <option value="">-- Elige Color --</option>
           {prod.color ? (
             prod.color.split(",").map((col, idx) => (
-              <option key={idx} value={col.trim()}>
-                {col.trim()}
-              </option>
+              <button
+                className={`color-btn ${
+                  colorElegido === col.trim() ? "active" : ""
+                }`}
+                key={idx}
+                type="button"
+                onClick={() => {
+                  const color = col.trim();
+
+                  setColorElegido(color);
+
+                  setFotoActivaIdx(idx);
+                }}
+                style={{
+                  color: colorElegido === col.trim() ? "#5b21b6" : "#374151",
+
+                  border:
+                    colorElegido === col.trim()
+                      ? "2px solid #7c3aed"
+                      : "1px solid #d1d5db",
+                  background:
+                    colorElegido === col.trim() ? "#ede9fe" : "#ffffff",
+                }}
+              >
+                <>
+                  <span
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      marginRight: "8px",
+                      border: "2px solid #d1d5db",
+                      background:
+                        col.trim().toLowerCase().includes("black") ||
+                        col.trim().toLowerCase().includes("negro")
+                          ? "#000"
+                          : col.trim().toLowerCase().includes("white") ||
+                              col.trim().toLowerCase().includes("blanco")
+                            ? "#fff"
+                            : col.trim().toLowerCase().includes("red") ||
+                                col.trim().toLowerCase().includes("rojo")
+                              ? "#ef4444"
+                              : col.trim().toLowerCase().includes("blue") ||
+                                  col.trim().toLowerCase().includes("azul")
+                                ? "#2563eb"
+                                : col.trim().toLowerCase().includes("green") ||
+                                    col.trim().toLowerCase().includes("verde")
+                                  ? "#22c55e"
+                                  : "#9ca3af",
+                    }}
+                  />
+
+                  {col.trim()}
+                </>
+              </button>
             ))
           ) : (
-            <option value="Estándar">Estándar</option>
+            <button
+              type="button"
+              style={{
+                padding: "8px 14px",
+                borderRadius: "20px",
+              }}
+            >
+              Estándar
+            </button>
           )}
-        </select>
+        </div>
       </div>
       <div>
         <label
