@@ -680,18 +680,27 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
 
       <h3>{prod.name}</h3>
 
-      <p>Marca: {prod.marca}</p>
+      <div
+        style={{
+          fontSize: "14px",
+          fontWeight: "700",
+          color: "#374151",
+          marginBottom: "12px",
+        }}
+      >
+        🏷️ {prod.marca}
+      </div>
       <div>
         <label
           style={{
-            fontSize: "12px",
-            fontWeight: "700",
-            color: "#767676",
+            fontSize: "13px",
+            fontWeight: "600",
+            color: "#374151",
+            marginBottom: "6px",
             display: "block",
-            marginBottom: "3px",
           }}
         >
-          COLOR:
+          Color
         </label>
 
         <select
@@ -730,14 +739,14 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       <div>
         <label
           style={{
-            fontSize: "12px",
-            fontWeight: "700",
-            color: "#767676",
+            fontSize: "13px",
+            fontWeight: "600",
+            color: "#374151",
+            marginBottom: "6px",
             display: "block",
-            marginBottom: "3px",
           }}
         >
-          TALLA:
+          Talla
         </label>
         <select
           style={{
