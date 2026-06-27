@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./TarjetaProducto.css";
+import ProductoDetalle from "./ProductoDetalle";
 
 function ClientView({
   products,
@@ -24,6 +25,8 @@ function ClientView({
   const [metodoPago, setMetodoPago] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("todos");
   const [generoSeleccionado, setGeneroSeleccionado] = useState("todos");
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [verDetalle, setVerDetalle] = useState(false);
 
   const productosFiltrados = products.filter((prod) => {
     const pasaCategoria =
@@ -33,6 +36,19 @@ function ClientView({
       generoSeleccionado === "todos" || prod.gender === generoSeleccionado;
     return pasaCategoria && pasaGenero;
   });
+  if (verDetalle && productoSeleccionado) {
+    return (
+      <ProductoDetalle
+        producto={productoSeleccionado}
+        volver={() => {
+          setVerDetalle(false);
+          setProductoSeleccionado(null);
+        }}
+        AgregarAlCarrito={AgregarAlCarrito}
+        formatearPrecio={formatearPrecio}
+      />
+    );
+  }
   return (
     <div
       style={{
@@ -259,6 +275,10 @@ function ClientView({
               prod={prod}
               AgregarAlCarrito={AgregarAlCarrito}
               formatearPrecio={formatearPrecio}
+              verProducto={() => {
+                setProductoSeleccionado(prod);
+                setVerDetalle(true);
+              }}
             />
           ))
         )}
@@ -590,8 +610,12 @@ function ClientView({
   );
 }
 
-function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
-  const [verDescripcion, setVerDescripcion] = useState(false);
+function TarjetaProducto({
+  prod,
+  AgregarAlCarrito,
+  formatearPrecio,
+  verProducto,
+}) {
   const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
   // Por defecto muestra la primera foto (posición 0)
   const [mensajeTalla, setMensajeTalla] = useState("");
@@ -1010,7 +1034,7 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
       {prod.description && (
         <div style={{ marginBottom: "10px" }}>
           <button
-            onClick={() => setVerDescripcion(!verDescripcion)}
+            onClick={verProducto}
             style={{
               background: "#f3f4f6",
               border: "1px solid #e5e7eb",
@@ -1022,24 +1046,8 @@ function TarjetaProducto({ prod, AgregarAlCarrito, formatearPrecio }) {
               fontSize: "13px",
             }}
           >
-            {verDescripcion ? "Ocultar ↑" : "Ver más →"}
+            "Ver más →"
           </button>
-          {verDescripcion && (
-            <p
-              style={{
-                fontStyle: "italic",
-                color: "#475569",
-                fontSize: "13px",
-                background: "#f8fafc",
-                padding: "8px",
-                borderRadius: "4px",
-                marginTop: "5px",
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              📢 {prod.description}
-            </p>
-          )}
         </div>
       )}
 
