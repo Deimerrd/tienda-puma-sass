@@ -10,6 +10,32 @@ export default function ProductoDetalle({
   const [colorElegido, setColorElegido] = useState("");
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidad, setCantidad] = useState(1);
+  const [mostrarDescripcion, setMostrarDescripcion] = useState(false);
+  const [mostrarEspecificaciones, setMostrarEspecificaciones] = useState(false);
+  const obtenerEstadoStock = (stock) => {
+    const cantidad = Number(stock);
+
+    if (cantidad <= 0) {
+      return {
+        texto: "🔴 Agotado",
+        color: "#dc2626",
+      };
+    }
+
+    if (cantidad <= 5) {
+      return {
+        texto: "🟡 Últimas unidades",
+        color: "#f59e0b",
+      };
+    }
+
+    return {
+      texto: "🟢 Disponible",
+      color: "#16a34a",
+    };
+  };
+
+  const estadoStock = obtenerEstadoStock(producto.stock);
 
   if (!producto) {
     return <h2>Producto no encontrado.</h2>;
@@ -19,8 +45,8 @@ export default function ProductoDetalle({
     <div
       style={{
         maxWidth: "1400px",
-        margin: "30px auto",
-        padding: "20px",
+        margin: "20px auto",
+        padding: "15px",
         background: "#f8fafc",
         minHeight: "100vh",
       }}
@@ -28,7 +54,7 @@ export default function ProductoDetalle({
       <button
         onClick={volver}
         style={{
-          marginBottom: "20px",
+          marginBottom: "15px",
           padding: "10px 18px",
           border: "none",
           background: "#111827",
@@ -45,10 +71,10 @@ export default function ProductoDetalle({
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "40px",
+          gap: "25px",
           background: "#ffffff",
           borderRadius: "20px",
-          padding: "30px",
+          padding: "20px",
           boxShadow: "0 8px 25px rgba(0,0,0,.08)",
         }}
       >
@@ -68,7 +94,7 @@ export default function ProductoDetalle({
             style={{
               display: "flex",
               gap: "10px",
-              marginTop: "20px",
+              marginTop: "15px",
               flexWrap: "wrap",
             }}
           >
@@ -105,7 +131,7 @@ export default function ProductoDetalle({
               fontWeight: "700",
               color: "#111827",
               lineHeight: "1.2",
-              marginBottom: "25px",
+              marginBottom: "10px",
             }}
           >
             {producto.name}
@@ -115,7 +141,7 @@ export default function ProductoDetalle({
             style={{
               color: "#6b7280",
               fontSize: "18px",
-              marginBottom: "30px",
+              marginBottom: "10px",
             }}
           >
             Marca: <strong>{producto.marca}</strong>
@@ -126,20 +152,42 @@ export default function ProductoDetalle({
               color: "#7c3aed",
               fontSize: "34px",
               fontWeight: "700",
-              marginBottom: "35px",
+              marginBottom: "10px",
             }}
           >
             {formatearPrecio(Number(producto.price))}
           </h2>
 
+          <div style={{ marginBottom: "10px" }}>
+            <p
+              style={{
+                color: estadoStock.color,
+                fontWeight: "700",
+                fontSize: "18px",
+                marginBottom: "5px",
+              }}
+            >
+              {estadoStock.texto}
+            </p>
+
+            <p
+              style={{
+                color: "#6b7280",
+                fontSize: "15px",
+              }}
+            >
+              {producto.stock} unidades disponibles
+            </p>
+          </div>
+
           {/* Selector de Color */}
 
-          <div style={{ marginBottom: "30px" }}>
+          <div style={{ marginBottom: "10px" }}>
             <h3
               style={{
                 fontSize: "18px",
                 color: "#111827",
-                marginBottom: "15px",
+                marginBottom: "8px",
               }}
             >
               Color
@@ -148,7 +196,7 @@ export default function ProductoDetalle({
             <div
               style={{
                 display: "flex",
-                gap: "12px",
+                gap: "10px",
                 flexWrap: "wrap",
               }}
             >
@@ -169,7 +217,7 @@ export default function ProductoDetalle({
                       color:
                         colorElegido === col.trim() ? "#5b21b6" : "#374151",
 
-                      padding: "10px 18px",
+                      padding: "10px 10px",
 
                       display: "flex",
 
@@ -187,7 +235,7 @@ export default function ProductoDetalle({
 
                       cursor: "pointer",
 
-                      fontSize: "14px",
+                      fontSize: "12px",
 
                       fontWeight: "600",
 
@@ -197,7 +245,7 @@ export default function ProductoDetalle({
                     <span
                       style={{
                         width: "16px",
-                        height: "16px",
+                        height: "15px",
                         borderRadius: "50%",
                         marginRight: "8px",
                         border: "1px solid #d1d5db",
@@ -232,7 +280,7 @@ export default function ProductoDetalle({
           </div>
           {/* Selector de Talla */}
 
-          <div style={{ marginBottom: "30px" }}>
+          <div style={{ marginBottom: "15px" }}>
             <h3
               style={{
                 fontSize: "18px",
@@ -248,7 +296,7 @@ export default function ProductoDetalle({
             <div
               style={{
                 display: "flex",
-                gap: "12px",
+                gap: "10px",
                 flexWrap: "wrap",
               }}
             >
@@ -288,9 +336,11 @@ export default function ProductoDetalle({
             </div>
           </div>
           {/* Selector de Cantidad */}
+
           <div
             style={{
-              marginBottom: "35px",
+              marginTop: "15px",
+              marginBottom: "20px",
             }}
           >
             <h3
@@ -298,7 +348,7 @@ export default function ProductoDetalle({
                 fontSize: "18px",
                 fontWeight: "700",
                 color: "#111827",
-                marginBottom: "15px",
+                marginBottom: "10px",
               }}
             >
               Cantidad
@@ -308,23 +358,25 @@ export default function ProductoDetalle({
               style={{
                 display: "flex",
                 alignItems: "center",
-                width: "fit-content",
+                width: "170px",
                 border: "1px solid #d1d5db",
                 borderRadius: "12px",
                 overflow: "hidden",
-                background: "#fff",
+                background: "#ffffff",
               }}
             >
               <button
                 onClick={() => setCantidad((prev) => Math.max(1, prev - 1))}
                 style={{
-                  width: "50px",
-                  height: "50px",
+                  width: "55px",
+                  height: "40px",
                   border: "none",
-                  background: "#f3f4f6",
+                  background: "#f5f3ff",
+                  color: "#7c3aed",
                   cursor: "pointer",
-                  fontSize: "22px",
+                  fontSize: "24px",
                   fontWeight: "700",
+                  transition: "0.25s",
                 }}
               >
                 −
@@ -332,29 +384,300 @@ export default function ProductoDetalle({
 
               <div
                 style={{
-                  width: "60px",
+                  flex: 1,
                   textAlign: "center",
                   fontSize: "20px",
                   fontWeight: "700",
+                  color: "black",
                 }}
               >
                 {cantidad}
               </div>
 
               <button
-                onClick={() => setCantidad((prev) => prev + 1)}
+                onClick={() =>
+                  setCantidad((prev) =>
+                    Math.min(Number(producto.stock), prev + 1),
+                  )
+                }
                 style={{
-                  width: "50px",
-                  height: "50px",
+                  width: "55px",
+                  height: "45px",
                   border: "none",
-                  background: "#f3f4f6",
+                  background: "#f5f3ff",
+                  color: "#7c3aed",
                   cursor: "pointer",
-                  fontSize: "22px",
+                  fontSize: "24px",
                   fontWeight: "700",
+                  transition: "0.25s",
                 }}
               >
                 +
               </button>
+            </div>
+          </div>
+          <button
+            disabled={Number(producto.stock) <= 0}
+            onClick={() => {
+              if (!colorElegido || !tallaElegida) {
+                alert("⚠️ Por favor selecciona un color y una talla.");
+                return;
+              }
+
+              if (Number(producto.stock) <= 0) {
+                alert("❌ Este producto está agotado.");
+                return;
+              }
+
+              AgregarAlCarrito({
+                ...producto,
+                color: colorElegido,
+                talla: tallaElegida,
+                cantidad,
+              });
+
+              alert("✅ Producto agregado al carrito.");
+            }}
+            style={{
+              width: "100%",
+              marginTop: "12px",
+              padding: "15px",
+              border: "none",
+              borderRadius: "14px",
+              background: Number(producto.stock) <= 0 ? "#9ca3af" : "#7c3aed",
+              color: "#fff",
+              fontSize: "18px",
+              fontWeight: "700",
+              cursor: Number(producto.stock) <= 0 ? "not-allowed" : "pointer",
+              transition: ".25s",
+            }}
+          >
+            {Number(producto.stock) <= 0
+              ? "Producto agotado"
+              : "Agregar al carrito"}
+          </button>
+          {/* Descripción */}
+          <div
+            style={{
+              marginTop: "12px",
+              borderTop: "1px solid #e5e7eb",
+              paddingTop: "10px",
+            }}
+          >
+            <div
+              onClick={() => setMostrarDescripcion(!mostrarDescripcion)}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+                padding: "10px 0",
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  color: "#111827",
+                }}
+              >
+                📄 Descripción
+              </h3>
+
+              <span
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "700",
+                  color: "#7c3aed",
+                }}
+              >
+                {mostrarDescripcion ? "▲" : "▼"}
+              </span>
+            </div>
+
+            {mostrarDescripcion && (
+              <div
+                style={{
+                  marginTop: "13px",
+                  padding: "15px",
+                  background: "#f9fafb",
+                  borderRadius: "12px",
+                  color: "#4b5563",
+                  lineHeight: "1.8",
+                }}
+              >
+                {producto.description}
+              </div>
+            )}
+            {/* Especificaciones */}
+
+            <div
+              style={{
+                marginTop: "15px",
+                borderTop: "1px solid #e5e7eb",
+                paddingTop: "15px",
+              }}
+            >
+              <div
+                onClick={() =>
+                  setMostrarEspecificaciones(!mostrarEspecificaciones)
+                }
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  padding: "10px 0",
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    color: "#111827",
+                  }}
+                >
+                  📋 Especificaciones
+                </h3>
+
+                <span
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "700",
+                    color: "#7c3aed",
+                  }}
+                >
+                  {mostrarEspecificaciones ? "▲" : "▼"}
+                </span>
+              </div>
+
+              {mostrarEspecificaciones && (
+                <div
+                  style={{
+                    marginTop: "15px",
+                    padding: "22px",
+                    background: "#f9fafb",
+                    borderRadius: "15px",
+                  }}
+                >
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                    }}
+                  >
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "700",
+                            color: "#374151",
+                            width: "40%",
+                          }}
+                        >
+                          Marca
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            color: "#6b7280",
+                          }}
+                        >
+                          {producto.marca}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "700",
+                            color: "#374151",
+                          }}
+                        >
+                          Categoría
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            color: "#6b7280",
+                          }}
+                        >
+                          {producto.category}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "700",
+                            color: "#374151",
+                          }}
+                        >
+                          Género
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            color: "#6b7280",
+                          }}
+                        >
+                          {producto.gender}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "700",
+                            color: "#374151",
+                          }}
+                        >
+                          Colores
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            color: "#6b7280",
+                          }}
+                        >
+                          {producto.color}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "700",
+                            color: "#374151",
+                          }}
+                        >
+                          Tallas
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            color: "#6b7280",
+                          }}
+                        >
+                          {producto.size}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>
