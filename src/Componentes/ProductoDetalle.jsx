@@ -2,6 +2,9 @@ import { useState } from "react";
 
 export default function ProductoDetalle({
   producto,
+  products,
+  seleccionarProducto,
+
   volver,
   AgregarAlCarrito,
   formatearPrecio,
@@ -35,7 +38,32 @@ export default function ProductoDetalle({
     };
   };
 
+  // ✅ AQUÍ AFUERA
   const estadoStock = obtenerEstadoStock(producto.stock);
+
+  // ✅ AQUÍ AFUERA
+  const compartirProducto = async () => {
+    const url = window.location.href;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: producto.name,
+          text: `Mira este producto: ${producto.name}`,
+          url,
+        });
+      } catch (error) {
+        console.log("Compartir cancelado");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("✅ Enlace copiado al portapapeles.");
+      } catch {
+        alert("❌ No fue posible copiar el enlace.");
+      }
+    }
+  };
 
   if (!producto) {
     return <h2>Producto no encontrado.</h2>;
@@ -136,6 +164,74 @@ export default function ProductoDetalle({
           >
             {producto.name}
           </h1>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              marginTop: "10px",
+              marginBottom: "20px",
+            }}
+          >
+            <span
+              style={{
+                color: "#fbbf24",
+                fontSize: "20px",
+                letterSpacing: "2px",
+              }}
+            >
+              ★★★★★
+            </span>
+
+            <span
+              style={{
+                fontSize: "15px",
+                color: "#374151",
+                fontWeight: "600",
+              }}
+            >
+              4.8
+            </span>
+
+            <span
+              style={{
+                fontSize: "14px",
+                color: "#6b7280",
+              }}
+            >
+              (128 opiniones)
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "25px",
+            }}
+          >
+            <button
+              onClick={compartirProducto}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 18px",
+                border: "1px solid #d1d5db",
+                borderRadius: "10px",
+                background: "#ffffff",
+                cursor: "pointer",
+                fontSize: "15px",
+                fontWeight: "600",
+                color: "#374151",
+                transition: ".25s",
+              }}
+            >
+              🔗 Compartir
+            </button>
+          </div>
 
           <p
             style={{
@@ -456,6 +552,113 @@ export default function ProductoDetalle({
               ? "Producto agotado"
               : "Agregar al carrito"}
           </button>
+
+          <div
+            style={{
+              marginTop: "25px",
+              marginBottom: "25px",
+              background: "#fafafa",
+              border: "1px solid #e5e7eb",
+              borderRadius: "12px",
+              padding: "18px",
+            }}
+          >
+            {/* Envío */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <span style={{ fontSize: "22px" }}>🚚</span>
+
+              <div>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    color: "#111827",
+                  }}
+                >
+                  Envío gratis
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Compras superiores a $150.000
+                </div>
+              </div>
+            </div>
+
+            {/* Tiempo */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <span style={{ fontSize: "22px" }}>📦</span>
+
+              <div>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    color: "#111827",
+                  }}
+                >
+                  Entrega estimada
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                  }}
+                >
+                  2 a 5 días hábiles
+                </div>
+              </div>
+            </div>
+
+            {/* Compra segura */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <span style={{ fontSize: "22px" }}>🔒</span>
+
+              <div>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    color: "#111827",
+                  }}
+                >
+                  Compra segura
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Pago protegido y garantía de satisfacción.
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Descripción */}
           <div
             style={{
@@ -678,6 +881,90 @@ export default function ProductoDetalle({
                   </table>
                 </div>
               )}
+            </div>
+          </div>
+          {/* ================= PRODUCTOS RELACIONADOS ================= */}
+
+          <div
+            style={{
+              marginTop: "50px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "30px",
+                fontWeight: "700",
+                marginBottom: "25px",
+                color: "#111827",
+              }}
+            >
+              También te puede interesar
+            </h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))",
+                gap: "20px",
+              }}
+            >
+              {products
+                .filter(
+                  (item) =>
+                    item.id !== producto.id &&
+                    item.category === producto.category,
+                )
+                .slice(0, 4)
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      seleccionarProducto(item);
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                    style={{
+                      background: "#fff",
+                      borderRadius: "16px",
+                      padding: "15px",
+                      boxShadow: "0 5px 18px rgba(0,0,0,.08)",
+                      cursor: "pointer",
+                      transition: ".25s",
+                    }}
+                  >
+                    <img
+                      src={item.image.split(",")[0].trim()}
+                      alt={item.name}
+                      style={{
+                        width: "100%",
+                        height: "220px",
+                        objectFit: "contain",
+                      }}
+                    />
+
+                    <h4
+                      style={{
+                        marginTop: "12px",
+                        fontSize: "18px",
+                        color: "#111827",
+                      }}
+                    >
+                      {item.name}
+                    </h4>
+
+                    <p
+                      style={{
+                        color: "#7c3aed",
+                        fontWeight: "700",
+                        fontSize: "22px",
+                      }}
+                    >
+                      {formatearPrecio(item.price)}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

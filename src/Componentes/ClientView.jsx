@@ -40,6 +40,8 @@ function ClientView({
     return (
       <ProductoDetalle
         producto={productoSeleccionado}
+        products={products}
+        seleccionarProducto={(prod) => setProductoSeleccionado(prod)}
         volver={() => {
           setVerDetalle(false);
           setProductoSeleccionado(null);
