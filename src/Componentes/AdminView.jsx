@@ -28,8 +28,10 @@ function AdminView({
   nequiNumero,
   setNequiNumero,
   nequiQR,
-  setNequiQR,
 }) {
+  const subirQR = (e) => {
+    console.log(e.target.files[0]);
+  };
   const [articulo, setArticulo] = useState({
     id: "",
     name: "",
@@ -42,6 +44,8 @@ function AdminView({
     image: "",
     gender: "",
     description: "",
+    rating: 5,
+    reviews: 0,
     promocion: "",
     descuento: 0,
   });
@@ -158,7 +162,6 @@ function AdminView({
             prod.id.trim() === articulo.id.trim() ? articulo : prod,
           ),
         );
-        alert("🔒 ¡La edición se ha guardado con éxito!");
         // Limpiamos el formulario
         alert("🔒 ¡La edición se ha guardado con éxito!");
 
@@ -175,6 +178,8 @@ function AdminView({
           image: "",
           gender: "",
           description: "",
+          rating: 5,
+          reviews: 0,
           promocion: "",
           descuento: 0,
         });
@@ -197,6 +202,8 @@ function AdminView({
       image: "",
       gender: "",
       description: "",
+      rating: 5,
+      reviews: 0,
       promocion: "",
       descuento: 0,
     });
@@ -545,18 +552,30 @@ function AdminView({
         </div>
 
         <div>
-          <label>URL QR Nequi:</label>
-
-          <input
-            type="text"
-            value={nequiQR}
-            onChange={(e) => setNequiQR(e.target.value)}
-            placeholder="https://..."
+          <label
             style={{
-              width: "100%",
-              padding: "8px",
+              fontWeight: "700",
+              display: "block",
+              marginTop: "20px",
+              marginBottom: "10px",
             }}
-          />
+          >
+            🖼 Código QR
+          </label>
+
+          <input type="file" accept="image/*" onChange={subirQR} />
+          {nequiQR && (
+            <img
+              src={nequiQR}
+              alt="QR Nequi"
+              style={{
+                width: "180px",
+                marginTop: "15px",
+                borderRadius: "12px",
+                border: "1px solid #ddd",
+              }}
+            />
+          )}
         </div>
       </div>
 
@@ -812,6 +831,46 @@ function AdminView({
                 padding: "10px",
               }}
             />
+
+            <div>
+              <label>Calificación</label>
+
+              <input
+                type="number"
+                name="rating"
+                value={articulo.rating}
+                onChange={handleChange}
+                min="1"
+                max="5"
+                step="0.1"
+                placeholder="Ej: 4.8"
+                style={{
+                  background: "#171717",
+                  border: "1px solid #404040",
+                  color: "#fff",
+                  padding: "10px",
+                }}
+              />
+            </div>
+
+            <div>
+              <label>Número de opiniones</label>
+
+              <input
+                type="number"
+                name="reviews"
+                value={articulo.reviews}
+                onChange={handleChange}
+                min="0"
+                placeholder="Ej: 125"
+                style={{
+                  background: "#171717",
+                  border: "1px solid #404040",
+                  color: "#fff",
+                  padding: "10px",
+                }}
+              />
+            </div>
           </div>
 
           {/* Si es calzado (Zapatos), abre la matriz avanzada de tallas */}

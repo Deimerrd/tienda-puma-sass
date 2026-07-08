@@ -65,6 +65,13 @@ export default function ProductoDetalle({
     }
   };
 
+  const generarEstrellas = (rating) => {
+    const estrellasLlenas = Math.round(Number(rating));
+    const estrellasVacias = 5 - estrellasLlenas;
+
+    return "★".repeat(estrellasLlenas) + "☆".repeat(estrellasVacias);
+  };
+
   if (!producto) {
     return <h2>Producto no encontrado.</h2>;
   }
@@ -182,7 +189,7 @@ export default function ProductoDetalle({
                 letterSpacing: "2px",
               }}
             >
-              ★★★★★
+              {generarEstrellas(producto.rating)}
             </span>
 
             <span
@@ -192,7 +199,7 @@ export default function ProductoDetalle({
                 fontWeight: "600",
               }}
             >
-              4.8
+              {producto.rating}
             </span>
 
             <span
@@ -201,10 +208,9 @@ export default function ProductoDetalle({
                 color: "#6b7280",
               }}
             >
-              (128 opiniones)
+              ({producto.reviews} opiniones)
             </span>
           </div>
-
           <div
             style={{
               display: "flex",

@@ -351,81 +351,328 @@ function ClientView({
 
           <div
             style={{
-              marginTop: "20px",
-              padding: "15px",
-              background: "#f9f9f9",
-              border: "1px solid #ccc",
+              marginTop: "35px",
+              background: "#ffffff",
+              borderRadius: "18px",
+              padding: "35px",
+              boxShadow: "0 10px 30px rgba(0,0,0,.08)",
+              maxWidth: "750px",
+              marginInline: "auto",
             }}
           >
-            <h3>Datos de Envío y Facturación</h3>
-            <label htmlFor="txt-cliente-nombre">Nombre Completo: </label>
-            <input
-              id="txt-cliente-nombre"
-              type="text"
-              value={nombreComprador}
-              onChange={(e) => setNombreComprador(e.target.value)}
-            />
-            <br />
-            <br />
-            <label htmlFor="txt-cliente-cedula">Cédula: </label>
-            <input
-              id="txt-cliente-cedula"
-              type="text"
-              value={cedulaComprador}
-              onChange={(e) => setCedulaComprador(e.target.value)}
-            />
-            <br />
-            <br />
-            <label htmlFor="txt-cliente-telefono">Teléfono: </label>
-            <input
-              id="txt-cliente-telefono"
-              type="text"
-              value={telefonoComprador}
-              onChange={(e) => setTelefonoComprador(e.target.value)}
-            />
-            <br />
-            <br />
-            <label htmlFor="txt-cliente-direccion">Dirección de Envío: </label>
-            <input
-              id="txt-cliente-direccion"
-              type="text"
-              style={{ width: "300px" }}
-              value={direccionComprador}
-              onChange={(e) => setDireccionComprador(e.target.value)}
-            />
-            <br />
-            <br />
-            <label htmlFor="email">correo electronico</label>
-
-            <input
-              type="email"
-              placeholder="Correo electrónico"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
-            />
-
-            <br />
-            <br />
-            <div
+            <h2
               style={{
-                padding: "10px",
-                background: "#fff",
-                border: "1px solid #ddd",
+                textAlign: "center",
+                marginBottom: "30px",
+                color: "#111827",
+                fontSize: "30px",
+                fontWeight: "800",
               }}
             >
-              <label htmlFor="select-pago" style={{ fontWeight: "bold" }}>
-                Método de Pago:{" "}
-              </label>
-              <select
-                id="select-pago"
-                value={metodoPago}
-                onChange={(e) => setMetodoPago(e.target.value)}
+              📦 Datos de envío
+            </h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gap: "22px",
+              }}
+            >
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#6b7280",
+                  marginBottom: "35px",
+                  fontSize: "15px",
+                }}
               >
-                <option value="">-- Elige un método --</option>
-                <option value="Nequi">Nequi</option>
-                <option value="Breve">Breve</option>
-                <option value="Contraentrega">Pago Contraentrega</option>
-              </select>
+                Completa la información para recibir tu pedido.
+              </p>
+              <div>
+                <div>
+                  <label
+                    htmlFor="txt-cliente-nombre"
+                    style={{
+                      display: "block",
+                      marginBottom: "8px",
+                      fontWeight: "600",
+                      color: "#374151",
+                      fontSize: "15px",
+                    }}
+                  >
+                    👤 Nombre completo
+                  </label>
+
+                  <input
+                    id="txt-cliente-nombre"
+                    type="text"
+                    placeholder="Ingresa tu nombre completo"
+                    value={nombreComprador}
+                    onChange={(e) => setNombreComprador(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "14px 16px",
+                      borderRadius: "12px",
+                      border: "1px solid #d1d5db",
+                      fontSize: "15px",
+                      outline: "none",
+                      boxSizing: "border-box",
+                      transition: ".2s",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+              }}
+            >
+              {/* Cédula */}
+              <div>
+                <label
+                  htmlFor="txt-cliente-cedula"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    fontSize: "15px",
+                  }}
+                >
+                  🆔 Cédula
+                </label>
+
+                <input
+                  id="txt-cliente-cedula"
+                  type="text"
+                  placeholder="Número de documento"
+                  value={cedulaComprador}
+                  onChange={(e) => setCedulaComprador(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    borderRadius: "12px",
+                    border: "1px solid #d1d5db",
+                    fontSize: "15px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              {/* Teléfono */}
+              <div>
+                <label
+                  htmlFor="txt-cliente-telefono"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    fontSize: "15px",
+                  }}
+                >
+                  📱 Teléfono
+                </label>
+
+                <input
+                  id="txt-cliente-telefono"
+                  type="text"
+                  placeholder="Número celular"
+                  value={telefonoComprador}
+                  onChange={(e) => setTelefonoComprador(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    borderRadius: "12px",
+                    border: "1px solid #d1d5db",
+                    fontSize: "15px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="txt-cliente-direccion"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    fontSize: "16px",
+                    textAlign: "left",
+                  }}
+                >
+                  📍 Dirección de entrega
+                </label>
+
+                <input
+                  id="txt-cliente-direccion"
+                  type="text"
+                  placeholder="Ej: Calle 10 #25-18, Barrio Centro"
+                  value={direccionComprador}
+                  onChange={(e) => setDireccionComprador(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "14px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "12px",
+                    fontSize: "15px",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="email"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    fontSize: "16px",
+                    textAlign: "left",
+                  }}
+                >
+                  ✉ Correo electrónico
+                </label>
+
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="ejemplo@correo.com"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "14px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "12px",
+                    fontSize: "15px",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <h3
+                style={{
+                  textAlign: "left",
+                  marginBottom: "18px",
+                  color: "#111827",
+                  fontSize: "20px",
+                  fontWeight: "700",
+                }}
+              >
+                💳 Método de pago
+              </h3>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3,1fr)",
+                  gap: "15px",
+                }}
+              >
+                <div
+                  onClick={() => setMetodoPago("Nequi")}
+                  style={{
+                    cursor: "pointer",
+                    padding: "20px",
+                    borderRadius: "14px",
+                    border:
+                      metodoPago === "Nequi"
+                        ? "2px solid #7c3aed"
+                        : "1px solid #d1d5db",
+                    background: metodoPago === "Nequi" ? "#f5f3ff" : "#ffffff",
+                    transition: ".2s",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "30px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    📱
+                  </div>
+
+                  <strong>Nequi</strong>
+
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      color: "#6b7280",
+                      fontSize: "13px",
+                    }}
+                  >
+                    Pago inmediato
+                  </p>
+                </div>
+
+                <div
+                  onClick={() => setMetodoPago("Breve")}
+                  style={{
+                    cursor: "pointer",
+                    padding: "20px",
+                    borderRadius: "14px",
+                    border:
+                      metodoPago === "Breve"
+                        ? "2px solid #7c3aed"
+                        : "1px solid #d1d5db",
+                    background: metodoPago === "Breve" ? "#f5f3ff" : "#ffffff",
+                    transition: ".2s",
+                  }}
+                >
+                  <div style={{ fontSize: "30px" }}>🏦</div>
+
+                  <strong>Bre-B</strong>
+
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      color: "#6b7280",
+                      fontSize: "13px",
+                    }}
+                  >
+                    Transferencia bancaria
+                  </p>
+                </div>
+                <div
+                  onClick={() => setMetodoPago("Contraentrega")}
+                  style={{
+                    cursor: "pointer",
+                    padding: "20px",
+                    borderRadius: "14px",
+                    border:
+                      metodoPago === "Contraentrega"
+                        ? "2px solid #7c3aed"
+                        : "1px solid #d1d5db",
+                    background:
+                      metodoPago === "Contraentrega" ? "#f5f3ff" : "#ffffff",
+                    transition: ".2s",
+                  }}
+                >
+                  <div style={{ fontSize: "30px" }}>🚚</div>
+
+                  <strong>Contraentrega</strong>
+
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      color: "#6b7280",
+                      fontSize: "13px",
+                    }}
+                  >
+                    Paga al recibir
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* 👇 PASO 1: PASARELA DINÁMICA DE PAGOS LOCALES COLOMBIANOS */}
@@ -439,16 +686,31 @@ function ClientView({
                   fontFamily: "sans-serif",
                 }}
               >
-                <h4
+                <h3
                   style={{
-                    margin: "0 0 15px 0",
-                    textTransform: "uppercase",
-                    fontSize: "14px",
-                    letterSpacing: "0.5px",
+                    marginBottom: "20px",
+                    fontSize: "24px",
+                    fontWeight: "700",
+                    color: "#111827",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
                   }}
                 >
-                  📱 Instrucciones de Pago Electrónico Seguro
-                </h4>
+                  📱 Pago con {metodoPago}
+                </h3>
+
+                <p
+                  style={{
+                    marginTop: "-10px",
+                    marginBottom: "25px",
+                    color: "#6b7280",
+                    fontSize: "15px",
+                  }}
+                >
+                  Escanea el código QR o realiza la transferencia utilizando los
+                  datos de abajo.
+                </p>
 
                 <div
                   style={{
@@ -461,57 +723,104 @@ function ClientView({
                   {/* 📷 CONTENEDOR DEL CÓDIGO QR DE TU NEGOCIO */}
                   <div
                     style={{
-                      width: "120px",
-                      height: "120px",
+                      width: "170px",
+                      height: "170px",
                       background: "#ffffff",
-                      border: "1px solid #cbd5e1",
+                      borderRadius: "16px",
+                      border: "1px solid #e5e7eb",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      padding: "12px",
+                      boxShadow: "0 8px 24px rgba(0,0,0,.08)",
                     }}
                   >
                     {/* Aquí pones un QR real de tu Nequi cuando lances la app a internet. Por ahora ponemos un marcador visual */}
                     <div style={{ textAlign: "center", padding: "5px" }}>
                       <img
-                        // 👇 REEMPLAZA EL COMPORTAMIENTO DEL SRC POR ESTAS DOS URLS REALES VERIFICADAS:
                         src={nequiQR}
                         alt={metodoPago}
                         style={{
                           width: "100%",
                           height: "100%",
                           objectFit: "contain",
-                          padding: "8px",
+                          borderRadius: "8px",
                         }}
                       />
                     </div>
                   </div>
 
                   {/* 📝 DATOS TÉCNICOS DE TRANSFERENCIA */}
-                  <div style={{ flex: "1 1 200px" }}>
-                    <p style={{ margin: "0 0 8px 0", fontSize: "13px" }}>
-                      Titular: <strong>TIENDA PUMA PREMIUM S.A.S</strong>
-                    </p>
-                    <p style={{ margin: "0 0 8px 0", fontSize: "13px" }}>
-                      Celular Cuenta:{" "}
-                      <strong style={{ color: "#000000", fontSize: "15px" }}>
-                        {nequiNumero}{" "}
-                      </strong>
-                    </p>
+                  <div
+                    style={{
+                      flex: "1 1 250px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      gap: "18px",
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          color: "#6b7280",
+                        }}
+                      >
+                        Titular
+                      </span>
+
+                      <h3
+                        style={{
+                          margin: "4px 0 0",
+                          color: "#111827",
+                          fontSize: "22px",
+                          fontWeight: "700",
+                        }}
+                      >
+                        TIENDA PUMA PREMIUM S.A.S
+                      </h3>
+                    </div>
+
+                    <div>
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          color: "#6b7280",
+                        }}
+                      >
+                        Número para transferencias
+                      </span>
+
+                      <h2
+                        style={{
+                          margin: "5px 0",
+                          color: "#7c3aed",
+                          fontSize: "28px",
+                          fontWeight: "800",
+                          letterSpacing: "1px",
+                        }}
+                      >
+                        {nequiNumero}
+                      </h2>
+                    </div>
+
                     <p
                       style={{
-                        margin: "0",
-                        fontSize: "12px",
-                        color: "#64748b",
-                        fontStyle: "italic",
+                        margin: 0,
+                        color: "#475569",
+                        lineHeight: "1.7",
+                        fontSize: "15px",
                       }}
                     >
-                      💡 Escanea el código QR desde tu app de {metodoPago} o
-                      transfiere directamente al número de celular. Una vez
-                      realizado el pago, confirma tu pedido abajo.
+                      💡 Escanea el código QR desde tu aplicación de{" "}
+                      <strong>{metodoPago}</strong> o realiza la transferencia
+                      al número mostrado arriba. Después de pagar, presiona
+                      <strong> "Finalizar Compra"</strong> para registrar tu
+                      pedido.
                     </p>
                   </div>
                 </div>
-
                 {/* BOTÓN INTERACTIVO COMPLEMENTARIO PARA CELULARES */}
                 <button
                   type="button"
@@ -543,6 +852,113 @@ function ClientView({
             )}
 
             <div style={{ marginTop: "15px" }}>
+              {/* 🛒 RESUMEN DEL PEDIDO */}
+
+              <div
+                style={{
+                  marginTop: "35px",
+                  background: "#ffffff",
+                  borderRadius: "18px",
+                  padding: "25px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 8px 25px rgba(0,0,0,.05)",
+                }}
+              >
+                <h3
+                  style={{
+                    marginBottom: "20px",
+                    fontSize: "24px",
+                    color: "#111827",
+                    fontWeight: "700",
+                  }}
+                >
+                  🛒 Resumen del pedido
+                </h3>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <span>Productos</span>
+                  <strong>{cart.length}</strong>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <span>Envío</span>
+                  <strong style={{ color: "#16a34a" }}>GRATIS</strong>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "18px",
+                  }}
+                >
+                  <span>Subtotal</span>
+
+                  <strong>
+                    {formatearPrecio(
+                      cart.reduce(
+                        (acc, item) => acc + item.price * item.cantidad,
+                        0,
+                      ),
+                    )}
+                  </strong>
+                </div>
+
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "1px solid #e5e7eb",
+                    margin: "20px 0",
+                  }}
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    Total
+                  </span>
+
+                  <span
+                    style={{
+                      fontSize: "30px",
+                      color: "#7c3aed",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {formatearPrecio(
+                      cart.reduce(
+                        (acc, item) => acc + item.price * item.cantidad,
+                        0,
+                      ),
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* BOTONES */}
+
               {/* 👇 BOTÓN VERDE CORREGIDO: YA NO TIENE WINDOW.OPEN NI MENSAJES DE WHATSAPP */}
               <button
                 onClick={() => {
