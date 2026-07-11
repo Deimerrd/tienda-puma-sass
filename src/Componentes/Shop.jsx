@@ -78,15 +78,30 @@ function Shop() {
   const [categories, setCategories] = useState(() => {
     try {
       const savedCats = localStorage.getItem("company_categories");
-      return savedCats
-        ? JSON.parse(savedCats)
-        : [
-            { id: "shirt", name: "Camisas" },
-            { id: "shoes", name: "Zapatos" },
-            { id: "pants", name: "Pantalones" },
-            { id: "sweater", name: "Suéteres" },
-            { id: "accessories", name: "Accesorios" },
-          ];
+
+      if (savedCats) {
+        const iconosPorDefecto = {
+          shirt: "👕",
+          shoes: "👟",
+          pants: "👖",
+          sweater: "🧥",
+          accessories: "⌚",
+          jackets: "🥼",
+        };
+
+        return JSON.parse(savedCats).map((cat) => ({
+          ...cat,
+          icono: cat.icono || iconosPorDefecto[cat.id] || "📦",
+        }));
+      }
+
+      return [
+        { id: "shirt", name: "Camisas", icono: "👕" },
+        { id: "shoes", name: "Zapatos", icono: "👟" },
+        { id: "pants", name: "Pantalones", icono: "👖" },
+        { id: "sweater", name: "Suéteres", icono: "🧥" },
+        { id: "accessories", name: "Accesorios", icono: "⌚" },
+      ];
     } catch {
       return [];
     }
@@ -95,7 +110,23 @@ function Shop() {
   useEffect(() => {
     localStorage.setItem("company_categories", JSON.stringify(categories));
   }, [categories]);
+  useEffect(() => {
+    const iconosPorDefecto = {
+      shirt: "👕",
+      shoes: "👟",
+      pants: "👖",
+      sweater: "🧥",
+      accessories: "⌚",
+      jackets: "🥼",
+    };
 
+    setCategories((prev) =>
+      prev.map((cat) => ({
+        ...cat,
+        icono: cat.icono || iconosPorDefecto[cat.id] || "📦",
+      })),
+    );
+  }, []);
   // 👇 D. NUEVA MEMORIA: CONTRASEÑA DINÁMICA DE ADMINISTRADOR
   const [claveMaestra, setClaveMaestra] = useState(() => {
     const savedClave = localStorage.getItem("company_admin_clave");
@@ -150,15 +181,27 @@ function Shop() {
     }
   }
 
-  function agregarCategoria(nombreNuevaCat) {
+  function agregarCategoria(nombreNuevaCat, icono) {
     if (!nombreNuevaCat.trim()) return;
+
     const idSeguro = nombreNuevaCat.trim().toLowerCase().replace(/\s+/g, "-");
+
     const existe = categories.find((cat) => cat.id === idSeguro);
+
     if (existe) {
       alert("Esta categoría ya existe.");
       return;
     }
-    setCategories((prev) => [...prev, { id: idSeguro, name: nombreNuevaCat }]);
+
+    setCategories((prev) => [
+      ...prev,
+      {
+        id: idSeguro,
+        name: nombreNuevaCat,
+        icono: icono,
+      },
+    ]);
+
     alert(`¡Categoría "${nombreNuevaCat}" agregada!`);
   }
 

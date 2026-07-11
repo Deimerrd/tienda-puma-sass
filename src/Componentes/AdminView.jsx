@@ -110,6 +110,7 @@ function AdminView({
   }
 
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");
+  const [iconoCategoria, setIconoCategoria] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState(""); // 👈 ESTADO PARA CAPTURAR LA NUEVA CLAVE
   const [busquedaProducto, setBusquedaProducto] = useState("");
 
@@ -600,10 +601,39 @@ function AdminView({
           value={nuevaCatNombre}
           onChange={(e) => setNuevaCatNombre(e.target.value)}
         />
+        <label
+          style={{
+            display: "block",
+            marginTop: "12px",
+            marginBottom: "5px",
+            fontWeight: "700",
+          }}
+        >
+          Icono de la categoría
+        </label>
+
+        <select
+          value={iconoCategoria}
+          onChange={(e) => setIconoCategoria(e.target.value)}
+          style={{
+            padding: "8px",
+            borderRadius: "8px",
+            width: "220px",
+          }}
+        >
+          <option value="👕">👕 Camisas</option>
+          <option value="👟">👟 Zapatos</option>
+          <option value="👖">👖 Pantalones</option>
+          <option value="🧥">🧥 Chaquetas</option>
+          <option value="🧶">🧶 Suéteres</option>
+          <option value="⌚">⌚ Accesorios</option>
+        </select>
+
         <button
           onClick={() => {
-            agregarCategoria(nuevaCatNombre);
+            agregarCategoria(nuevaCatNombre, iconoCategoria);
             setNuevaCatNombre("");
+            setIconoCategoria("👕");
           }}
           style={{ marginLeft: "10px", cursor: "pointer" }}
         >
