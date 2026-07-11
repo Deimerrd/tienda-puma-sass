@@ -73,13 +73,29 @@ function ClientView({
     },
   ];
   const [slideActual, setSlideActual] = useState(0);
+  const [fade, setFade] = useState(true);
+  const siguienteSlide = () => {
+    setSlideActual((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  const anteriorSlide = () => {
+    setSlideActual((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
   useEffect(() => {
     const intervalo = setInterval(() => {
-      setSlideActual((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setFade(false);
+
+      setTimeout(() => {
+        setSlideActual((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+
+        setFade(true);
+      }, 250);
     }, 5000);
 
     return () => clearInterval(intervalo);
   }, [slides.length]);
+
+  const slide = slides[slideActual];
   const productosFiltrados = products.filter((prod) => {
     const pasaCategoria =
       categoriaSeleccionada === "todos" ||
@@ -342,9 +358,35 @@ function ClientView({
                 color: "#fff",
               }}
             >
+              <button
+                onClick={anteriorSlide}
+                style={{
+                  position: "absolute",
+                  left: "20px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "rgba(255,255,255,.18)",
+                  color: "#fff",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  zIndex: 10,
+                }}
+              >
+                ❮
+              </button>
               <div
                 style={{
                   maxWidth: "500px",
+
+                  opacity: fade ? 1 : 0,
+
+                  transform: fade ? "translateY(0px)" : "translateY(25px)",
+
+                  transition: "all .50s ease",
                 }}
               >
                 <span
@@ -356,7 +398,7 @@ function ClientView({
                     fontWeight: "700",
                   }}
                 >
-                  🔥 NUEVA COLECCIÓN 2026
+                  {slide.etiqueta}{" "}
                 </span>
                 <h1
                   style={{
@@ -366,9 +408,7 @@ function ClientView({
                     lineHeight: "1.05",
                   }}
                 >
-                  ESTILO QUE
-                  <br />
-                  TE DEFINE
+                  {slide.titulo}
                 </h1>
                 <p
                   style={{
@@ -377,8 +417,7 @@ function ClientView({
                     marginBottom: "35px",
                   }}
                 >
-                  Descubre las mejores prendas para hombre, mujer y niños con
-                  envío inmediato.
+                  {slide.subtitulo}
                 </p>
                 <button
                   style={{
@@ -393,7 +432,7 @@ function ClientView({
                     boxShadow: "0 8px 25px rgba(124,58,237,.45)",
                   }}
                 >
-                  Comprar ahora →
+                  {slide.boton} →{" "}
                 </button>
               </div>
               <div
@@ -404,14 +443,68 @@ function ClientView({
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900"
+                  src={slide.imagen}
                   alt="Colección"
                   style={{
                     height: "380px",
                     objectFit: "contain",
+
+                    opacity: fade ? 1 : 0,
+
+                    transform: fade ? "scale(1)" : "scale(.95)",
+
+                    transition: "all .35s ease",
                   }}
                 />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "20px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    display: "flex",
+                    gap: "10px",
+                  }}
+                >
+                  {slides.map((_, index) => (
+                    <span
+                      key={index}
+                      onClick={() => setSlideActual(index)}
+                      style={{
+                        width: "12px",
+                        height: "12px",
+                        borderRadius: "50%",
+                        background:
+                          slideActual === index
+                            ? "#ffffff"
+                            : "rgba(255,255,255,.35)",
+                        cursor: "pointer",
+                        transition: "0.3s",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
+              <button
+                onClick={siguienteSlide}
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "rgba(255,255,255,.18)",
+                  color: "#fff",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  zIndex: 10,
+                }}
+              >
+                ❯
+              </button>
             </div>
 
             {/* ================= BENEFICIOS ================= */}
