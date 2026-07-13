@@ -24,7 +24,7 @@ const abrirFacebook = () => {
    próximamente, el carrito de compras.
 ========================================================== */
 
-function Header({ abrirLogin, abrirCarrito }) {
+function Header({ abrirLogin, abrirCarrito, abrirCategorias }) {
   return (
     <>
       <div className="header">
@@ -44,7 +44,12 @@ function Header({ abrirLogin, abrirCarrito }) {
         </div>
         <div className="header-main">
           <div className="header-content">
-            <div className="header-categorias">☰ Categorías</div>
+            {/* ==========================================================
+   BOTÓN CATEGORÍAS
+========================================================== */}
+            <div className="header-categorias" onClick={abrirCategorias}>
+              ☰ Categorías
+            </div>{" "}
             <div style={{ textAlign: "center" }}>
               <h1
                 style={{
@@ -73,7 +78,6 @@ function Header({ abrirLogin, abrirCarrito }) {
             {/* ==========================================================
     HEADER - ACCIONES DEL USUARIO
 ========================================================== */}
-
             <div className="header-user">
               <span
                 onClick={() => {

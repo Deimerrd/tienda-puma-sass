@@ -1,0 +1,141 @@
+/* ==========================================================
+   OVERLAY
+========================================================== */
+
+.drawer-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  backdrop-filter: blur(5px);
+
+  display: flex;
+
+  z-index: 9999;
+
+  animation: fadeIn 0.28s ease forwards;
+}
+
+/* ==========================================================
+   ANIMACIÓN DE SALIDA DEL OVERLAY
+========================================================== */
+
+.overlay-close {
+  animation: fadeOut 0.28s ease forwards;
+}
+
+/* ==========================================================
+   PANEL
+========================================================== */
+
+.drawer {
+  width: 340px;
+
+  height: 100vh;
+
+  background: white;
+
+  padding: 32px;
+
+  box-sizing: border-box;
+
+  box-shadow: 12px 0 35px rgba(0, 0, 0, 0.15);
+
+  overflow-y: auto;
+
+  animation: drawerOpen 0.28s ease forwards;
+}
+
+/* ==========================================================
+   CIERRE
+========================================================== */
+
+.drawer-close {
+  animation: drawerClose 0.28s ease forwards;
+}
+
+/* ==========================================================
+   TÍTULO
+========================================================== */
+
+.drawer-title {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  margin-bottom: 35px;
+
+  color: #111827;
+}
+
+/* ==========================================================
+   ITEMS
+========================================================== */
+
+.drawer-item {
+  padding: 16px 18px;
+
+  border-radius: 12px;
+
+  margin-bottom: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  color: #374151;
+}
+
+.drawer-item:hover {
+  background: #f3f4f6;
+
+  transform: translateX(8px);
+}
+
+/* ==========================================================
+   ANIMACIONES
+========================================================== */
+
+@keyframes drawerOpen {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawerClose {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

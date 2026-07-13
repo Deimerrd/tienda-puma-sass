@@ -3,6 +3,7 @@ import ClientView from "./ClientView";
 import AdminView from "./AdminView";
 import Header from "./Header";
 import LoginModal from "./LoginModal";
+import CategoryDrawer from "./CategoryDrawer";
 
 const formatearPrecio = (numero) => {
   return new Intl.NumberFormat("es-CO", {
@@ -65,6 +66,18 @@ function Shop() {
 ========================================================== */
 
   const [mostrarLogin, setMostrarLogin] = useState(false);
+  /* ==========================================================
+   DRAWER DE CATEGORÍAS
+   ----------------------------------------------------------
+   Controla la apertura y cierre del menú lateral
+   de categorías.
+
+   FALSE = Cerrado
+
+   TRUE = Abierto
+========================================================== */
+
+  const [mostrarCategorias, setMostrarCategorias] = useState(false);
 
   // B. Memoria de Productos
 
@@ -408,6 +421,16 @@ function Shop() {
         <Header
           abrirLogin={() => setMostrarLogin(true)}
           abrirCarrito={() => console.log("Abrir carrito")}
+          abrirCategorias={() => setMostrarCategorias(true)}
+        />
+      )}
+      {/* ==========================================================
+   DRAWER DE CATEGORÍAS
+========================================================== */}
+      {vista === "cliente" && (
+        <CategoryDrawer
+          abierto={mostrarCategorias}
+          cerrar={() => setMostrarCategorias(false)}
         />
       )}
       <div
