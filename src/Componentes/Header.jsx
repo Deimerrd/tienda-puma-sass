@@ -15,16 +15,14 @@ const abrirInstagram = () => {
 const abrirFacebook = () => {
   window.open(storeConfig.facebook, "_blank");
 };
-
 /* ==========================================================
    HEADER PRINCIPAL
    ----------------------------------------------------------
-   Función:
-   Recibe funciones desde Shop para abrir el Login y,
-   próximamente, el carrito de compras.
+   Recibe las funciones para controlar el Mega Menú,
+   el Login y el Carrito.
 ========================================================== */
 
-function Header({ abrirLogin, abrirCarrito, abrirCategorias }) {
+function Header({ abrirLogin, abrirCarrito, mostrarMegaMenu }) {
   return (
     <>
       <div className="header">
@@ -47,7 +45,8 @@ function Header({ abrirLogin, abrirCarrito, abrirCategorias }) {
             {/* ==========================================================
    BOTÓN CATEGORÍAS
 ========================================================== */}
-            <div className="header-categorias" onClick={abrirCategorias}>
+            <div className="header-categorias" onMouseEnter={mostrarMegaMenu}>
+              {" "}
               ☰ Categorías
             </div>{" "}
             <div style={{ textAlign: "center" }}>

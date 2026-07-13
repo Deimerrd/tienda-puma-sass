@@ -3,7 +3,7 @@ import ClientView from "./ClientView";
 import AdminView from "./AdminView";
 import Header from "./Header";
 import LoginModal from "./LoginModal";
-import CategoryDrawer from "./CategoryDrawer";
+import MegaMenu from "./MegaMenu";
 
 const formatearPrecio = (numero) => {
   return new Intl.NumberFormat("es-CO", {
@@ -407,34 +407,38 @@ function Shop() {
       ),
     );
   }
-
   return (
     <>
-      {" "}
       {/* ==========================================================
-   HEADER PRINCIPAL
-   ----------------------------------------------------------
-   Se renderiza únicamente cuando la tienda está en modo
-   cliente.
-========================================================== */}
+       HEADER PRINCIPAL
+    ========================================================== */}
+
       {vista === "cliente" && (
         <Header
           abrirLogin={() => setMostrarLogin(true)}
           abrirCarrito={() => console.log("Abrir carrito")}
-          abrirCategorias={() => setMostrarCategorias(true)}
+          mostrarMegaMenu={() => setMostrarCategorias(true)}
+          ocultarMegaMenu={() => setMostrarCategorias(false)}
         />
       )}
+
       {/* ==========================================================
-   DRAWER DE CATEGORÍAS
-========================================================== */}
-      {vista === "cliente" && (
-        <CategoryDrawer
-          abierto={mostrarCategorias}
-          cerrar={() => setMostrarCategorias(false)}
+       MEGA MENÚ
+    ========================================================== */}
+
+      {vista === "cliente" && mostrarCategorias && (
+        <MegaMenu
+          ocultarMegaMenu={() => setMostrarCategorias(false)}
+          mantenerMegaMenu={() => setMostrarCategorias(true)}
         />
       )}
+
       <div
-        style={{ position: "relative", minHeight: "100vh", padding: "20px" }}
+        style={{
+          position: "relative",
+          minHeight: "100vh",
+          padding: "20px",
+        }}
       >
         {/* BARRA SUPERIOR ESQUINADA COMPACTA */}
 
