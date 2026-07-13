@@ -1,0 +1,378 @@
+/* ==========================================================
+   LOGIN MODAL
+========================================================== */
+/* ==========================================================
+   FONDO OSCURO
+========================================================== */
+
+.login-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  backdrop-filter: blur(8px);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 99999;
+}
+
+/* ==========================================================
+   TARJETA
+========================================================== */
+
+.login-card {
+  width: 420px;
+
+  background: white;
+
+  border-radius: 22px;
+
+  padding: 45px;
+
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================
+   TITULO
+========================================================== */
+
+.login-logo {
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 42px;
+
+  font-weight: 900;
+
+  color: #111827;
+
+  letter-spacing: -2px;
+}
+
+.login-subtitulo {
+  margin-top: 10px;
+
+  text-align: center;
+
+  color: #6b7280;
+
+  font-size: 16px;
+}
+
+/* ==========================================================
+   FORMULARIO
+========================================================== */
+
+.login-form {
+  display: flex;
+
+  flex-direction: column;
+
+  margin-top: 35px;
+}
+
+.login-form label {
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #374151;
+
+  margin-bottom: 8px;
+}
+
+.login-form input {
+  height: 50px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 12px;
+
+  padding: 0 15px;
+
+  margin-bottom: 20px;
+
+  font-size: 15px;
+
+  transition: 0.25s;
+}
+
+.login-form input:focus {
+  outline: none;
+
+  border-color: #7c3aed;
+}
+
+/* ==========================================================
+   BOTONES
+========================================================== */
+
+.login-buttons {
+  display: flex;
+
+  gap: 15px;
+
+  margin-top: 10px;
+}
+
+.btn-login {
+  flex: 1;
+
+  height: 50px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #7c3aed;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background: #6d28d9;
+}
+
+.btn-cancelar {
+  flex: 1;
+
+  height: 50px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #ececec;
+
+  cursor: pointer;
+}
+
+/* ==========================================================
+   FONDO OSCURO
+========================================================== */
+
+.login-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  backdrop-filter: blur(8px);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 99999;
+}
+
+/* ==========================================================
+   TARJETA
+========================================================== */
+
+.login-card {
+  width: 420px;
+
+  background: white;
+
+  border-radius: 22px;
+
+  padding: 45px;
+
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================
+   TITULO
+========================================================== */
+
+.login-logo {
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 42px;
+
+  font-weight: 900;
+
+  color: #111827;
+
+  letter-spacing: -2px;
+}
+
+.login-subtitulo {
+  margin-top: 10px;
+
+  text-align: center;
+
+  color: #6b7280;
+
+  font-size: 16px;
+}
+
+/* ==========================================================
+   FORMULARIO
+========================================================== */
+
+.login-form {
+  display: flex;
+
+  flex-direction: column;
+
+  margin-top: 35px;
+}
+
+.login-form label {
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #374151;
+
+  margin-bottom: 8px;
+}
+
+.login-form input {
+  height: 50px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 12px;
+
+  padding: 0 15px;
+
+  margin-bottom: 20px;
+
+  font-size: 15px;
+
+  transition: 0.25s;
+}
+
+.login-form input:focus {
+  outline: none;
+
+  border-color: #7c3aed;
+}
+
+/* ==========================================================
+   BOTONES
+========================================================== */
+
+.login-buttons {
+  display: flex;
+
+  gap: 15px;
+
+  margin-top: 10px;
+}
+
+.btn-login {
+  flex: 1;
+
+  height: 50px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #7c3aed;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background: #6d28d9;
+}
+
+.btn-cancelar {
+  flex: 1;
+
+  height: 50px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #ececec;
+
+  cursor: pointer;
+}
+
+/* ==========================================================
+   ANIMACIÓN DEL MODAL
+========================================================== */
+
+@keyframes aparecerLogin {
+  from {
+    opacity: 0;
+
+    transform: translateY(-20px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-card {
+  animation: aparecerLogin 0.35s ease;
+}
+
+/* ==========================================================
+   CONTRASEÑA
+========================================================== */
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding-right: 55px;
+}
+
+.toggle-password {
+  position: absolute;
+
+  right: 12px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: none;
+
+  background: none;
+
+  cursor: pointer;
+
+  font-size: 18px;
+}

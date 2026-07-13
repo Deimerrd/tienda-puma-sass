@@ -1,0 +1,172 @@
+/* ===========================
+   HEADER PRINCIPAL
+=========================== */
+
+.header {
+  background: var(--color-card);
+  border-radius: 0 0 20px 20px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+/* ===========================
+   TOP BAR
+=========================== */
+
+.topbar {
+  width: 100%;
+  background: #111;
+}
+
+.topbar-content {
+  max-width: 1600px;
+  margin: 0 auto;
+
+  color: white;
+
+  height: 42px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 0 30px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.header-main {
+  width: 100%;
+  background: white;
+}
+
+.header-content {
+  max-width: 1600px;
+  margin: 0 auto;
+
+  padding: 28px 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-search {
+  width: 100%;
+  padding-bottom: 35px;
+}
+
+.header-search-content {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.header-categorias {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 34px;
+
+  font-weight: 700;
+
+  color: #111827;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.header-categorias:hover {
+  color: #7c3aed;
+}
+.header-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 35px;
+
+  font-size: 18px;
+
+  font-weight: 600;
+
+  color: #374151;
+}
+
+.header-user span {
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  font-weight: 600;
+}
+
+.header-user span:hover {
+  color: #7c3aed;
+}
+
+.header-search input {
+  width: 560px;
+
+  height: 58px;
+
+  border-radius: 18px;
+
+  padding: 0 22px;
+
+  font-size: 17px;
+
+  border: 1px solid #d1d5db;
+
+  transition: 0.25s;
+}
+
+.header-search input:focus {
+  border-color: #7c3aed;
+
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+
+  outline: none;
+}
+
+.topbar-redes {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.topbar-redes span {
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.topbar-redes span:hover {
+  color: #a855f7;
+}
+
+/*redes*/
+.topbar-redes {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.topbar-redes span {
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.topbar-redes span:hover {
+  color: #a855f7;
+}

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import ClientView from "./ClientView";
 import AdminView from "./AdminView";
+import Header from "./Header";
+import LoginModal from "./LoginModal";
 
 const formatearPrecio = (numero) => {
   return new Intl.NumberFormat("es-CO", {
@@ -56,7 +58,16 @@ function Shop() {
     localStorage.setItem("company_nequi_qr", nequiQR);
   }, [nequiQR]);
 
+  /* ==========================================================
+   LOGIN DEL ADMINISTRADOR
+   ----------------------------------------------------------
+   Controla la apertura y cierre del LoginModal.
+========================================================== */
+
+  const [mostrarLogin, setMostrarLogin] = useState(false);
+
   // B. Memoria de Productos
+
   const [products, setProducts] = useState(() => {
     try {
       const savedProducts = localStorage.getItem("company_products");
@@ -107,26 +118,6 @@ function Shop() {
     }
   });
 
-  useEffect(() => {
-    localStorage.setItem("company_categories", JSON.stringify(categories));
-  }, [categories]);
-  useEffect(() => {
-    const iconosPorDefecto = {
-      shirt: "👕",
-      shoes: "👟",
-      pants: "👖",
-      sweater: "🧥",
-      accessories: "⌚",
-      jackets: "🥼",
-    };
-
-    setCategories((prev) =>
-      prev.map((cat) => ({
-        ...cat,
-        icono: cat.icono || iconosPorDefecto[cat.id] || "📦",
-      })),
-    );
-  }, []);
   // 👇 D. NUEVA MEMORIA: CONTRASEÑA DINÁMICA DE ADMINISTRADOR
   const [claveMaestra, setClaveMaestra] = useState(() => {
     const savedClave = localStorage.getItem("company_admin_clave");
@@ -405,103 +396,79 @@ function Shop() {
   }
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh", padding: "20px" }}>
-      {/* BARRA SUPERIOR ESQUINADA COMPACTA */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid #e2e8f0",
-          paddingBottom: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2 style={{ margin: 0, fontSize: "20px" }}>🏬 Mi Tienda Virtual</h2>
-
-        {vista === "cliente" ? (
-          <button
-            onClick={() => {
-              // 👇 COMPUERTA DE SEGURIDAD UTILIZANDO LA CLAVE DINÁMICA
-              const claveIngresada = window.prompt(
-                "🔐 Ingrese la contraseña de Administrador:",
-              );
-
-              if (claveIngresada === claveMaestra) {
-                setVista("admin");
-              } else if (claveIngresada !== null) {
-                alert("❌ Acceso Denegado: Contraseña Incorrecta.");
-              }
-            }}
-            style={{
-              padding: "6px 12px",
-              cursor: "pointer",
-              background: "#64748b",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontWeight: "bold",
-            }}
-          >
-            🔑 Admin
-          </button>
-        ) : (
-          <button
-            onClick={() => setVista("cliente")}
-            style={{
-              padding: "6px 12px",
-              cursor: "pointer",
-              background: "#ef4444",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontWeight: "bold",
-            }}
-          >
-            🚪 Cerrar Sesión Admin
-          </button>
-        )}
-      </div>
-
-      {/* RENDERIZADO CONDICIONAL */}
-      {vista === "cliente" ? (
-        <ClientView
-          products={products}
-          cart={cart}
-          categories={categories}
-          AgregarAlCarrito={AgregarAlCarrito}
-          eliminarDelCarrito={eliminarDelCarrito}
-          aumentarCantidad={aumentarCantidad}
-          disminuirCantidad={disminuirCantidad}
-          finalizarCompra={finalizarCompra}
-          vaciarCarrito={vaciarCarrito}
-          formatearPrecio={formatearPrecio}
-          nequiNumero={nequiNumero}
-          nequiQR={nequiQR}
-        />
-      ) : (
-        <AdminView
-          products={products}
-          productosStockCritico={productosStockCritico}
-          setProducts={setProducts}
-          ventas={ventas}
-          categories={categories}
-          agregarCategoria={agregarCategoria}
-          cancelarPedidoAdmin={cancelarPedidoAdmin}
-          eliminarProducto={eliminarProducto} // 👈 AQUÍ ESTABA EL ERROR
-          marcarPedidoEntregado={marcarPedidoEntregado} // 👈 CORRIENTAZO: Agrega esta prop aquíww
-          modoIngenieroActivo={modoIngenieroActivo}
-          forzarDesbloqueoDev={forzarDesbloqueoDev} // 👈 INYECTA ESTA NUEVA PROP AQUÍ
-          cambiarClave={cambiarClave} // 👈 PASAMOS LA FUNCIÓN PARA QUE EL ADMIN LA USE
-          formatearPrecio={formatearPrecio}
-          nequiNumero={nequiNumero}
-          setNequiNumero={setNequiNumero}
-          nequiQR={nequiQR}
-          setNequiQR={setNequiQR}
-          cambiarEstadoPedido={cambiarEstadoPedido}
+    <>
+      {" "}
+      {/* ==========================================================
+   HEADER PRINCIPAL
+   ----------------------------------------------------------
+   Se renderiza únicamente cuando la tienda está en modo
+   cliente.
+========================================================== */}
+      {vista === "cliente" && (
+        <Header
+          abrirLogin={() => setMostrarLogin(true)}
+          abrirCarrito={() => console.log("Abrir carrito")}
         />
       )}
-    </div>
+      <div
+        style={{ position: "relative", minHeight: "100vh", padding: "20px" }}
+      >
+        {/* BARRA SUPERIOR ESQUINADA COMPACTA */}
+
+        {/* RENDERIZADO CONDICIONAL */}
+
+        {vista === "cliente" ? (
+          <ClientView
+            products={products}
+            cart={cart}
+            categories={categories}
+            AgregarAlCarrito={AgregarAlCarrito}
+            eliminarDelCarrito={eliminarDelCarrito}
+            aumentarCantidad={aumentarCantidad}
+            disminuirCantidad={disminuirCantidad}
+            finalizarCompra={finalizarCompra}
+            vaciarCarrito={vaciarCarrito}
+            formatearPrecio={formatearPrecio}
+            nequiNumero={nequiNumero}
+            nequiQR={nequiQR}
+          />
+        ) : (
+          <AdminView
+            products={products}
+            productosStockCritico={productosStockCritico}
+            setProducts={setProducts}
+            ventas={ventas}
+            categories={categories}
+            agregarCategoria={agregarCategoria}
+            cancelarPedidoAdmin={cancelarPedidoAdmin}
+            eliminarProducto={eliminarProducto} // 👈 AQUÍ ESTABA EL ERROR
+            marcarPedidoEntregado={marcarPedidoEntregado} // 👈 CORRIENTAZO: Agrega esta prop aquíww
+            modoIngenieroActivo={modoIngenieroActivo}
+            forzarDesbloqueoDev={forzarDesbloqueoDev} // 👈 INYECTA ESTA NUEVA PROP AQUÍ
+            cambiarClave={cambiarClave} // 👈 PASAMOS LA FUNCIÓN PARA QUE EL ADMIN LA USE
+            formatearPrecio={formatearPrecio}
+            nequiNumero={nequiNumero}
+            setNequiNumero={setNequiNumero}
+            nequiQR={nequiQR}
+            setNequiQR={setNequiQR}
+            cambiarEstadoPedido={cambiarEstadoPedido}
+          />
+        )}
+
+        {/* ==========================================================
+   LOGIN MODAL
+========================================================== */}
+      </div>
+      {mostrarLogin && (
+        <LoginModal
+          cerrar={() => setMostrarLogin(false)}
+          ingresar={() => {
+            setVista("admin");
+            setMostrarLogin(false);
+          }}
+        />
+      )}
+    </>
   );
 }
 

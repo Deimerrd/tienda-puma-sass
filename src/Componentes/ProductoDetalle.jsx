@@ -53,6 +53,7 @@ export default function ProductoDetalle({
           url,
         });
       } catch (error) {
+        console.error(error);
         console.log("Compartir cancelado");
       }
     } else {

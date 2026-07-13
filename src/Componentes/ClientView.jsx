@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./TarjetaProducto.css";
 import ProductoDetalle from "./ProductoDetalle";
 import HeroSlider from "./HeroSlider";
+
 function ClientView({
   products,
   cart,
@@ -72,105 +73,6 @@ function ClientView({
             marginBottom: "30px",
           }}
         >
-          {/* ================= TOP BAR ================= */}
-
-          <div
-            style={{
-              background: "#111",
-              color: "#fff",
-              height: "42px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "0 30px",
-              fontSize: "13px",
-              fontWeight: "600",
-            }}
-          >
-            <span>🚚 Envíos gratis desde $200.000</span>
-
-            <span>⭐ Productos 100% originales</span>
-
-            <span>📱 Atención por WhatsApp</span>
-          </div>
-
-          <div
-            style={{
-              padding: "28px 40px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                cursor: "pointer",
-                fontWeight: "700",
-              }}
-            >
-              ☰ Categorías
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: "48px",
-                  fontWeight: "900",
-                  letterSpacing: "2px",
-                }}
-              >
-                TODA MODA
-              </h1>
-
-              <p
-                style={{
-                  marginTop: "4px",
-                  color: "#777",
-                  fontSize: "15px",
-                }}
-              >
-                Moda Premium para toda la familia
-              </p>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "30px",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              <span>👤 Mi cuenta</span>
-
-              <span>🛒 Carrito</span>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="🔍 Buscar productos..."
-              style={{
-                width: "400px",
-                maxWidth: "100%",
-                padding: "14px",
-                border: "1px solid #d1d5db",
-                borderRadius: "12px",
-                fontSize: "15px",
-                outline: "none",
-              }}
-            />
-          </div>
-        </div>
-        <div>
           <div style={{ marginBottom: "15px" }}>
             <strong style={{ marginRight: "10px" }}>Sección:</strong>
             <button
@@ -271,9 +173,8 @@ function ClientView({
             </button>
           </div>
           <div>
-            <HeroSlider />
-
             {/* ================= SLIDER PRINCIPAL ================= */}
+            <HeroSlider />
 
             {/* ================= BENEFICIOS ================= */}
 
