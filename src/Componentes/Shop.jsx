@@ -118,13 +118,67 @@ function Shop() {
           icono: cat.icono || iconosPorDefecto[cat.id] || "📦",
         }));
       }
+      /* ==========================================================
+   CATEGORÍAS PRINCIPALES DEL SISTEMA
+   ----------------------------------------------------------
+   IMPORTANTE
+
+   Cada categoría tendrá:
+
+   id
+   nombre
+   icono
+   tipos
+
+   Los tipos serán utilizados por:
+
+   ✔ Mega Menu
+   ✔ Filtros
+   ✔ Registro de productos
+   ✔ Firebase (futuro)
+
+========================================================== */
 
       return [
-        { id: "shirt", name: "Camisas", icono: "👕" },
-        { id: "shoes", name: "Zapatos", icono: "👟" },
-        { id: "pants", name: "Pantalones", icono: "👖" },
-        { id: "sweater", name: "Suéteres", icono: "🧥" },
-        { id: "accessories", name: "Accesorios", icono: "⌚" },
+        {
+          id: "shirt",
+          name: "Camisas",
+          icono: "👕",
+
+          tipos: ["Manga corta", "Manga larga", "Polo", "Oversize"],
+        },
+
+        {
+          id: "shoes",
+          name: "Zapatos",
+          icono: "👟",
+
+          tipos: ["Deportivo", "Casual", "Formal"],
+        },
+
+        {
+          id: "pants",
+          name: "Pantalones",
+          icono: "👖",
+
+          tipos: ["Jeans", "Cargo", "Jogger"],
+        },
+
+        {
+          id: "sweater",
+          name: "Suéteres",
+          icono: "🧥",
+
+          tipos: ["Capucha", "Cremallera", "Clásico"],
+        },
+
+        {
+          id: "accessories",
+          name: "Accesorios",
+          icono: "⌚",
+
+          tipos: ["Relojes", "Gorras", "Cinturones"],
+        },
       ];
     } catch {
       return [];
@@ -428,6 +482,7 @@ function Shop() {
 
       {vista === "cliente" && mostrarCategorias && (
         <MegaMenu
+          categories={categories}
           ocultarMegaMenu={() => setMostrarCategorias(false)}
           mantenerMegaMenu={() => setMostrarCategorias(true)}
         />

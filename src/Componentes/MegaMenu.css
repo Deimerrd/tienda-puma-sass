@@ -73,6 +73,7 @@
 
   align-items: center;
 
+  gap: 12px;
   padding: 14px 18px;
 
   border-radius: 12px;
@@ -96,6 +97,14 @@
   color: white;
 
   transform: translateX(6px);
+}
+/* ==========================================================
+   ITEM ACTIVO
+========================================================== */
+
+.mega-item.active {
+  background: #6d28d9;
+  color: white;
 }
 
 /* ==========================================================

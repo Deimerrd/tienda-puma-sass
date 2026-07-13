@@ -1,52 +1,28 @@
 import "./MegaMenu.css";
 import { useState } from "react";
+/* ==========================================================
+   MEGA MENÚ DINÁMICO
+   ----------------------------------------------------------
+   Ahora las categorías ya no están escritas en este archivo.
 
-const categorias = [
-  {
-    nombre: "Calzado",
-    icono: "👟",
-    subcategorias: ["Hombre", "Mujer", "Niño", "Niña", "Deportivo", "Casual"],
-  },
+   Llegan directamente desde Shop.jsx.
 
-  {
-    nombre: "Camisas",
-    icono: "👕",
-    subcategorias: ["Manga corta", "Manga larga", "Polo", "Oversize"],
-  },
+   En el futuro llegarán desde Firebase.
 
-  {
-    nombre: "Jeans",
-    icono: "👖",
-    subcategorias: ["Slim", "Skinny", "Recto", "Cargo"],
-  },
+========================================================== */
 
-  {
-    nombre: "Vestidos",
-    icono: "👗",
-    subcategorias: ["Casual", "Elegante", "Fiesta"],
-  },
+function MegaMenu({
+  categories,
 
-  {
-    nombre: "Chaquetas",
-    icono: "🧥",
-    subcategorias: ["Cuero", "Jean", "Impermeable"],
-  },
+  ocultarMegaMenu,
 
-  {
-    nombre: "Bolsos",
-    icono: "👜",
-    subcategorias: ["Mano", "Viaje", "Escolar"],
-  },
+  mantenerMegaMenu,
+}) {
+  /* ==========================================================
+   CATEGORÍA SELECCIONADA
+========================================================== */
 
-  {
-    nombre: "Accesorios",
-    icono: "⌚",
-    subcategorias: ["Relojes", "Gorras", "Cinturones"],
-  },
-];
-
-function MegaMenu({ ocultarMegaMenu, mantenerMegaMenu }) {
-  const [categoriaActiva, setCategoriaActiva] = useState(categorias[0]);
+  const [categoriaActiva, setCategoriaActiva] = useState(categories[0]);
   return (
     <div
       className="mega-menu"
@@ -58,14 +34,14 @@ function MegaMenu({ ocultarMegaMenu, mantenerMegaMenu }) {
       }}
     >
       <div className="mega-menu-left">
-        {categorias.map((categoria) => (
+        {categories.map((categoria) => (
           <div
-            key={categoria.nombre}
+            key={categoria.name}
             className="mega-item"
             onMouseEnter={() => setCategoriaActiva(categoria)}
           >
             <span>
-              {categoria.icono} {categoria.nombre}
+              {categoria.icono} {categoria.name}
             </span>
 
             <span></span>
@@ -75,10 +51,10 @@ function MegaMenu({ ocultarMegaMenu, mantenerMegaMenu }) {
 
       <div className="mega-menu-right">
         <h2>
-          {categoriaActiva.icono} {categoriaActiva.nombre}
+          {categoriaActiva.icono} {categoriaActiva.name}
         </h2>
 
-        {categoriaActiva.subcategorias.map((sub) => (
+        {categoriaActiva.tipos.map((sub) => (
           <div key={sub} className="mega-subitem">
             {sub}
           </div>
