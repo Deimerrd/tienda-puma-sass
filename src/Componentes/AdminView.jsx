@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import jsPDF from "jspdf";
+import AdminLayout from "./admin/layout/AdminLayout";
 import {
   BarChart,
   Bar,
@@ -497,7 +498,7 @@ function AdminView({
     });
   }, [ventas, busquedaPedido]);
   return (
-    <>
+    <AdminLayout>
       {/* 🔐 1. AJUSTES DE SEGURIDAD CONTRASEÑA */}
       <div
         style={{
@@ -2021,7 +2022,7 @@ function AdminView({
           </div>
         ))
       )}
-    </>
+    </AdminLayout>
   );
 }
 

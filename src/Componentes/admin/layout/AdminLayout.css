@@ -1,0 +1,221 @@
+/* ============================= */
+/* PANEL ADMINISTRADOR TODA MODA */
+/* ============================= */
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f1117;
+}
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+.admin-sidebar {
+  width: 250px;
+  background: #111827;
+
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding: 25px 15px;
+
+  border-right: 1px solid #2d3748;
+}
+
+.sidebar-logo h2 {
+  margin: 0;
+
+  color: #8b5cf6;
+
+  font-size: 28px;
+}
+
+.sidebar-logo span {
+  color: #a1a1aa;
+
+  font-size: 14px;
+}
+
+.sidebar-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 40px;
+}
+
+.sidebar-menu button {
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  text-align: left;
+
+  padding: 14px 18px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition: 0.25s;
+}
+
+.sidebar-menu button:hover {
+  background: #7c3aed;
+}
+
+.sidebar-footer {
+  border-top: 1px solid #374151;
+
+  padding-top: 20px;
+
+  color: #d4d4d8;
+}
+
+/* ============================= */
+/* CONTENIDO */
+/* ============================= */
+
+.admin-content {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+/* ============================= */
+/* TOPBAR */
+/* ============================= */
+
+.admin-topbar {
+  height: 75px;
+
+  background: #111827;
+
+  border-bottom: 1px solid #2d3748;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 0 35px;
+
+  color: white;
+}
+
+.topbar-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 25px;
+}
+
+.btn-ver-tienda {
+  background: #7c3aed;
+
+  color: white;
+
+  border: none;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.btn-ver-tienda:hover {
+  background: #6d28d9;
+}
+
+.admin-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.avatar {
+  width: 45px;
+
+  height: 45px;
+
+  border-radius: 50%;
+
+  background: #7c3aed;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-weight: bold;
+}
+
+/* ============================= */
+/* ZONA CENTRAL */
+/* ============================= */
+
+.admin-page {
+  padding: 30px;
+
+  color: white;
+}
+.menu-button {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  width: 100%;
+
+  background: transparent;
+
+  border: none;
+
+  color: white;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition: 0.25s;
+}
+
+.menu-button:hover {
+  background: #7c3aed;
+}
+
+.menu-button.activo {
+  background: #8b5cf6;
+
+  font-weight: bold;
+}
