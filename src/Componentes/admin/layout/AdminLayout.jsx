@@ -3,10 +3,10 @@ import "./AdminLayout.css";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
-function AdminLayout({ children }) {
+function AdminLayout({ children, moduloActivo, setModuloActivo }) {
   return (
     <div className="admin-layout">
-      <Sidebar />
+      <Sidebar moduloActivo={moduloActivo} setModuloActivo={setModuloActivo} />
 
       <div className="admin-content">
         <Topbar />
