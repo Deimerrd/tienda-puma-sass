@@ -1,4 +1,45 @@
-function DashboardManager({ ventas, products }) {
+import { useMemo } from "react";
+
+export default function useDashboard(ventas, products) {
+  // Estadísticas generales
+  const estadisticasPedidos = useMemo(() => {
+    const entregados = ventas.filter((v) => v.estado === "Entregado");
+    const pendientes = ventas.filter((v) => v.estado !== "Entregado");
+
+    return { entregados, pendientes };
+  }, [ventas]);
+
+  const { entregados, pendientes } = estadisticasPedidos;
+
+  const totalVendido = ventas.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+
+  const totalEntregado = entregados.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+
+  // Caja de hoy
+  const hoy = new Date();
+
+  const ventasHoy = ventas.filter((v) => {
+    const fechaVenta = new Date(v.fechaISO);
+
+    return (
+      fechaVenta.getDate() === hoy.getDate() &&
+      fechaVenta.getMonth() === hoy.getMonth() &&
+      fechaVenta.getFullYear() === hoy.getFullYear()
+    );
+  });
+
+  const totalHoy = ventasHoy.reduce(
+    (acc, venta) => acc + Number(venta.total),
+    0,
+  );
+
+  // Top productos
   const rankingProductos = {};
 
   ventas.forEach((venta) => {
@@ -7,11 +48,8 @@ function DashboardManager({ ventas, products }) {
         producto.size || "Sin talla"
       }`;
 
-      if (!rankingProductos[clave]) {
-        rankingProductos[clave] = 0;
-      }
-
-      rankingProductos[clave] += Number(producto.cantidad || 1);
+      rankingProductos[clave] =
+        (rankingProductos[clave] || 0) + Number(producto.cantidad || 1);
     });
   });
 
@@ -19,17 +57,15 @@ function DashboardManager({ ventas, products }) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
+  // Top tallas
   const rankingTallas = {};
 
   ventas.forEach((venta) => {
     venta.productos.forEach((producto) => {
       const talla = producto.size || "Sin talla";
 
-      if (!rankingTallas[talla]) {
-        rankingTallas[talla] = 0;
-      }
-
-      rankingTallas[talla] += Number(producto.cantidad || 1);
+      rankingTallas[talla] =
+        (rankingTallas[talla] || 0) + Number(producto.cantidad || 1);
     });
   });
 
@@ -37,17 +73,15 @@ function DashboardManager({ ventas, products }) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
+  // Top colores
   const rankingColores = {};
 
   ventas.forEach((venta) => {
     venta.productos.forEach((producto) => {
       const color = producto.color || "Sin color";
 
-      if (!rankingColores[color]) {
-        rankingColores[color] = 0;
-      }
-
-      rankingColores[color] += Number(producto.cantidad || 1);
+      rankingColores[color] =
+        (rankingColores[color] || 0) + Number(producto.cantidad || 1);
     });
   });
 
@@ -55,6 +89,7 @@ function DashboardManager({ ventas, products }) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
+  // Productos por reponer
   const productosReponer = products
     .map((prod) => {
       let vendidos = 0;
@@ -80,6 +115,7 @@ function DashboardManager({ ventas, products }) {
     .sort((a, b) => b.vendidos - a.vendidos)
     .slice(0, 10);
 
+  // Resumen mensual
   const ventasPorMes = {};
 
   ventas.forEach((venta) => {
@@ -92,11 +128,8 @@ function DashboardManager({ ventas, products }) {
       year: "numeric",
     });
 
-    if (!ventasPorMes[mes]) {
-      ventasPorMes[mes] = 0;
-    }
-
-    ventasPorMes[mes] += Number(venta.total || venta.totalCompra || 0);
+    ventasPorMes[mes] =
+      (ventasPorMes[mes] || 0) + Number(venta.total || venta.totalCompra || 0);
   });
 
   const resumenMensual = Object.entries(ventasPorMes).map(([mes, total]) => ({
@@ -115,6 +148,7 @@ function DashboardManager({ ventas, products }) {
       ((ultimoMes.total - mesAnterior.total) / mesAnterior.total) * 100;
   }
 
+  // Datos gráfica
   const ventasPorMesGrafica = {};
 
   ventas.forEach((venta) => {
@@ -140,12 +174,19 @@ function DashboardManager({ ventas, products }) {
     ventasPorMesGrafica[nombreMes] =
       (ventasPorMesGrafica[nombreMes] || 0) + Number(venta.total);
   });
+
   const datosGrafica = Object.keys(ventasPorMesGrafica).map((mes) => ({
     mes,
-
     ventas: ventasPorMesGrafica[mes],
   }));
+
   return {
+    entregados,
+    pendientes,
+    totalVendido,
+    totalEntregado,
+    ventasHoy,
+    totalHoy,
     topProductos,
     topTallas,
     topColores,
@@ -157,5 +198,3 @@ function DashboardManager({ ventas, products }) {
     datosGrafica,
   };
 }
-
-export default DashboardManager;
