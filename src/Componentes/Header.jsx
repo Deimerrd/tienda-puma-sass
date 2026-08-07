@@ -33,10 +33,8 @@ function Header({ abrirLogin, abrirCarrito, mostrarMegaMenu }) {
             <span>⭐ Productos 100% originales</span>
             <div className="topbar-redes">
               <span onClick={abrirWhatsApp}>📱 WhatsApp</span>
-
               <span onClick={abrirInstagram}>📷 Instagram</span>
-
-              <span onClick={abrirFacebook}>👍 Facebook</span>
+              <span>👍 Facebook</span>{" "}
             </div>{" "}
           </div>
         </div>

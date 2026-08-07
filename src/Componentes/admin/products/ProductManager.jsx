@@ -1,620 +1,449 @@
-function ProductManager({ articulo, handleChange, categories, Guardar }) {
+import { useState } from "react";
+
+import ProductBasicForm from "./ProductBasicForm";
+import ProductDetailsForm from "./ProductDetailsForm";
+
+function ProductManager({
+  articulo,
+  handleChange,
+  categories,
+  Guardar,
+  products,
+  ventas,
+  setArticulo,
+  eliminarProducto,
+  formatearPrecio,
+}) {
+  const [busqueda, setBusqueda] = useState("");
+  const [categoriaFiltro, setCategoriaFiltro] = useState("todas");
+
+  // ==========================================================
+  // CALCULAR CUÁNTAS UNIDADES SE HAN VENDIDO
+  // ==========================================================
+
+  const obtenerVendidos = (producto) => {
+    let cantidadVendida = 0;
+
+    ventas.forEach((venta) => {
+      if (!venta.productos) return;
+
+      venta.productos.forEach((item) => {
+        if (item.id === producto.id || item.id?.startsWith(`${producto.id}-`)) {
+          cantidadVendida += Number(item.cantidad || 1);
+        }
+      });
+    });
+
+    return cantidadVendida;
+  };
+
+  // ==========================================================
+  // FILTRAR PRODUCTOS
+  // ==========================================================
+
+  const productosFiltrados = products.filter((producto) => {
+    const coincideBusqueda =
+      producto.id?.toString().toLowerCase().includes(busqueda.toLowerCase()) ||
+      producto.name?.toLowerCase().includes(busqueda.toLowerCase());
+
+    const coincideCategoria =
+      categoriaFiltro === "todas" || producto.category === categoriaFiltro;
+
+    return coincideBusqueda && coincideCategoria;
+  });
+
+  // ==========================================================
+  // EDITAR PRODUCTO
+  // ==========================================================
+
+  const editarProducto = (producto) => {
+    setArticulo({
+      ...producto,
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
-      {/* 📊 3. SECCIÓN GLOBALES (El menú que despliega todo según lo que elijas) */}
+      {/* ======================================================
+          FORMULARIO
+      ====================================================== */}
+
+      <ProductBasicForm
+        articulo={articulo}
+        handleChange={handleChange}
+        categories={categories}
+      />
+
+      <ProductDetailsForm
+        articulo={articulo}
+        handleChange={handleChange}
+        Guardar={Guardar}
+      />
+
+      {/* ======================================================
+          LISTADO DE PRODUCTOS
+      ====================================================== */}
+
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "15px",
-          marginBottom: "20px",
-          background: "#262626",
-          padding: "15px",
+          background: "#171717",
           color: "white",
+          padding: "25px",
+          borderRadius: "12px",
+          marginTop: "30px",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <label
-            htmlFor="txt-category"
-            style={{ fontSize: "12px", fontWeight: "700" }}
-          >
-            ¿QUÉ DESEAS AGREGAR AL CATÁLOGO?:
-          </label>
-          <select
-            name="category"
-            value={articulo.category}
-            id="txt-category"
-            onChange={handleChange}
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: "20px",
+            color: "#f97316",
+          }}
+        >
+          📦 Productos registrados
+        </h2>
+
+        {/* ==================================================
+            BUSCADOR Y FILTRO
+        ================================================== */}
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "15px",
+            marginBottom: "25px",
+          }}
+        >
+          {/* BUSCADOR */}
+
+          <input
+            type="text"
+            placeholder="🔎 Buscar por código o nombre..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
             style={{
-              background: "#171717",
+              flex: 1,
+              minWidth: "250px",
+              padding: "12px",
+              background: "#262626",
+              color: "white",
               border: "1px solid #404040",
-              color: "#ffffff",
-              padding: "10px",
-              width: "250px",
+              borderRadius: "8px",
+            }}
+          />
+
+          {/* CATEGORÍA */}
+
+          <select
+            value={categoriaFiltro}
+            onChange={(e) => setCategoriaFiltro(e.target.value)}
+            style={{
+              padding: "12px",
+              background: "#262626",
+              color: "white",
+              border: "1px solid #404040",
+              borderRadius: "8px",
+              minWidth: "200px",
             }}
           >
-            <option value="">-- Seleccione Categoría Primero --</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
+            <option value="todas">📂 Todas las categorías</option>
+
+            {categories.map((categoria) => (
+              <option key={categoria.id} value={categoria.id}>
+                {categoria.icono} {categoria.name}
               </option>
             ))}
           </select>
         </div>
 
-        {articulo.category && (
-          <>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-              <label
-                htmlFor="txt-id"
-                style={{ fontSize: "12px", fontWeight: "700" }}
-              >
-                ID / REF ÚNICA:
-              </label>
-              <input
-                type="text"
-                id="txt-id"
-                name="id"
-                value={articulo.id}
-                onChange={handleChange}
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#ffffff",
-                  padding: "10px",
-                  width: "120px",
-                }}
-              />
-            </div>
+        {/* ==================================================
+            CONTADOR
+        ================================================== */}
 
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-              <label
-                htmlFor="txt-name"
-                style={{ fontSize: "12px", fontWeight: "700" }}
-              >
-                NOMBRE DEL PRODUCTO:
-              </label>
-              <input
-                type="text"
-                id="txt-name"
-                name="name"
-                value={articulo.name}
-                onChange={handleChange}
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#ffffff",
-                  padding: "10px",
-                  width: "250px",
-                }}
-              />
-            </div>
-
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-              <label
-                htmlFor="txt-price"
-                style={{ fontSize: "12px", fontWeight: "700" }}
-              >
-                PRECIO DE VENTA:
-              </label>
-              <input
-                type="text"
-                name="price"
-                id="txt-price"
-                value={articulo.price}
-                onChange={handleChange}
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#ffffff",
-                  padding: "10px",
-                  width: "120px",
-                }}
-              />
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* ⚡ 4. FORMULARIO DINÁMICO INTELIGENTE POR CATEGORÍA */}
-      {articulo.category && (
         <div
           style={{
-            background: "#262626",
-            borderLeft: "4px solid #f97316",
-            padding: "20px",
-            marginBottom: "30px",
-            color: "white",
+            marginBottom: "20px",
+            color: "#d1d5db",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "5px",
-              }}
-            >
-              <label
-                htmlFor="txt-marca"
-                style={{ fontSize: "12px", fontWeight: "700" }}
-              >
-                MARCA:
-              </label>
-            </div>
-
-            <input
-              type="text"
-              id="txt-marca"
-              name="marca"
-              placeholder="Ej: Puma"
-              value={articulo.marca || ""}
-              onChange={handleChange}
-              style={{
-                background: "#171717",
-                border: "1px solid #404040",
-                color: "#ffffff",
-                padding: "10px",
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-            }}
-          >
-            <label
-              htmlFor="txt-gender"
-              style={{ fontSize: "12px", fontWeight: "700" }}
-            >
-              GÉNERO PÚBLICO:
-            </label>
-
-            <select
-              id="txt-gender"
-              name="gender"
-              value={articulo.gender}
-              onChange={handleChange}
-              style={{
-                background: "#171717",
-                border: "1px solid #404040",
-                color: "#ffffff",
-                padding: "10px",
-              }}
-            >
-              <option value="">Seleccionar</option>
-              <option value="Unisex">Unisex</option>
-              <option value="Hombre">Hombre</option>
-              <option value="Mujer">Mujer</option>
-              <option value="Niño">Niño</option>
-              <option value="Niña">Niña</option>
-            </select>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <label
-              htmlFor="txt-stock"
-              style={{ fontSize: "12px", fontWeight: "700" }}
-            >
-              📦 STOCK DISPONIBLE:
-            </label>
-
-            <input
-              type="text"
-              id="txt-stock"
-              name="stock"
-              placeholder="Cantidad disponible en inventario"
-              value={articulo.stock}
-              onChange={handleChange}
-              style={{
-                background: "#171717",
-                border: "1px solid #404040",
-                color: "#ffffff",
-                padding: "10px",
-              }}
-            />
-
-            <div>
-              <label>Calificación</label>
-
-              <input
-                type="number"
-                name="rating"
-                value={articulo.rating}
-                onChange={handleChange}
-                min="1"
-                max="5"
-                step="0.1"
-                placeholder="Ej: 4.8"
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#fff",
-                  padding: "10px",
-                }}
-              />
-            </div>
-
-            <div>
-              <label>Número de opiniones</label>
-
-              <input
-                type="number"
-                name="reviews"
-                value={articulo.reviews}
-                onChange={handleChange}
-                min="0"
-                placeholder="Ej: 125"
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#fff",
-                  padding: "10px",
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Si es calzado (Zapatos), abre la matriz avanzada de tallas */}
-          {articulo.category === "shoes" && (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-            >
-              <h4
-                style={{
-                  margin: "0",
-                  color: "#f97316",
-                  textTransform: "uppercase",
-                }}
-              >
-                👟 Configuración Técnica de Calzado
-              </h4>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <label
-                  htmlFor="txt-color"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  MATRIZ DE COLORES
-                </label>
-                <input
-                  type="text"
-                  id="txt-color"
-                  name="color"
-                  placeholder="Ej: Negro(39,40), Rojo(38,40)"
-                  value={articulo.color}
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                  }}
-                />
-              </div>
-
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "5px",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "700",
-                    }}
-                  >
-                    🔥 TIPO DE PROMOCIÓN:
-                  </label>
-
-                  <select
-                    name="promocion"
-                    value={articulo.promocion}
-                    onChange={handleChange}
-                    style={{
-                      background: "#171717",
-                      border: "1px solid #404040",
-                      color: "#ffffff",
-                      padding: "10px",
-                    }}
-                  >
-                    <option value="">Sin promoción</option>
-                    <option value="🔥 Promoción del Mes">
-                      🔥 Promoción del Mes
-                    </option>
-                    <option value="⭐ Destacado">⭐ Destacado</option>
-                    <option value="💥 Oferta Especial">
-                      💥 Oferta Especial
-                    </option>
-                    <option value="🆕 Nuevo Ingreso">🆕 Nuevo Ingreso</option>
-                  </select>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "5px",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "700",
-                    }}
-                  >
-                    📉 DESCUENTO (%):
-                  </label>
-
-                  <input
-                    type="number"
-                    name="descuento"
-                    min="0"
-                    max="90"
-                    value={articulo.descuento}
-                    onChange={handleChange}
-                    placeholder="Ej: 20"
-                    style={{
-                      background: "#171717",
-                      border: "1px solid #404040",
-                      color: "#ffffff",
-                      padding: "10px",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <label
-                  htmlFor="txt-size"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  TALLAS DISPONIBLES:
-                </label>
-
-                <input
-                  type="text"
-                  id="txt-size"
-                  name="size"
-                  placeholder="Ej: S,M,L,XL"
-                  value={articulo.size || ""}
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Si es Gorras, Accesorios, etc., esconde las tallas de zapato */}
-          {articulo.category !== "shoes" && (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-            >
-              <label
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "700",
-                }}
-              >
-                🔥 TIPO DE PROMOCIÓN:
-              </label>
-
-              <select
-                name="promocion"
-                value={articulo.promocion}
-                onChange={handleChange}
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#ffffff",
-                  padding: "10px",
-                }}
-              >
-                <option value="">Sin promoción</option>
-                <option value="🔥 Promoción del Mes">
-                  🔥 Promoción del Mes
-                </option>
-                <option value="⭐ Destacado">⭐ Destacado</option>
-                <option value="💥 Oferta Especial">💥 Oferta Especial</option>
-                <option value="🆕 Nuevo Ingreso">🆕 Nuevo Ingreso</option>
-              </select>
-              <label
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "700",
-                }}
-              >
-                📉 DESCUENTO (%):
-              </label>
-
-              <input
-                type="number"
-                name="descuento"
-                min="0"
-                max="90"
-                value={articulo.descuento}
-                onChange={handleChange}
-                placeholder="Ej: 20"
-                style={{
-                  background: "#171717",
-                  border: "1px solid #404040",
-                  color: "#ffffff",
-                  padding: "10px",
-                }}
-              />
-
-              <h4
-                style={{
-                  margin: "0",
-                  color: "#f97316",
-                  textTransform: "uppercase",
-                }}
-              >
-                ✨ Configuración de Prenda / Accesorio Corto
-              </h4>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              >
-                <label
-                  htmlFor="txt-color"
-                  style={{ fontSize: "12px", fontWeight: "700" }}
-                >
-                  COLORES DISPONIBLES (Separados por comas):
-                </label>
-                <input
-                  type="text"
-                  id="txt-color"
-                  name="color"
-                  placeholder="Ej: Negro, Azul, Blanco"
-                  value={articulo.color}
-                  onChange={handleChange}
-                  style={{
-                    background: "#171717",
-                    border: "1px solid #404040",
-                    color: "#ffffff",
-                    padding: "10px",
-                  }}
-                />
-              </div>
-
-              {(articulo.category === "shirt" ||
-                articulo.category === "sweater" ||
-                articulo.category === "pants") && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "5px",
-                  }}
-                >
-                  <label
-                    htmlFor="txt-marca"
-                    style={{ fontSize: "12px", fontWeight: "700" }}
-                  >
-                    TALLAS DISPONIBLES DE ROPA:
-                  </label>
-                  <input
-                    type="text"
-                    name="size"
-                    id="txt-size"
-                    placeholder="Ej: S, M, L, XL"
-                    value={articulo.size}
-                    onChange={handleChange}
-                    style={{
-                      background: "#171717",
-                      border: "1px solid #404040",
-                      color: "#ffffff",
-                      padding: "10px",
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* CAMPOS COMUNES DE FOTO Y DESCRIPCIÓN */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-              marginTop: "15px",
-            }}
-          >
-            <label
-              htmlFor="image"
-              style={{ fontSize: "12px", fontWeight: "700" }}
-            >
-              ENLACES DE IMÁGENES DE INTERNET:
-            </label>
-            <input
-              id="image"
-              type="text"
-              name="image"
-              placeholder="Enlaces de fotos separados por comas..."
-              value={articulo.image}
-              onChange={handleChange}
-              style={{
-                background: "#171717",
-                border: "1px solid #404040",
-                color: "#ffffff",
-                padding: "10px",
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-              marginTop: "15px",
-            }}
-          >
-            <label
-              htmlFor="txt-description"
-              style={{ fontSize: "12px", fontWeight: "700" }}
-            >
-              DESCRIPCIÓN PERSUASIVA DE CONVENCIMIENTO:
-            </label>
-            <textarea
-              id="txt-description"
-              name="description"
-              placeholder="Escribe el Copywriting que enamorará al cliente..."
-              value={articulo.description}
-              onChange={handleChange}
-              rows="4"
-              style={{
-                background: "#171717",
-                border: "1px solid #404040",
-                color: "#ffffff",
-                padding: "10px",
-                width: "100%",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-
-          <button
-            onClick={Guardar}
-            style={{
-              display: "block",
-              width: "100%",
-              padding: "12px",
-              marginTop: "20px",
-              background: "#f97316",
-              color: "#ffffff",
-              border: "none",
-              fontWeight: "700",
-              textTransform: "uppercase",
-              cursor: "pointer",
-            }}
-          >
-            🚀 Registrar en Catálogo Comercial
-          </button>
+          Mostrando{" "}
+          <strong style={{ color: "#f97316" }}>
+            {productosFiltrados.length}
+          </strong>{" "}
+          producto(s)
         </div>
-      )}
+
+        {/* ==================================================
+            PRODUCTOS
+        ================================================== */}
+
+        {productosFiltrados.length === 0 ? (
+          <div
+            style={{
+              padding: "40px",
+              textAlign: "center",
+              background: "#262626",
+              borderRadius: "10px",
+              color: "#9ca3af",
+            }}
+          >
+            📦 No se encontraron productos.
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "20px",
+            }}
+          >
+            {productosFiltrados.map((producto) => {
+              const vendidos = obtenerVendidos(producto);
+
+              const stock = Number(producto.stock || 0);
+
+              const agotado = stock <= 0;
+
+              const categoria = categories.find(
+                (cat) => cat.id === producto.category,
+              );
+
+              return (
+                <div
+                  key={producto.id}
+                  style={{
+                    background: "#262626",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    border: agotado ? "1px solid #7f1d1d" : "1px solid #404040",
+
+                    opacity: agotado ? 0.55 : 1,
+
+                    transition: "0.2s",
+                  }}
+                >
+                  {/* FOTO */}
+
+                  {producto.image ? (
+                    <img
+                      src={producto.image.split(",")[0].trim()}
+                      alt={producto.name}
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        height: "200px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "#111",
+                        fontSize: "60px",
+                      }}
+                    >
+                      📦
+                    </div>
+                  )}
+
+                  {/* INFORMACIÓN */}
+
+                  <div style={{ padding: "18px" }}>
+                    {/* ESTADO */}
+
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        fontWeight: "bold",
+                        color: agotado ? "#ef4444" : "#22c55e",
+                      }}
+                    >
+                      {agotado ? "🔴 AGOTADO / VENDIDO" : "🟢 DISPONIBLE"}
+                    </div>
+
+                    {/* CÓDIGO */}
+
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#9ca3af",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      REF: {producto.id}
+                    </div>
+
+                    {/* NOMBRE */}
+
+                    <h3
+                      style={{
+                        margin: "5px 0",
+                        color: "white",
+                      }}
+                    >
+                      {producto.name}
+                    </h3>
+
+                    {/* CATEGORÍA */}
+
+                    <div
+                      style={{
+                        color: "#f97316",
+                        fontSize: "14px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {categoria?.icono || "📦"}{" "}
+                      {categoria?.name || producto.category}
+                    </div>
+
+                    {/* PRECIO */}
+
+                    <div
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      {formatearPrecio(Number(producto.price || 0))}
+                    </div>
+
+                    {/* ESTADÍSTICAS */}
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "10px",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: "#171717",
+                          padding: "10px",
+                          borderRadius: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <small>📦 Disponible</small>
+
+                        <strong
+                          style={{
+                            display: "block",
+                            fontSize: "20px",
+                            color: agotado ? "#ef4444" : "#22c55e",
+                          }}
+                        >
+                          {stock}
+                        </strong>
+                      </div>
+
+                      <div
+                        style={{
+                          background: "#171717",
+                          padding: "10px",
+                          borderRadius: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <small>🛒 Vendidos</small>
+
+                        <strong
+                          style={{
+                            display: "block",
+                            fontSize: "20px",
+                            color: "#f97316",
+                          }}
+                        >
+                          {vendidos}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* COLOR */}
+
+                    {producto.color && (
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        🎨 <strong>Color:</strong> {producto.color}
+                      </div>
+                    )}
+
+                    {/* TALLA */}
+
+                    {producto.size && (
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          marginBottom: "15px",
+                        }}
+                      >
+                        📏 <strong>Talla:</strong> {producto.size}
+                      </div>
+                    )}
+
+                    {/* BOTONES */}
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                      }}
+                    >
+                      <button
+                        onClick={() => editarProducto(producto)}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          background: "#2563eb",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        ✏️ Editar
+                      </button>
+
+                      <button
+                        onClick={() => eliminarProducto(producto.id)}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          background: "#dc2626",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </>
   );
 }

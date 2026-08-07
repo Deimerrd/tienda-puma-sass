@@ -1,12 +1,14 @@
-function Topbar() {
+function Topbar({ cerrarSesionAdmin, volverTienda }) {
   return (
     <header className="admin-topbar">
-      <div className="topbar-left">
-        <h1>Panel de Administración</h1>
+      <div>
+        <strong>Panel de Administración</strong>
       </div>
 
       <div className="topbar-right">
-        <button className="btn-ver-tienda">🛍 Ver Tienda</button>
+        <button className="btn-ver-tienda" onClick={volverTienda}>
+          🛍 Ver Tienda
+        </button>
 
         <div className="admin-user">
           <div className="avatar">A</div>
@@ -17,6 +19,21 @@ function Topbar() {
             <small>En línea</small>
           </div>
         </div>
+
+        <button
+          onClick={cerrarSesionAdmin}
+          style={{
+            background: "#dc2626",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          🚪 Cerrar sesión
+        </button>
       </div>
     </header>
   );

@@ -220,6 +220,10 @@ function Shop() {
     setClaveMaestra(nuevaClave.trim());
     alert("🔒 ¡Contraseña de administrador actualizada con éxito!");
   }
+  function cerrarSesionAdmin() {
+    setVista("cliente");
+    setMostrarLogin(false);
+  }
 
   function cancelarPedidoAdmin(idVenta) {
     const confirmacion = window.confirm(
@@ -534,6 +538,7 @@ function Shop() {
             nequiQR={nequiQR}
             setNequiQR={setNequiQR}
             cambiarEstadoPedido={cambiarEstadoPedido}
+            cerrarSesionAdmin={cerrarSesionAdmin}
           />
         )}
 

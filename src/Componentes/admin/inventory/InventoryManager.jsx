@@ -1,3 +1,5 @@
+import InventoryCard from "./InventoryCard";
+
 function InventoryManager({
   productosStockCritico,
   productosFiltrados,
@@ -11,9 +13,7 @@ function InventoryManager({
 }) {
   return (
     <>
-      {/* 🚫 A PARTIR DE AQUÍ ABAJO COMIENZA TU HISTORIAL Y TU INVENTARIO ROJO DE SIEMPRE (No los borres, déjalos quietos abajo) */}
-
-      {/* 📦 SECCIÓN A: INVENTARIO DE LA TIENDA CON BOTONES LOGÍSTICOS */}
+      {/* 📦 SECCIÓN A: PRODUCTOS POR REABASTECER */}
       {productosStockCritico.length > 0 && (
         <div
           style={{
@@ -47,10 +47,13 @@ function InventoryManager({
           ))}
         </div>
       )}
+
+      {/* 📦 INVENTARIO */}
       <h3 style={{ fontFamily: "sans-serif", marginTop: "30px" }}>
         Inventario de la tienda
       </h3>
 
+      {/* 🔍 BUSCADOR */}
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
@@ -67,119 +70,23 @@ function InventoryManager({
           }}
         />
       </div>
+
+      {/* 📋 LISTA DE PRODUCTOS */}
       {productosFiltrados.length === 0 ? (
         <p style={{ fontFamily: "sans-serif" }}>
           🔍 No se encontraron productos.
         </p>
       ) : (
         productosFiltrados.map((prod) => (
-          <div
+          <InventoryCard
             key={prod.id}
-            style={{
-              border: "1px solid red",
-              padding: "15px",
-              margin: "10px 0",
-              background: "#171717",
-              color: "white",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontFamily: "sans-serif",
-            }}
-          >
-            {/* Detalles técnicos rápidos del producto */}
-            <div>
-              <p style={{ margin: 0 }}>
-                <strong>[{prod.id}]</strong> {prod.name} - {prod.marca}
-              </p>
-
-              <p style={{ margin: "5px 0 0 0" }}>
-                💲 {formatearPrecio(Number(prod.price))}
-              </p>
-
-              <p
-                style={{
-                  margin: "5px 0 0 0",
-                  fontWeight: "bold",
-                  color:
-                    Number(prod.stock) === 0
-                      ? "red"
-                      : Number(prod.stock) <= 5
-                        ? "orange"
-                        : "#22c55e",
-                }}
-              >
-                {Number(prod.stock) === 0
-                  ? `🔴 Agotado`
-                  : Number(prod.stock) <= 5
-                    ? `🟡 Stock Bajo: ${prod.stock}`
-                    : `🟢 Stock: ${prod.stock}`}
-              </p>
-            </div>
-
-            {/* Botonera comercial de administración */}
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                onClick={() => {
-                  // Sube de forma automática todos los datos del producto a los inputs de arriba
-                  setArticulo(prod);
-                  // Desplaza la pantalla suavemente hacia el formulario para editar de una vez
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                style={{
-                  background: "#2563eb",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                ✏️ Editar
-              </button>
-
-              <button
-                onClick={() => agregarStock(prod.id)}
-                style={{
-                  background: "#16a34a",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                ➕ Stock
-              </button>
-              <button
-                onClick={() => restarStock(prod.id)}
-                style={{
-                  background: "#ea580c",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                📉 Stock
-              </button>
-
-              <button
-                onClick={() => eliminarProducto(prod.id)}
-                style={{
-                  background: "#ef4444",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                🗑️ Eliminar
-              </button>
-            </div>
-          </div>
+            prod={prod}
+            formatearPrecio={formatearPrecio}
+            setArticulo={setArticulo}
+            agregarStock={agregarStock}
+            restarStock={restarStock}
+            eliminarProducto={eliminarProducto}
+          />
         ))
       )}
     </>

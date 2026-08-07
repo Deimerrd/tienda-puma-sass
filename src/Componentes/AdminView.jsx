@@ -4,12 +4,7 @@ import { obtenerEstadisticasPedidos } from "./admin/orders/orderStats";
 import { filtrarPedidos } from "./admin/orders/filterOrders";
 import { filtrarProductos } from "./admin/inventory/filterInventory";
 import AdminLayout from "./admin/layout/AdminLayout";
-import SecurityManager from "./admin/settings/SecurityManager";
-import PaymentsManager from "./admin/payments/PaymentsManager";
-import CategoryManager from "./admin/categories/CategoryManager";
-import ProductManager from "./admin/products/ProductManager";
-import InventoryManager from "./admin/inventory/InventoryManager";
-import OrdersManager from "./admin/orders/OrdersManager";
+import AdminModules from "./admin/AdminModules";
 import DashboardManager from "./admin/dashboard/DashboardManager";
 import { GuardarProducto } from "./admin/products/saveProduct";
 import {
@@ -25,6 +20,7 @@ function AdminView({
   productosStockCritico,
   setProducts,
   cambiarEstadoPedido,
+  cerrarSesionAdmin,
   ventas,
   categories,
   agregarCategoria,
@@ -62,6 +58,8 @@ function AdminView({
   const [iconoCategoria, setIconoCategoria] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState(""); // 👈 ESTADO PARA CAPTURAR LA NUEVA CLAVE
   const [busquedaProducto, setBusquedaProducto] = useState("");
+  const estadisticas = obtenerEstadisticasPedidos(ventas);
+
   const {
     entregados,
     pendientes,
@@ -69,7 +67,7 @@ function AdminView({
     totalEntregado,
     ventasHoy,
     totalHoy,
-  } = obtenerEstadisticasPedidos(ventas);
+  } = estadisticas;
 
   const productosFiltrados = filtrarProductos(products, busquedaProducto);
   const ventasFiltradas = filtrarPedidos(ventas, busquedaPedido);
@@ -89,26 +87,21 @@ function AdminView({
     products,
   });
   return (
-    <AdminLayout moduloActivo={moduloActivo} setModuloActivo={setModuloActivo}>
-      <SecurityManager
-        nuevaContrasena={nuevaContrasena}
-        setNuevaContrasena={setNuevaContrasena}
-        cambiarClave={cambiarClave}
-      />
-      <PaymentsManager
-        nequiNumero={nequiNumero}
-        setNequiNumero={setNequiNumero}
-        subirQR={subirQR}
-        nequiQR={nequiQR}
-      />
-      <CategoryManager
-        nuevaCatNombre={nuevaCatNombre}
-        setNuevaCatNombre={setNuevaCatNombre}
-        iconoCategoria={iconoCategoria}
-        setIconoCategoria={setIconoCategoria}
-        agregarCategoria={agregarCategoria}
-      />
-      <ProductManager
+    <AdminLayout
+      moduloActivo={moduloActivo}
+      setModuloActivo={setModuloActivo}
+      cerrarSesionAdmin={cerrarSesionAdmin}
+      volverTienda={cerrarSesionAdmin}
+    >
+      <AdminModules
+        moduloActivo={moduloActivo}
+        // Dashboard
+        ventas={ventas}
+        products={products}
+        productosStockCritico={productosStockCritico}
+        formatearPrecio={formatearPrecio}
+        topProductos={topProductos}
+        // Productos
         articulo={articulo}
         handleChange={(e) => handleChange(e, articulo, setArticulo)}
         categories={categories}
@@ -120,20 +113,25 @@ function AdminView({
             setArticulo,
           })
         }
-      />
-      <InventoryManager
-        productosStockCritico={productosStockCritico}
+        // Categorías
+        nuevaCatNombre={nuevaCatNombre}
+        setNuevaCatNombre={setNuevaCatNombre}
+        iconoCategoria={iconoCategoria}
+        setIconoCategoria={setIconoCategoria}
+        agregarCategoria={agregarCategoria}
+        // Inventario
         productosFiltrados={productosFiltrados}
         busquedaProducto={busquedaProducto}
         setBusquedaProducto={setBusquedaProducto}
-        formatearPrecio={formatearPrecio}
         setArticulo={setArticulo}
-        agregarStock={agregarStock}
-        restarStock={restarStock}
+        agregarStock={(idProducto) =>
+          agregarStock(idProducto, products, setProducts)
+        }
+        restarStock={(idProducto) =>
+          restarStock(idProducto, products, setProducts)
+        }
         eliminarProducto={eliminarProducto}
-      />
-      <OrdersManager
-        ventas={ventas}
+        // Pedidos
         ventasFiltradas={ventasFiltradas}
         busquedaPedido={busquedaPedido}
         setBusquedaPedido={setBusquedaPedido}
@@ -143,7 +141,6 @@ function AdminView({
         totalEntregado={totalEntregado}
         ventasHoy={ventasHoy}
         totalHoy={totalHoy}
-        topProductos={topProductos}
         topTallas={topTallas}
         topColores={topColores}
         productosReponer={productosReponer}
@@ -152,13 +149,21 @@ function AdminView({
         mesAnterior={mesAnterior}
         crecimiento={crecimiento}
         datosGrafica={datosGrafica}
-        formatearPrecio={formatearPrecio}
         marcarPedidoEntregado={marcarPedidoEntregado}
         cambiarEstadoPedido={cambiarEstadoPedido}
         cancelarPedidoAdmin={cancelarPedidoAdmin}
         generarFacturaPDF={generarFacturaPDF}
         modoIngenieroActivo={modoIngenieroActivo}
         forzarDesbloqueoDev={forzarDesbloqueoDev}
+        // Pagos
+        nequiNumero={nequiNumero}
+        setNequiNumero={setNequiNumero}
+        subirQR={subirQR}
+        nequiQR={nequiQR}
+        // Seguridad
+        nuevaContrasena={nuevaContrasena}
+        setNuevaContrasena={setNuevaContrasena}
+        cambiarClave={cambiarClave}
       />
     </AdminLayout>
   );

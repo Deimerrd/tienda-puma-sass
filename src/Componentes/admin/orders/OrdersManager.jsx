@@ -128,10 +128,6 @@ function OrderManager({
             >
               <strong>#{index + 1}</strong>{" "}
               <div>
-                <div>
-                  <strong>#{index + 1}</strong>
-                </div>
-
                 <div>{nombre}</div>
 
                 <div
