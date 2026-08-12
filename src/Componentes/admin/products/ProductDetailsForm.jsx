@@ -1,4 +1,6 @@
-function ProductDetailsForm({ articulo, handleChange, Guardar }) {
+import ProductVariants from "./ProductVariants";
+
+function ProductDetailsForm({ articulo, handleChange, Guardar, setArticulo }) {
   return (
     <>
       {/* ⚡ 4. FORMULARIO DINÁMICO INTELIGENTE POR CATEGORÍA */}
@@ -100,6 +102,7 @@ function ProductDetailsForm({ articulo, handleChange, Guardar }) {
                 padding: "10px",
               }}
             />
+            <ProductVariants articulo={articulo} setArticulo={setArticulo} />
 
             <div>
               <label>Calificación</label>

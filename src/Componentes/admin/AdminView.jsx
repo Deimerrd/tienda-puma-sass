@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { generarFacturaPDF } from "./admin/orders/pdfGenerator";
-import { obtenerEstadisticasPedidos } from "./admin/orders/orderStats";
-import { filtrarPedidos } from "./admin/orders/filterOrders";
-import { filtrarProductos } from "./admin/inventory/filterInventory";
-import AdminLayout from "./admin/layout/AdminLayout";
-import AdminModules from "./admin/AdminModules";
-import DashboardManager from "./admin/dashboard/DashboardManager";
-import { GuardarProducto } from "./admin/products/saveProduct";
+import { generarFacturaPDF } from "./orders/pdfGenerator";
+import { obtenerEstadisticasPedidos } from "./orders/orderStats";
+import { filtrarPedidos } from "./orders/filterOrders";
+import { filtrarProductos } from "./inventory/filterInventory";
+import AdminLayout from "./layout/AdminLayout";
+import AdminModules from "./AdminModules";
+import DashboardManager from "./dashboard/DashboardManager";
+import { GuardarProducto } from "./products/saveProduct";
 import {
   handleChange,
   agregarStock,
   restarStock,
-} from "./admin/products/productLogic";
+} from "./products/productLogic";
 
 function AdminView({
   modoIngenieroActivo,
@@ -52,6 +52,7 @@ function AdminView({
     reviews: 0,
     promocion: "",
     descuento: 0,
+    variantes: [],
   });
   const [busquedaPedido, setBusquedaPedido] = useState("");
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");

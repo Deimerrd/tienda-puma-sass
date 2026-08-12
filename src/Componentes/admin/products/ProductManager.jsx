@@ -18,7 +18,7 @@ function ProductManager({
   const [categoriaFiltro, setCategoriaFiltro] = useState("todas");
 
   // ==========================================================
-  // CALCULAR CUÁNTAS UNIDADES SE HAN VENDIDO
+  // OBTENER PRODUCTOS VENDIDOS
   // ==========================================================
 
   const obtenerVendidos = (producto) => {
@@ -38,13 +38,73 @@ function ProductManager({
   };
 
   // ==========================================================
+  // OBTENER STOCK TOTAL
+  //
+  // Si el producto tiene variantes:
+  // suma el stock de todas las variantes.
+  //
+  // Si es un producto antiguo:
+  // utiliza producto.stock.
+  // ==========================================================
+
+  const obtenerStock = (producto) => {
+    if (Array.isArray(producto.variantes) && producto.variantes.length > 0) {
+      return producto.variantes.reduce(
+        (total, variante) => total + Number(variante.stock || 0),
+        0,
+      );
+    }
+
+    return Number(producto.stock || 0);
+  };
+
+  // ==========================================================
+  // OBTENER VENDIDOS DE VARIANTES
+  // ==========================================================
+
+  const obtenerVendidosVariantes = (producto) => {
+    if (!Array.isArray(producto.variantes) || producto.variantes.length === 0) {
+      return obtenerVendidos(producto);
+    }
+
+    return producto.variantes.reduce(
+      (total, variante) => total + Number(variante.vendidos || 0),
+      0,
+    );
+  };
+
+  // ==========================================================
+  // OBTENER ESTADO DEL PRODUCTO
+  // ==========================================================
+
+  const obtenerEstado = (producto) => {
+    const stock = obtenerStock(producto);
+
+    if (stock <= 0) {
+      return {
+        agotado: true,
+        texto: "🔴 AGOTADO",
+        color: "#ef4444",
+      };
+    }
+
+    return {
+      agotado: false,
+      texto: "🟢 DISPONIBLE",
+      color: "#22c55e",
+    };
+  };
+
+  // ==========================================================
   // FILTRAR PRODUCTOS
   // ==========================================================
 
   const productosFiltrados = products.filter((producto) => {
+    const textoBusqueda = busqueda.toLowerCase().trim();
+
     const coincideBusqueda =
-      producto.id?.toString().toLowerCase().includes(busqueda.toLowerCase()) ||
-      producto.name?.toLowerCase().includes(busqueda.toLowerCase());
+      producto.id?.toString().toLowerCase().includes(textoBusqueda) ||
+      producto.name?.toLowerCase().includes(textoBusqueda);
 
     const coincideCategoria =
       categoriaFiltro === "todas" || producto.category === categoriaFiltro;
@@ -59,6 +119,10 @@ function ProductManager({
   const editarProducto = (producto) => {
     setArticulo({
       ...producto,
+
+      // Si el producto antiguo no tiene variantes,
+      // inicializamos una lista vacía.
+      variantes: Array.isArray(producto.variantes) ? producto.variantes : [],
     });
 
     window.scrollTo({
@@ -83,6 +147,7 @@ function ProductManager({
         articulo={articulo}
         handleChange={handleChange}
         Guardar={Guardar}
+        setArticulo={setArticulo}
       />
 
       {/* ======================================================
@@ -93,20 +158,44 @@ function ProductManager({
         style={{
           background: "#171717",
           color: "white",
-          padding: "25px",
+          padding: "20px",
           borderRadius: "12px",
           marginTop: "30px",
         }}
       >
-        <h2
+        {/* ==================================================
+            ENCABEZADO
+        ================================================== */}
+
+        <div
           style={{
-            marginTop: 0,
-            marginBottom: "20px",
-            color: "#f97316",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "15px",
+            flexWrap: "wrap",
+            marginBottom: "18px",
           }}
         >
-          📦 Productos registrados
-        </h2>
+          <h2
+            style={{
+              margin: 0,
+              color: "#f97316",
+              fontSize: "22px",
+            }}
+          >
+            📦 Productos registrados
+          </h2>
+
+          <div
+            style={{
+              fontSize: "13px",
+              color: "#9ca3af",
+            }}
+          >
+            Total: <strong style={{ color: "#fff" }}>{products.length}</strong>
+          </div>
+        </div>
 
         {/* ==================================================
             BUSCADOR Y FILTRO
@@ -114,42 +203,38 @@ function ProductManager({
 
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "15px",
-            marginBottom: "25px",
+            display: "grid",
+            gridTemplateColumns: "minmax(250px, 1fr) 220px",
+            gap: "10px",
+            marginBottom: "18px",
           }}
         >
-          {/* BUSCADOR */}
-
           <input
             type="text"
             placeholder="🔎 Buscar por código o nombre..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "12px",
-              background: "#262626",
-              color: "white",
+              width: "100%",
+              boxSizing: "border-box",
+              padding: "11px 13px",
+              background: "#222",
+              color: "#fff",
               border: "1px solid #404040",
-              borderRadius: "8px",
+              borderRadius: "7px",
+              outline: "none",
             }}
           />
-
-          {/* CATEGORÍA */}
 
           <select
             value={categoriaFiltro}
             onChange={(e) => setCategoriaFiltro(e.target.value)}
             style={{
-              padding: "12px",
-              background: "#262626",
-              color: "white",
+              padding: "11px",
+              background: "#222",
+              color: "#fff",
               border: "1px solid #404040",
-              borderRadius: "8px",
-              minWidth: "200px",
+              borderRadius: "7px",
             }}
           >
             <option value="todas">📂 Todas las categorías</option>
@@ -168,8 +253,9 @@ function ProductManager({
 
         <div
           style={{
-            marginBottom: "20px",
-            color: "#d1d5db",
+            marginBottom: "15px",
+            fontSize: "13px",
+            color: "#9ca3af",
           }}
         >
           Mostrando{" "}
@@ -186,10 +272,10 @@ function ProductManager({
         {productosFiltrados.length === 0 ? (
           <div
             style={{
-              padding: "40px",
+              padding: "35px",
               textAlign: "center",
-              background: "#262626",
-              borderRadius: "10px",
+              background: "#222",
+              borderRadius: "8px",
               color: "#9ca3af",
             }}
           >
@@ -199,36 +285,41 @@ function ProductManager({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "20px",
+              gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
+              gap: "14px",
             }}
           >
             {productosFiltrados.map((producto) => {
-              const vendidos = obtenerVendidos(producto);
+              const stock = obtenerStock(producto);
 
-              const stock = Number(producto.stock || 0);
+              const vendidos = obtenerVendidosVariantes(producto);
 
-              const agotado = stock <= 0;
+              const estado = obtenerEstado(producto);
 
               const categoria = categories.find(
                 (cat) => cat.id === producto.category,
               );
 
+              const tieneVariantes =
+                Array.isArray(producto.variantes) &&
+                producto.variantes.length > 0;
+
               return (
                 <div
                   key={producto.id}
                   style={{
-                    background: "#262626",
-                    borderRadius: "12px",
+                    background: "#242424",
+                    borderRadius: "9px",
                     overflow: "hidden",
-                    border: agotado ? "1px solid #7f1d1d" : "1px solid #404040",
-
-                    opacity: agotado ? 0.55 : 1,
-
-                    transition: "0.2s",
+                    border: `1px solid ${
+                      estado.agotado ? "#7f1d1d" : "#383838"
+                    }`,
+                    opacity: estado.agotado ? 0.65 : 1,
                   }}
                 >
-                  {/* FOTO */}
+                  {/* ==================================================
+                      IMAGEN PEQUEÑA
+                  ================================================== */}
 
                   {producto.image ? (
                     <img
@@ -236,47 +327,55 @@ function ProductManager({
                       alt={producto.name}
                       style={{
                         width: "100%",
-                        height: "200px",
+                        height: "130px",
                         objectFit: "cover",
+                        display: "block",
                       }}
                     />
                   ) : (
                     <div
                       style={{
-                        height: "200px",
+                        height: "130px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         background: "#111",
-                        fontSize: "60px",
+                        fontSize: "40px",
                       }}
                     >
                       📦
                     </div>
                   )}
 
-                  {/* INFORMACIÓN */}
+                  {/* ==================================================
+                      INFORMACIÓN
+                  ================================================== */}
 
-                  <div style={{ padding: "18px" }}>
+                  <div
+                    style={{
+                      padding: "13px",
+                    }}
+                  >
                     {/* ESTADO */}
 
                     <div
                       style={{
-                        marginBottom: "10px",
+                        color: estado.color,
                         fontWeight: "bold",
-                        color: agotado ? "#ef4444" : "#22c55e",
+                        fontSize: "12px",
+                        marginBottom: "7px",
                       }}
                     >
-                      {agotado ? "🔴 AGOTADO / VENDIDO" : "🟢 DISPONIBLE"}
+                      {estado.texto}
                     </div>
 
-                    {/* CÓDIGO */}
+                    {/* REFERENCIA */}
 
                     <div
                       style={{
-                        fontSize: "12px",
-                        color: "#9ca3af",
-                        marginBottom: "5px",
+                        fontSize: "11px",
+                        color: "#888",
+                        marginBottom: "3px",
                       }}
                     >
                       REF: {producto.id}
@@ -286,8 +385,10 @@ function ProductManager({
 
                     <h3
                       style={{
-                        margin: "5px 0",
-                        color: "white",
+                        margin: "4px 0",
+                        fontSize: "16px",
+                        lineHeight: "1.25",
+                        color: "#fff",
                       }}
                     >
                       {producto.name}
@@ -298,8 +399,8 @@ function ProductManager({
                     <div
                       style={{
                         color: "#f97316",
-                        fontSize: "14px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "8px",
                       }}
                     >
                       {categoria?.icono || "📦"}{" "}
@@ -310,39 +411,48 @@ function ProductManager({
 
                     <div
                       style={{
-                        fontSize: "20px",
+                        fontSize: "17px",
                         fontWeight: "bold",
-                        marginBottom: "15px",
+                        marginBottom: "10px",
                       }}
                     >
                       {formatearPrecio(Number(producto.price || 0))}
                     </div>
 
-                    {/* ESTADÍSTICAS */}
+                    {/* ==================================================
+                        ESTADÍSTICAS
+                    ================================================== */}
 
                     <div
                       style={{
                         display: "grid",
                         gridTemplateColumns: "1fr 1fr",
-                        gap: "10px",
-                        marginBottom: "15px",
+                        gap: "6px",
+                        marginBottom: "10px",
                       }}
                     >
                       <div
                         style={{
                           background: "#171717",
-                          padding: "10px",
-                          borderRadius: "8px",
+                          padding: "7px",
+                          borderRadius: "6px",
                           textAlign: "center",
                         }}
                       >
-                        <small>📦 Disponible</small>
+                        <div
+                          style={{
+                            fontSize: "10px",
+                            color: "#999",
+                          }}
+                        >
+                          📦 Disponible
+                        </div>
 
                         <strong
                           style={{
                             display: "block",
-                            fontSize: "20px",
-                            color: agotado ? "#ef4444" : "#22c55e",
+                            fontSize: "17px",
+                            color: stock <= 0 ? "#ef4444" : "#22c55e",
                           }}
                         >
                           {stock}
@@ -352,17 +462,24 @@ function ProductManager({
                       <div
                         style={{
                           background: "#171717",
-                          padding: "10px",
-                          borderRadius: "8px",
+                          padding: "7px",
+                          borderRadius: "6px",
                           textAlign: "center",
                         }}
                       >
-                        <small>🛒 Vendidos</small>
+                        <div
+                          style={{
+                            fontSize: "10px",
+                            color: "#999",
+                          }}
+                        >
+                          🛒 Vendidos
+                        </div>
 
                         <strong
                           style={{
                             display: "block",
-                            fontSize: "20px",
+                            fontSize: "17px",
                             color: "#f97316",
                           }}
                         >
@@ -371,50 +488,113 @@ function ProductManager({
                       </div>
                     </div>
 
-                    {/* COLOR */}
+                    {/* ==================================================
+                        VARIANTES
+                    ================================================== */}
 
-                    {producto.color && (
+                    {tieneVariantes && (
                       <div
                         style={{
-                          fontSize: "13px",
-                          marginBottom: "5px",
+                          marginTop: "8px",
+                          marginBottom: "10px",
+                          padding: "8px",
+                          background: "#1b1b1b",
+                          borderRadius: "6px",
                         }}
                       >
-                        🎨 <strong>Color:</strong> {producto.color}
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            color: "#aaa",
+                            marginBottom: "6px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          🎨 VARIANTES
+                        </div>
+
+                        {producto.variantes.map((variante) => {
+                          const stockVariante = Number(variante.stock || 0);
+
+                          const agotada = stockVariante <= 0;
+
+                          return (
+                            <div
+                              key={variante.id}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                padding: "4px 0",
+                                fontSize: "11px",
+                                color: agotada ? "#777" : "#ddd",
+                              }}
+                            >
+                              <span>
+                                {variante.color || "Sin color"} /{" "}
+                                {variante.talla || "Sin talla"}
+                              </span>
+
+                              <strong
+                                style={{
+                                  color: agotada ? "#ef4444" : "#22c55e",
+                                }}
+                              >
+                                {agotada ? "Agotado" : variante.stock}
+                              </strong>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
 
-                    {/* TALLA */}
+                    {/* PRODUCTOS ANTIGUOS */}
 
-                    {producto.size && (
+                    {!tieneVariantes && producto.color && (
                       <div
                         style={{
-                          fontSize: "13px",
-                          marginBottom: "15px",
+                          fontSize: "11px",
+                          color: "#ccc",
+                          marginBottom: "4px",
                         }}
                       >
-                        📏 <strong>Talla:</strong> {producto.size}
+                        🎨 {producto.color}
                       </div>
                     )}
 
-                    {/* BOTONES */}
+                    {!tieneVariantes && producto.size && (
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "#ccc",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        📏 {producto.size}
+                      </div>
+                    )}
+
+                    {/* ==================================================
+                        BOTONES
+                    ================================================== */}
 
                     <div
                       style={{
                         display: "flex",
-                        gap: "10px",
+                        gap: "6px",
                       }}
                     >
                       <button
                         onClick={() => editarProducto(producto)}
                         style={{
                           flex: 1,
-                          padding: "10px",
+                          padding: "8px",
                           background: "#2563eb",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "5px",
                           cursor: "pointer",
+                          fontSize: "12px",
                           fontWeight: "bold",
                         }}
                       >
@@ -425,12 +605,13 @@ function ProductManager({
                         onClick={() => eliminarProducto(producto.id)}
                         style={{
                           flex: 1,
-                          padding: "10px",
+                          padding: "8px",
                           background: "#dc2626",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "5px",
                           cursor: "pointer",
+                          fontSize: "12px",
                           fontWeight: "bold",
                         }}
                       >

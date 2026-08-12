@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import ClientView from "./ClientView";
-import AdminView from "./AdminView";
-import Header from "./Header";
-import LoginModal from "./LoginModal";
-import MegaMenu from "./MegaMenu";
+import AdminView from "../../admin/AdminView";
+import Header from "../layout/Header";
+import LoginModal from "../shared/LoginModal";
+import MegaMenu from "../layout/MegaMenu";
 
 const formatearPrecio = (numero) => {
   return new Intl.NumberFormat("es-CO", {
@@ -268,25 +268,81 @@ function Shop() {
   }
 
   function AgregarAlCarrito(productoElegido) {
+    const cantidadAgregar = Number(productoElegido.cantidad || 1);
+
+    // ==========================================================
+    // IDENTIFICADOR DE LA VARIANTE
+    // ==========================================================
+
+    const varianteId =
+      productoElegido.varianteId || productoElegido.variante?.id || "principal";
+
+    const idCarrito = `${productoElegido.id}-${varianteId}`;
+
+    // ==========================================================
+    // VERIFICAR STOCK DE LA VARIANTE
+    // ==========================================================
+
+    const stockDisponible =
+      productoElegido.variante?.stock ?? productoElegido.stock ?? 0;
+
+    if (stockDisponible <= 0) {
+      alert("⚠️ Esta variante ya no está disponible.");
+      return;
+    }
+
     setCart((prevCart) => {
-      const existe = prevCart.find((item) => item.id === productoElegido.id);
+      const existe = prevCart.find((item) => item.idCarrito === idCarrito);
+
+      // ========================================================
+      // SI YA EXISTE ESA MISMA VARIANTE EN EL CARRITO
+      // ========================================================
 
       if (existe) {
+        const nuevaCantidad = existe.cantidad + cantidadAgregar;
+
+        if (nuevaCantidad > stockDisponible) {
+          alert(
+            `⚠️ Solo quedan ${stockDisponible} unidades disponibles de esta variante.`,
+          );
+
+          return prevCart;
+        }
+
         return prevCart.map((item) =>
-          item.id === productoElegido.id
+          item.idCarrito === idCarrito
             ? {
                 ...item,
-                cantidad: item.cantidad + (productoElegido.cantidad || 1),
+                cantidad: nuevaCantidad,
               }
             : item,
         );
+      }
+
+      // ========================================================
+      // PRODUCTO NUEVO EN EL CARRITO
+      // ========================================================
+
+      if (cantidadAgregar > stockDisponible) {
+        alert(
+          `⚠️ Solo quedan ${stockDisponible} unidades disponibles de esta variante.`,
+        );
+
+        return prevCart;
       }
 
       return [
         ...prevCart,
         {
           ...productoElegido,
-          cantidad: productoElegido.cantidad || 1,
+
+          // Identificador único dentro del carrito
+          idCarrito,
+
+          // Guardamos explícitamente la variante
+          varianteId,
+
+          cantidad: cantidadAgregar,
         },
       ];
     });

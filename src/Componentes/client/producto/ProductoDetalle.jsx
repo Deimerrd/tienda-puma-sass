@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ProductoGaleria from "./ProductoGaleria";
+import ProductoVariantes from "./ProductoVariantes";
 
 export default function ProductoDetalle({
   producto,
@@ -13,6 +15,25 @@ export default function ProductoDetalle({
   const [colorElegido, setColorElegido] = useState("");
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidad, setCantidad] = useState(1);
+  const varianteSeleccionada = producto?.variantes?.find(
+    (variante) =>
+      variante.color?.trim().toLowerCase() ===
+        colorElegido?.trim().toLowerCase() &&
+      variante.talla?.trim().toLowerCase() ===
+        tallaElegida?.trim().toLowerCase(),
+  );
+
+  const stockDisponible = varianteSeleccionada
+    ? Number(varianteSeleccionada.stock || 0)
+    : Number(producto.stock || 0);
+  console.log("========== STOCK DEBUG ==========");
+  console.log("Color elegido:", colorElegido);
+  console.log("Talla elegida:", tallaElegida);
+  console.log("Variantes del producto:", producto?.variantes);
+  console.log("Variante encontrada:", varianteSeleccionada);
+  console.log("Stock variante:", varianteSeleccionada?.stock);
+  console.log("Stock producto:", producto?.stock);
+  console.log("Stock mostrado:", stockDisponible);
   const [mostrarDescripcion, setMostrarDescripcion] = useState(false);
   const [mostrarEspecificaciones, setMostrarEspecificaciones] = useState(false);
   const obtenerEstadoStock = (stock) => {
@@ -39,8 +60,7 @@ export default function ProductoDetalle({
   };
 
   // ✅ AQUÍ AFUERA
-  const estadoStock = obtenerEstadoStock(producto.stock);
-
+  const estadoStock = obtenerEstadoStock(stockDisponible);
   // ✅ AQUÍ AFUERA
   const compartirProducto = async () => {
     const url = window.location.href;
@@ -74,7 +94,12 @@ export default function ProductoDetalle({
   };
 
   if (!producto) {
-    return <h2>Producto no encontrado.</h2>;
+    console.log("🔎 PRODUCTO EN CLIENTE:", producto);
+    console.log("🔎 VARIANTES EN CLIENTE:", producto.variantes);
+    console.log("🔎 COLOR ELEGIDO:", colorElegido);
+    console.log("🔎 TALLA ELEGIDA:", tallaElegida);
+    console.log("🔎 VARIANTE ENCONTRADA:", varianteSeleccionada);
+    console.log("🔎 STOCK VARIANTE:", stockDisponible);
   }
 
   return (
@@ -114,50 +139,11 @@ export default function ProductoDetalle({
           boxShadow: "0 8px 25px rgba(0,0,0,.08)",
         }}
       >
-        {/* Imagen */}
-        <div>
-          <img
-            src={producto.image.split(",")[fotoActivaIdx].trim()}
-            alt={producto.name}
-            style={{
-              width: "100%",
-              maxHeight: "550px",
-              objectFit: "contain",
-            }}
-          />
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              marginTop: "15px",
-              flexWrap: "wrap",
-            }}
-          >
-            {producto.image.split(",").map((img, idx) => (
-              <img
-                key={idx}
-                src={img.trim()}
-                alt={`Vista ${idx + 1}`}
-                onClick={() => setFotoActivaIdx(idx)}
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  objectFit: "contain",
-                  cursor: "pointer",
-                  border:
-                    fotoActivaIdx === idx
-                      ? "2px solid #7c3aed"
-                      : "1px solid #d1d5db",
-                  borderRadius: "8px",
-                  padding: "5px",
-                  background: "#ffffff",
-                  transition: "0.2s",
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        <ProductoGaleria
+          producto={producto}
+          fotoActivaIdx={fotoActivaIdx}
+          setFotoActivaIdx={setFotoActivaIdx}
+        />
 
         {/* Información */}
         <div>
@@ -279,165 +265,20 @@ export default function ProductoDetalle({
                 fontSize: "15px",
               }}
             >
-              {producto.stock} unidades disponibles
+              {stockDisponible} unidades disponibles{" "}
             </p>
           </div>
+          {/* ==========================================================
+    VARIANTES: COLOR + TALLA
+========================================================== */}
 
-          {/* Selector de Color */}
-
-          <div style={{ marginBottom: "10px" }}>
-            <h3
-              style={{
-                fontSize: "18px",
-                color: "#111827",
-                marginBottom: "8px",
-              }}
-            >
-              Color
-            </h3>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                flexWrap: "wrap",
-              }}
-            >
-              {producto.color &&
-                producto.color.split(",").map((col, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className="color-btn"
-                    onClick={() => {
-                      const color = col.trim();
-
-                      setColorElegido(color);
-
-                      setFotoActivaIdx(idx);
-                    }}
-                    style={{
-                      color:
-                        colorElegido === col.trim() ? "#5b21b6" : "#374151",
-
-                      padding: "10px 10px",
-
-                      display: "flex",
-
-                      alignItems: "center",
-
-                      borderRadius: "22px",
-
-                      border:
-                        colorElegido === col.trim()
-                          ? "2px solid #7c3aed"
-                          : "1px solid #d1d5db",
-
-                      background:
-                        colorElegido === col.trim() ? "#ede9fe" : "#ffffff",
-
-                      cursor: "pointer",
-
-                      fontSize: "12px",
-
-                      fontWeight: "600",
-
-                      transition: "all .25s ease",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: "16px",
-                        height: "15px",
-                        borderRadius: "50%",
-                        marginRight: "8px",
-                        border: "1px solid #d1d5db",
-
-                        background:
-                          col.trim().toLowerCase().includes("black") ||
-                          col.trim().toLowerCase().includes("negro")
-                            ? "#000"
-                            : col.trim().toLowerCase().includes("white") ||
-                                col.trim().toLowerCase().includes("blanco")
-                              ? "#fff"
-                              : col.trim().toLowerCase().includes("red") ||
-                                  col.trim().toLowerCase().includes("rojo")
-                                ? "#ef4444"
-                                : col.trim().toLowerCase().includes("blue") ||
-                                    col.trim().toLowerCase().includes("azul")
-                                  ? "#2563eb"
-                                  : col
-                                        .trim()
-                                        .toLowerCase()
-                                        .includes("green") ||
-                                      col.trim().toLowerCase().includes("verde")
-                                    ? "#22c55e"
-                                    : "#9ca3af",
-                      }}
-                    />
-
-                    {col.trim()}
-                  </button>
-                ))}
-            </div>
-          </div>
-          {/* Selector de Talla */}
-
-          <div style={{ marginBottom: "15px" }}>
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: "700",
-                color: "#111827",
-                marginBottom: "15px",
-                textAlign: "center",
-              }}
-            >
-              Talla
-            </h3>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                flexWrap: "wrap",
-              }}
-            >
-              {producto.size &&
-                producto.size.split(",").map((talla, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setTallaElegida(talla.trim())}
-                    style={{
-                      minWidth: "58px",
-                      height: "48px",
-                      textTransform: "uppercase",
-                      borderRadius: "12px",
-
-                      border:
-                        tallaElegida === talla.trim()
-                          ? "2px solid #7c3aed"
-                          : "1px solid #d1d5db",
-
-                      background:
-                        tallaElegida === talla.trim() ? "#ede9fe" : "#ffffff",
-
-                      color:
-                        tallaElegida === talla.trim() ? "#5b21b6" : "#374151",
-
-                      fontWeight: "700",
-
-                      cursor: "pointer",
-
-                      transition: ".25s",
-                    }}
-                  >
-                    {talla.trim()}
-                  </button>
-                ))}
-            </div>
-          </div>
+          <ProductoVariantes
+            producto={producto}
+            colorElegido={colorElegido}
+            tallaElegida={tallaElegida}
+            setColorElegido={setColorElegido}
+            setTallaElegida={setTallaElegida}
+          />
           {/* Selector de Cantidad */}
 
           <div
@@ -499,9 +340,7 @@ export default function ProductoDetalle({
 
               <button
                 onClick={() =>
-                  setCantidad((prev) =>
-                    Math.min(Number(producto.stock), prev + 1),
-                  )
+                  setCantidad((prev) => Math.min(stockDisponible, prev + 1))
                 }
                 style={{
                   width: "55px",
@@ -520,14 +359,14 @@ export default function ProductoDetalle({
             </div>
           </div>
           <button
-            disabled={Number(producto.stock) <= 0}
+            disabled={stockDisponible <= 0}
             onClick={() => {
               if (!colorElegido || !tallaElegida) {
                 alert("⚠️ Por favor selecciona un color y una talla.");
                 return;
               }
 
-              if (Number(producto.stock) <= 0) {
+              if (stockDisponible <= 0) {
                 alert("❌ Este producto está agotado.");
                 return;
               }
@@ -547,17 +386,15 @@ export default function ProductoDetalle({
               padding: "15px",
               border: "none",
               borderRadius: "14px",
-              background: Number(producto.stock) <= 0 ? "#9ca3af" : "#7c3aed",
+              background: stockDisponible <= 0 ? "#9ca3af" : "#7c3aed",
               color: "#fff",
               fontSize: "18px",
               fontWeight: "700",
-              cursor: Number(producto.stock) <= 0 ? "not-allowed" : "pointer",
+              cursor: stockDisponible <= 0 ? "not-allowed" : "pointer",
               transition: ".25s",
             }}
           >
-            {Number(producto.stock) <= 0
-              ? "Producto agotado"
-              : "Agregar al carrito"}
+            {stockDisponible <= 0 ? "Producto agotado" : "Agregar al carrito"}
           </button>
 
           <div

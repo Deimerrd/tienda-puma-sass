@@ -6,7 +6,7 @@ const storeConfig = {
 
   instagram: "https://instagram.com/todamoda",
 
-  facebook: "https://facebook.com/todamoda",
+  facebook: "https://www.facebook.com/",
 };
 
 export default storeConfig;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./TarjetaProducto.css";
-import ProductoDetalle from "./ProductoDetalle";
-import HeroSlider from "./HeroSlider";
+import ProductoDetalle from "../producto/ProductoDetalle";
+import HeroSlider from "../home/HeroSlider";
 
 function ClientView({
   products,
@@ -1169,29 +1169,18 @@ function TarjetaProducto({
   const [colorElegido, setColorElegido] = useState("");
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidadDeseada, setCantidadDeseada] = useState(1);
-  function obtenerEstadoStock(stock) {
-    const cantidad = Number(stock);
 
-    if (cantidad <= 0) {
-      return {
-        texto: "🔴 Agotado",
-        color: "red",
-      };
-    }
+  const varianteActual = prod.variantes?.find(
+    (variante) =>
+      variante.color?.trim().toLowerCase() ===
+        colorElegido?.trim().toLowerCase() &&
+      variante.talla?.trim().toLowerCase() ===
+        tallaElegida?.trim().toLowerCase(),
+  );
 
-    if (cantidad <= 5) {
-      return {
-        texto: "🟡 Últimas unidades",
-        color: "orange",
-      };
-    }
-
-    return {
-      texto: "🟢 Disponible",
-      color: "green",
-    };
-  }
-  const estadoStock = obtenerEstadoStock(prod.stock);
+  const stockSeleccionado = varianteActual
+    ? Number(varianteActual.stock ?? 0)
+    : 0;
 
   const precioOriginal = Number(prod.price);
 
@@ -1317,7 +1306,9 @@ function TarjetaProducto({
                   const color = col.trim();
 
                   setColorElegido(color);
-
+                  setTallaElegida("");
+                  setCantidadDeseada(1);
+                  setMensajeTalla("");
                   setFotoActivaIdx(idx);
                 }}
                 style={{
@@ -1400,18 +1391,30 @@ function TarjetaProducto({
             color: "#000000", // 🚨 ¡LÍNEA CLAVE!: Obliga a que la opción elegida se pinte en negro nítido
           }}
           onChange={(e) => {
-            const tallaElegida = e.target.value;
-            setTallaElegida(tallaElegida); // Guardamos en memoria
+            const talla = e.target.value;
 
-            if (!tallaElegida) {
+            setTallaElegida(talla);
+
+            if (!talla) {
               setMensajeTalla("");
               return;
             }
 
-            if (tallaElegida === "38") {
+            const varianteSeleccionada = prod.variantes?.find(
+              (variante) =>
+                variante.color?.trim().toLowerCase() ===
+                  colorElegido?.trim().toLowerCase() &&
+                variante.talla?.trim().toLowerCase() ===
+                  talla.trim().toLowerCase(),
+            );
+            const stock = Number(varianteSeleccionada?.stock ?? 0);
+
+            if (stock <= 0) {
               setMensajeTalla("❌ Esta talla se encuentra agotada en bodega.");
             } else {
-              setMensajeTalla("✅ ¡Talla disponible para despacho inmediato!");
+              setMensajeTalla(
+                `✅ ¡Talla disponible para despacho inmediato! (${stock} unidades)`,
+              );
             }
           }}
         >
@@ -1527,21 +1530,11 @@ function TarjetaProducto({
         <div>
           <div
             style={{
-              color: estadoStock.color,
-              fontWeight: "700",
-              fontSize: "15px",
-            }}
-          >
-            {estadoStock.texto}
-          </div>
-
-          <div
-            style={{
               color: "#6b7280",
               fontSize: "13px",
             }}
           >
-            {prod.stock} unidades disponibles
+            {stockSeleccionado} unidades disponibles
           </div>
         </div>
         <button
@@ -1592,7 +1585,7 @@ function TarjetaProducto({
           }}
           type="button"
           onClick={() => {
-            if (cantidadDeseada < Number(prod.stock)) {
+            if (cantidadDeseada < stockSeleccionado) {
               setCantidadDeseada((prev) => prev + 1);
             }
           }}
@@ -1622,7 +1615,7 @@ function TarjetaProducto({
       )}
 
       <button
-        disabled={Number(prod.stock) <= 0}
+        disabled={stockSeleccionado <= 0}
         onClick={() => {
           if (!colorElegido || !tallaElegida) {
             alert(
@@ -1630,16 +1623,14 @@ function TarjetaProducto({
             );
             return;
           }
-
-          if (tallaElegida === "38") {
-            alert(
-              "❌ No puedes agregar este artículo porque la talla seleccionada está agotada.",
-            );
+          if (stockSeleccionado <= 0) {
+            alert("❌ Esta combinación de color y talla está agotada.");
             return;
           }
-
-          if (Number(prod.stock) <= 0) {
-            alert("❌ Este producto está agotado.");
+          if (cantidadDeseada > stockSeleccionado) {
+            alert(
+              `❌ Solo hay ${stockSeleccionado} unidades disponibles de esta combinación.`,
+            );
             return;
           }
           const precioOriginal = Number(prod.price);
@@ -1667,21 +1658,21 @@ function TarjetaProducto({
         style={{
           width: "100%",
           padding: "14px",
-          background: Number(prod.stock) <= 0 ? "#9ca3af" : "#7c3aed",
+          background: stockSeleccionado <= 0 ? "#9ca3af" : "#7c3aed",
           color: "#ffffff",
           border: "none",
           borderRadius: "12px",
-          cursor: Number(prod.stock) <= 0 ? "not-allowed" : "pointer",
+          cursor: stockSeleccionado <= 0 ? "not-allowed" : "pointer",
           fontWeight: "700",
           fontSize: "15px",
           marginTop: "10px",
           boxShadow:
-            Number(prod.stock) <= 0
+            stockSeleccionado <= 0
               ? "none"
               : "0 4px 12px rgba(124, 58, 237, 0.35)",
         }}
       >
-        {Number(prod.stock) <= 0 ? "Producto agotado" : "Agregar al carrito"}
+        {stockSeleccionado <= 0 ? "Producto agotado" : "Agregar al carrito"}
       </button>
     </div>
   );
