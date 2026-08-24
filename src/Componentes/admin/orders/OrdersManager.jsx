@@ -1,3 +1,5 @@
+import OrderSummary from "./OrderSummary";
+import TopProducts from "./TopProducts";
 import {
   ResponsiveContainer,
   BarChart,
@@ -51,99 +53,24 @@ function OrderManager({
       />
 
       {/* 📋 SECCIÓN B: HISTORIAL DE PEDIDOS CONTRAENTREGA */}
+
       <h3
         style={{ marginTop: "40px", color: "green", fontFamily: "sans-serif" }}
       >
         📋 Historial de Pedidos
       </h3>
+      <OrderSummary
+        ventas={ventas}
+        entregados={entregados}
+        pendientes={pendientes}
+        totalVendido={totalVendido}
+        totalEntregado={totalEntregado}
+        ventasHoy={ventasHoy}
+        totalHoy={totalHoy}
+        formatearPrecio={formatearPrecio}
+      />
 
-      <div
-        style={{
-          background: "#f4f4f4",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2>💰 Caja General</h2>
-
-        <p>
-          <strong>Pedidos Totales:</strong> {ventas.length}
-        </p>
-
-        <p>
-          <strong>Entregados:</strong> {entregados.length}
-        </p>
-
-        <p>
-          <strong>Pendientes:</strong> {pendientes.length}
-        </p>
-
-        <p>
-          <strong>Total Vendido:</strong> {formatearPrecio(totalVendido)}
-        </p>
-
-        <p>
-          <strong>Total Entregado:</strong> {formatearPrecio(totalEntregado)}
-        </p>
-      </div>
-
-      <div
-        style={{
-          background: "#dbeafe",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2>📅 Caja de Hoy</h2>
-        <p>
-          <strong>Pedidos Hoy:</strong> {ventasHoy.length}
-        </p>
-
-        <p>
-          <strong>Ventas Hoy:</strong> {formatearPrecio(totalHoy)}
-        </p>
-      </div>
-      <div
-        style={{
-          background: "#fef3c7",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2>🏆 Top Productos Más Vendidos</h2>
-
-        {topProductos.length === 0 ? (
-          <p>No hay ventas registradas todavía.</p>
-        ) : (
-          topProductos.map(([nombre, cantidad], index) => (
-            <div
-              key={nombre}
-              style={{
-                padding: "8px 0",
-                borderBottom: "1px solid #ddd",
-              }}
-            >
-              <strong>#{index + 1}</strong>{" "}
-              <div>
-                <div>{nombre}</div>
-
-                <div
-                  style={{
-                    color: "#16a34a",
-                    fontWeight: "bold",
-                    marginTop: "4px",
-                  }}
-                >
-                  {cantidad} unidades vendidas
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      <TopProducts topProductos={topProductos} />
       <div
         style={{
           background: "#dbeafe",
