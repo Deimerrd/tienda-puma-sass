@@ -107,7 +107,7 @@ export default function ProductoDetalle({
       style={{
         maxWidth: "1400px",
         margin: "20px auto",
-        padding: "15px",
+        padding: "25px",
         background: "#f8fafc",
         minHeight: "100vh",
       }}
