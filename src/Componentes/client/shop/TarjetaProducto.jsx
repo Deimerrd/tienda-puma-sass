@@ -22,7 +22,7 @@ function TarjetaProducto({
 
   const stockSeleccionado = varianteActual
     ? Number(varianteActual.stock ?? 0)
-    : 0;
+    : null;
 
   const precioOriginal = Number(prod.price);
 
@@ -483,7 +483,9 @@ function TarjetaProducto({
               marginRight: "auto",
             }}
           >
-            {stockSeleccionado} unidades disponibles
+            {stockSeleccionado === null
+              ? "Selecciona color y talla"
+              : `${stockSeleccionado} unidades disponibles`}{" "}
           </div>
 
           <button
@@ -502,7 +504,9 @@ function TarjetaProducto({
               fontWeight: "700",
               cursor: "pointer",
             }}
-          ></button>
+          >
+            -
+          </button>
 
           <div
             style={{
@@ -568,7 +572,7 @@ function TarjetaProducto({
 
         <button
           type="button"
-          disabled={stockSeleccionado <= 0}
+          disabled={stockSeleccionado !== null && stockSeleccionado <= 0}
           onClick={() => {
             if (!colorElegido || !tallaElegida) {
               alert(
@@ -613,21 +617,29 @@ function TarjetaProducto({
           style={{
             width: "100%",
             padding: "14px",
-            background: stockSeleccionado <= 0 ? "#9ca3af" : "#7c3aed",
+            background:
+              stockSeleccionado !== null && stockSeleccionado <= 0
+                ? "#9ca3af"
+                : "#7c3aed",
             color: "#ffffff",
             border: "none",
             borderRadius: "12px",
-            cursor: stockSeleccionado <= 0 ? "not-allowed" : "pointer",
+            cursor:
+              stockSeleccionado !== null && stockSeleccionado <= 0
+                ? "not-allowed"
+                : "pointer",
             fontWeight: "700",
             fontSize: "15px",
             marginTop: "10px",
             boxShadow:
-              stockSeleccionado <= 0
+              stockSeleccionado !== null && stockSeleccionado <= 0
                 ? "none"
                 : "0 4px 12px rgba(124,58,237,.35)",
           }}
         >
-          {stockSeleccionado <= 0 ? "Producto agotado" : "Agregar al carrito"}
+          {stockSeleccionado !== null && stockSeleccionado <= 0
+            ? "Producto agotado"
+            : "Agregar al carrito"}{" "}
         </button>
       </div>
     </div>
