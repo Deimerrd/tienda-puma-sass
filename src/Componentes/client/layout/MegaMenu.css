@@ -1,0 +1,164 @@
+/* ==========================================================
+   MEGA MENU DE CATEGORÍAS
+   ----------------------------------------------------------
+   Estilo del menú desplegable principal.
+
+   Funciones:
+   ✔ Fondo blanco
+   ✔ Sombra elegante
+   ✔ Dos columnas
+   ✔ Hover moderno
+   ✔ Animación suave
+========================================================== */
+
+.mega-menu {
+  position: absolute;
+
+  top: 180px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 1200px;
+  max-width: 95%;
+
+  background: white;
+
+  border-radius: 18px;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+
+  display: flex;
+
+  overflow: hidden;
+
+  z-index: 500;
+
+  animation: megaFade 0.22s ease;
+}
+
+/* ==========================================================
+   COLUMNA IZQUIERDA
+========================================================== */
+
+.mega-menu-left {
+  width: 300px;
+
+  background: #fafafa;
+
+  border-right: 1px solid #ececec;
+
+  padding: 15px;
+}
+
+/* ==========================================================
+   COLUMNA DERECHA
+========================================================== */
+
+.mega-menu-right {
+  flex: 1;
+
+  padding: 35px;
+}
+
+/* ==========================================================
+   ITEMS DEL MENÚ
+========================================================== */
+
+.mega-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 12px;
+  padding: 14px 18px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  color: #1f2937;
+
+  margin-bottom: 6px;
+}
+
+.mega-item:hover {
+  background: #6d28d9;
+
+  color: white;
+
+  transform: translateX(6px);
+}
+/* ==========================================================
+   ITEM ACTIVO
+========================================================== */
+
+.mega-item.active {
+  background: #6d28d9;
+  color: white;
+}
+
+/* ==========================================================
+   TÍTULO
+========================================================== */
+
+.mega-menu-right h2 {
+  font-size: 30px;
+
+  margin-bottom: 20px;
+
+  color: #111827;
+}
+
+/* ==========================================================
+   SUBCATEGORÍAS
+========================================================== */
+
+.mega-subitem {
+  padding: 12px 0;
+
+  font-size: 17px;
+
+  color: #4b5563;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.mega-subitem:hover {
+  color: #6d28d9;
+
+  padding-left: 12px;
+
+  font-weight: 600;
+}
+
+/* ==========================================================
+   ANIMACIÓN
+========================================================== */
+
+@keyframes megaFade {
+  from {
+    opacity: 0;
+
+    transform: translateX(-50%) translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateX(-50%) translateY(0);
+  }
+}
