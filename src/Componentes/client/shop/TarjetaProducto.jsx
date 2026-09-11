@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./TarjetaProducto.css";
 
 function TarjetaProducto({
   prod,
@@ -12,6 +13,10 @@ function TarjetaProducto({
   const [tallaElegida, setTallaElegida] = useState("");
   const [cantidadDeseada, setCantidadDeseada] = useState(1);
 
+  // =========================================================
+  // VARIANTE ACTUAL
+  // =========================================================
+
   const varianteActual = prod.variantes?.find(
     (variante) =>
       variante.color?.trim().toLowerCase() ===
@@ -20,17 +25,26 @@ function TarjetaProducto({
         tallaElegida?.trim().toLowerCase(),
   );
 
+  // null = todavía no se ha seleccionado una combinación
   const stockSeleccionado = varianteActual
     ? Number(varianteActual.stock ?? 0)
     : null;
+
+  // =========================================================
+  // PRECIOS
+  // =========================================================
 
   const precioOriginal = Number(prod.price);
 
   const precioFinal =
     precioOriginal - (precioOriginal * Number(prod.descuento || 0)) / 100;
 
+  // =========================================================
+  // COLORES
+  // =========================================================
+
   const colores = prod.color
-    ? prod.color.split(",").map((col) => col.trim())
+    ? prod.color.split(",").map((color) => color.trim())
     : [];
 
   const obtenerColorVisual = (color) => {
@@ -56,160 +70,98 @@ function TarjetaProducto({
       return "#22c55e";
     }
 
+    if (nombre.includes("yellow") || nombre.includes("amarillo")) {
+      return "#eab308";
+    }
+
+    if (nombre.includes("pink") || nombre.includes("rosado")) {
+      return "#ec4899";
+    }
+
+    if (nombre.includes("purple") || nombre.includes("morado")) {
+      return "#8b5cf6";
+    }
+
+    if (nombre.includes("orange") || nombre.includes("naranja")) {
+      return "#f97316";
+    }
+
     return "#9ca3af";
   };
 
-  return (
-    <div
-      style={{
-        background: "#ffffff",
-        borderRadius: "22px",
-        overflow: "hidden",
-        boxShadow: "0 10px 35px rgba(0,0,0,.08)",
-        border: "1px solid #eef2f7",
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* ================= FAVORITO ================= */}
+  // =========================================================
+  // TALLAS
+  // =========================================================
 
-      <div
-        style={{
-          position: "absolute",
-          top: "18px",
-          right: "18px",
-          width: "36px",
-          height: "36px",
-          borderRadius: "50%",
-          background: "#ffffff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 4px 12px rgba(0,0,0,.15)",
-          cursor: "pointer",
-          zIndex: 20,
-          fontSize: "18px",
-        }}
+  const tallas = prod.size
+    ? prod.size.split(",").map((talla) => talla.trim())
+    : [];
+
+  // =========================================================
+  // RENDER
+  // =========================================================
+
+  return (
+    <article className="tarjeta-producto">
+      {/* =====================================================
+          FAVORITO
+      ====================================================== */}
+
+      <button
+        type="button"
+        className="tarjeta-favorito"
+        aria-label="Agregar a favoritos"
       >
         🤍
+      </button>
+
+      {/* =====================================================
+          IMAGEN
+      ====================================================== */}
+
+      <div className="tarjeta-imagen-contenedor">
+        {prod.image ? (
+          <img
+            src={
+              prod.image.split(",")[fotoActivaIdx]
+                ? prod.image.split(",")[fotoActivaIdx].trim()
+                : prod.image.split(",")[0].trim()
+            }
+            alt={prod.name}
+            className="tarjeta-imagen"
+          />
+        ) : (
+          <div className="tarjeta-sin-imagen">Sin imagen</div>
+        )}
       </div>
 
-      {/* ================= IMAGEN ================= */}
+      {/* =====================================================
+          CONTENIDO
+      ====================================================== */}
 
-      {prod.image ? (
-        <img
-          src={
-            prod.image.split(",")[fotoActivaIdx]
-              ? prod.image.split(",")[fotoActivaIdx].trim()
-              : prod.image.split(",")[0].trim()
-          }
-          alt={prod.name}
-          style={{
-            width: "100%",
-            height: "290px",
-            objectFit: "contain",
-            padding: "25px",
-            background: "#ffffff",
-            transition: ".3s",
-            boxSizing: "border-box",
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            width: "100%",
-            height: "290px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#94a3b8",
-            fontSize: "13px",
-          }}
-        >
-          Sin imagen
-        </div>
-      )}
-
-      {/* ================= CONTENIDO ================= */}
-
-      <div
-        style={{
-          padding: "0 20px 20px 20px",
-          boxSizing: "border-box",
-          width: "100%",
-        }}
-      >
-        {/* ================= PROMOCIÓN ================= */}
+      <div className="tarjeta-contenido">
+        {/* PROMOCIÓN */}
 
         {prod.promocion && (
-          <div
-            style={{
-              background: "#dc2626",
-              color: "#ffffff",
-              padding: "5px 10px",
-              borderRadius: "20px",
-              display: "inline-block",
-              fontSize: "12px",
-              fontWeight: "bold",
-              marginBottom: "10px",
-            }}
-          >
-            {prod.promocion}
-          </div>
+          <div className="tarjeta-promocion">🔥 {prod.promocion}</div>
         )}
 
-        {/* ================= NOMBRE ================= */}
+        {/* NOMBRE */}
 
-        <h3
-          style={{
-            margin: "5px 0 8px 0",
-            color: "#111827",
-            fontSize: "20px",
-            fontWeight: "800",
-            lineHeight: "1.3",
-          }}
-        >
-          {prod.name}
-        </h3>
+        <h3 className="tarjeta-nombre">{prod.name}</h3>
 
-        {/* ================= MARCA ================= */}
+        {/* MARCA */}
 
-        <div
-          style={{
-            fontSize: "14px",
-            fontWeight: "700",
-            color: "#374151",
-            marginBottom: "18px",
-          }}
-        >
-          🏷️ {prod.marca}
-        </div>
+        <div className="tarjeta-marca">🏷️ {prod.marca}</div>
 
-        {/* ================= COLOR ================= */}
+        {/* =================================================
+            COLOR
+        ================================================== */}
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              fontSize: "13px",
-              fontWeight: "600",
-              color: "#374151",
-              marginBottom: "7px",
-              display: "block",
-            }}
-          >
-            Color
-          </label>
+        <div className="tarjeta-seccion">
+          <label className="tarjeta-label">Color</label>
 
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "8px",
-            }}
-          >
+          <div className="tarjeta-colores">
             {colores.length > 0 ? (
               colores.map((col, idx) => {
                 const seleccionado =
@@ -220,6 +172,9 @@ function TarjetaProducto({
                   <button
                     key={idx}
                     type="button"
+                    className={`tarjeta-color-btn ${
+                      seleccionado ? "activo" : ""
+                    }`}
                     onClick={() => {
                       const color = col.trim();
 
@@ -229,88 +184,36 @@ function TarjetaProducto({
                       setMensajeTalla("");
                       setFotoActivaIdx(idx);
                     }}
-                    style={{
-                      padding: "8px 12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "20px",
-                      cursor: "pointer",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      transition: "all .15s ease",
-                      border: seleccionado
-                        ? "2px solid #7c3aed"
-                        : "1px solid #d1d5db",
-                      background: seleccionado ? "#ede9fe" : "#ffffff",
-                      color: seleccionado ? "#5b21b6" : "#374151",
-                      boxShadow: seleccionado
-                        ? "0 6px 18px rgba(124,58,237,.25)"
-                        : "0 2px 6px rgba(0,0,0,.08)",
-                    }}
                   >
                     <span
+                      className="tarjeta-color-circulo"
                       style={{
-                        width: "18px",
-                        height: "18px",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        marginRight: "8px",
-                        border: "2px solid #d1d5db",
-                        background: obtenerColorVisual(col),
-                        boxSizing: "border-box",
+                        backgroundColor: obtenerColorVisual(col),
                       }}
                     />
 
-                    {col}
+                    <span>{col}</span>
                   </button>
                 );
               })
             ) : (
-              <button
-                type="button"
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: "20px",
-                  border: "1px solid #d1d5db",
-                  background: "#ffffff",
-                  color: "#374151",
-                }}
-              >
+              <button type="button" className="tarjeta-color-btn">
                 Estándar
               </button>
             )}
           </div>
         </div>
 
-        {/* ================= TALLA ================= */}
+        {/* =================================================
+            TALLA
+        ================================================== */}
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              fontSize: "13px",
-              fontWeight: "600",
-              color: "#374151",
-              marginBottom: "7px",
-              display: "block",
-            }}
-          >
-            Talla
-          </label>
+        <div className="tarjeta-seccion">
+          <label className="tarjeta-label">Talla</label>
 
           <select
             value={tallaElegida}
-            style={{
-              width: "100%",
-              padding: "9px 10px",
-              border: "1px solid #cbd5e1",
-              borderRadius: "8px",
-              fontSize: "13px",
-              background: "#ffffff",
-              color: "#000000",
-              boxSizing: "border-box",
-              cursor: "pointer",
-            }}
+            className="tarjeta-select-talla"
             onChange={(e) => {
               const talla = e.target.value;
 
@@ -342,237 +245,135 @@ function TarjetaProducto({
               }
             }}
           >
-            <option
-              value=""
-              style={{
-                color: "#000000",
-                background: "#ffffff",
-              }}
-            >
-              -- Elige Talla --
-            </option>
+            <option value="">-- Elige Talla --</option>
 
-            {prod.size ? (
-              prod.size.split(",").map((tal, idx) => (
-                <option
-                  key={idx}
-                  value={tal.trim()}
-                  style={{
-                    color: "#000000",
-                    background: "#ffffff",
-                  }}
-                >
-                  {tal.trim()}
+            {tallas.length > 0 ? (
+              tallas.map((talla, idx) => (
+                <option key={idx} value={talla}>
+                  {talla}
                 </option>
               ))
             ) : (
-              <option
-                value="Única"
-                style={{
-                  color: "#000000",
-                  background: "#ffffff",
-                }}
-              >
-                Única
-              </option>
+              <option value="Única">Única</option>
             )}
           </select>
         </div>
 
-        {/* ================= MENSAJE DE TALLA ================= */}
+        {/* =================================================
+            MENSAJE DE TALLA
+        ================================================== */}
 
         {mensajeTalla && (
           <p
-            style={{
-              margin: "8px 0 15px 0",
-              fontSize: "12px",
-              fontWeight: "600",
-              color: mensajeTalla.includes("❌") ? "#ef4444" : "#10b981",
-              background: mensajeTalla.includes("❌") ? "#fef2f2" : "#f0fdf4",
-              padding: "8px",
-              borderLeft: mensajeTalla.includes("❌")
-                ? "3px solid #ef4444"
-                : "3px solid #10b981",
-              borderRadius: "4px",
-            }}
+            className={`tarjeta-mensaje-talla ${
+              mensajeTalla.includes("❌") ? "agotado" : "disponible"
+            }`}
           >
             {mensajeTalla}
           </p>
         )}
 
-        {/* ================= GÉNERO ================= */}
+        {/* =================================================
+            GÉNERO
+        ================================================== */}
 
-        <p
-          style={{
-            margin: "0 0 12px 0",
-            color: "#374151",
-            fontSize: "13px",
-          }}
-        >
+        <p className="tarjeta-genero">
           Género: <strong>{prod.gender || "Unisex"}</strong>
         </p>
 
-        {/* ================= PRECIO ================= */}
+        {/* =================================================
+            PRECIO
+        ================================================== */}
 
-        <div style={{ marginBottom: "15px" }}>
+        <div className="tarjeta-precio-contenedor">
           {Number(prod.descuento) > 0 ? (
             <>
-              <div
-                style={{
-                  color: "#9ca3af",
-                  textDecoration: "line-through",
-                  fontSize: "15px",
-                  marginBottom: "4px",
-                }}
-              >
+              <div className="tarjeta-precio-original">
                 {formatearPrecio(precioOriginal)}
               </div>
 
-              <div
-                style={{
-                  color: "#7c3aed",
-                  fontSize: "28px",
-                  fontWeight: "800",
-                  marginBottom: "5px",
-                }}
-              >
+              <div className="tarjeta-precio-final">
                 {formatearPrecio(precioFinal)}
               </div>
 
-              <div
-                style={{
-                  background: "#ef4444",
-                  color: "#ffffff",
-                  display: "inline-block",
-                  padding: "4px 10px",
-                  borderRadius: "20px",
-                  fontSize: "12px",
-                  fontWeight: "700",
-                }}
-              >
-                {prod.descuento}% OFF
+              <div className="tarjeta-descuento">
+                {Number(prod.descuento)}% OFF
               </div>
             </>
           ) : (
-            <div
-              style={{
-                color: "#111827",
-                fontSize: "28px",
-                fontWeight: "800",
-              }}
-            >
+            <div className="tarjeta-precio-normal">
               {formatearPrecio(precioOriginal)}
             </div>
           )}
         </div>
 
-        {/* ================= CANTIDAD ================= */}
+        {/* =================================================
+            STOCK + CANTIDAD
+        ================================================== */}
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            marginBottom: "15px",
-          }}
-        >
-          <div
-            style={{
-              color: "#6b7280",
-              fontSize: "13px",
-              marginRight: "auto",
-            }}
-          >
+        <div className="tarjeta-cantidad">
+          <div className="tarjeta-stock">
             {stockSeleccionado === null
               ? "Selecciona color y talla"
-              : `${stockSeleccionado} unidades disponibles`}{" "}
+              : `${stockSeleccionado} unidades disponibles`}
           </div>
 
-          <button
-            type="button"
-            onClick={() =>
-              setCantidadDeseada((prev) => (prev > 1 ? prev - 1 : 1))
-            }
-            style={{
-              width: "35px",
-              height: "35px",
-              borderRadius: "10px",
-              border: "1px solid #d1d5db",
-              background: "#ffffff",
-              color: "#111827",
-              fontSize: "20px",
-              fontWeight: "700",
-              cursor: "pointer",
-            }}
-          >
-            -
-          </button>
-
-          <div
-            style={{
-              minWidth: "35px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "700",
-              fontSize: "16px",
-              color: "#111827",
-            }}
-          >
-            {cantidadDeseada}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (cantidadDeseada < stockSeleccionado) {
-                setCantidadDeseada((prev) => prev + 1);
-              }
-            }}
-            style={{
-              width: "35px",
-              height: "35px",
-              borderRadius: "10px",
-              border: "1px solid #d1d5db",
-              background: "#ffffff",
-              color: "#111827",
-              fontSize: "20px",
-              fontWeight: "700",
-              cursor: "pointer",
-            }}
-          >
-            +
-          </button>
-        </div>
-
-        {/* ================= VER MÁS ================= */}
-
-        {prod.description && (
-          <div style={{ marginBottom: "10px" }}>
+          <div className="tarjeta-controles">
             <button
               type="button"
-              onClick={verProducto}
-              style={{
-                background: "#f3f4f6",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                padding: "8px 12px",
-                color: "#374151",
-                fontWeight: "600",
-                cursor: "pointer",
-                fontSize: "13px",
+              className="tarjeta-cantidad-btn"
+              onClick={() =>
+                setCantidadDeseada((prev) => (prev > 1 ? prev - 1 : 1))
+              }
+            >
+              -
+            </button>
+
+            <span className="tarjeta-cantidad-numero">{cantidadDeseada}</span>
+
+            <button
+              type="button"
+              className="tarjeta-cantidad-btn"
+              onClick={() => {
+                if (
+                  stockSeleccionado !== null &&
+                  cantidadDeseada < stockSeleccionado
+                ) {
+                  setCantidadDeseada((prev) => prev + 1);
+                }
               }}
             >
-              Ver más →
+              +
             </button>
           </div>
+        </div>
+
+        {/* =================================================
+            VER MÁS
+        ================================================== */}
+
+        {prod.description && (
+          <button
+            type="button"
+            className="tarjeta-ver-mas"
+            onClick={verProducto}
+          >
+            Ver más →
+          </button>
         )}
 
-        {/* ================= AGREGAR AL CARRITO ================= */}
+        {/* =================================================
+            AGREGAR AL CARRITO
+        ================================================== */}
 
         <button
           type="button"
           disabled={stockSeleccionado !== null && stockSeleccionado <= 0}
+          className={`tarjeta-carrito-btn ${
+            stockSeleccionado !== null && stockSeleccionado <= 0
+              ? "agotado"
+              : ""
+          }`}
           onClick={() => {
             if (!colorElegido || !tallaElegida) {
               alert(
@@ -614,35 +415,13 @@ function TarjetaProducto({
 
             alert(`🛒 Se agregaron ${cantidadDeseada} unidades al carrito.`);
           }}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background:
-              stockSeleccionado !== null && stockSeleccionado <= 0
-                ? "#9ca3af"
-                : "#7c3aed",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "12px",
-            cursor:
-              stockSeleccionado !== null && stockSeleccionado <= 0
-                ? "not-allowed"
-                : "pointer",
-            fontWeight: "700",
-            fontSize: "15px",
-            marginTop: "10px",
-            boxShadow:
-              stockSeleccionado !== null && stockSeleccionado <= 0
-                ? "none"
-                : "0 4px 12px rgba(124,58,237,.35)",
-          }}
         >
           {stockSeleccionado !== null && stockSeleccionado <= 0
             ? "Producto agotado"
-            : "Agregar al carrito"}{" "}
+            : "Agregar al carrito"}
         </button>
       </div>
-    </div>
+    </article>
   );
 }
 
