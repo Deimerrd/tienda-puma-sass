@@ -38,7 +38,7 @@ function FiltroGeneroCliente({ generoSeleccionado, setGeneroSeleccionado }) {
               : "2px solid transparent",
         }}
       >
-        👨 Hombre
+        👨 Hombres
       </button>
 
       <button
