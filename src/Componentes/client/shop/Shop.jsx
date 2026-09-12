@@ -118,26 +118,6 @@ function Shop() {
           icono: cat.icono || iconosPorDefecto[cat.id] || "📦",
         }));
       }
-      /* ==========================================================
-   CATEGORÍAS PRINCIPALES DEL SISTEMA
-   ----------------------------------------------------------
-   IMPORTANTE
-
-   Cada categoría tendrá:
-
-   id
-   nombre
-   icono
-   tipos
-
-   Los tipos serán utilizados por:
-
-   ✔ Mega Menu
-   ✔ Filtros
-   ✔ Registro de productos
-   ✔ Firebase (futuro)
-
-========================================================== */
 
       return [
         {

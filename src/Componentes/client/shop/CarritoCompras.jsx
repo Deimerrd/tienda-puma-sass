@@ -1,15 +1,9 @@
-function CarritoCompras({
-  cart,
-  formatearPrecio,
-  disminuirCantidad,
-  aumentarCantidad,
-  eliminarDelCarrito,
-}) {
+function CarritoCompras({ cart, formatearPrecio, eliminarDelCarrito }) {
   return (
     <>
-      <h2>Tddu carrito de Compradxddsddsdd</h2>
+      <h2>Tu carrito de Compra</h2>
       {cart.length === 0 ? (
-        <p>Elsd carrito está svacío.</p>
+        <p>El carrito está vacíoss.</p>
       ) : (
         <div>
           {cart.map((item) => (
@@ -56,12 +50,12 @@ function CarritoCompras({
                   <strong>Talla:</strong> {item.size}
                 </div>
               </div>
-              <p>
-                Cantidad:
-                <button onClick={() => disminuirCantidad(item.id)}> - </button>
-                <strong style={{ margin: "0 10px" }}>{item.cantidad}</strong>
-                <button onClick={() => aumentarCantidad(item.id)}> + </button>
+
+              {/* Cantidad estática sin botones interactivos */}
+              <p style={{ margin: "10px 0" }}>
+                <strong>Cantidad elegida:</strong> {item.cantidad}
               </p>
+
               <button
                 onClick={() => eliminarDelCarrito(item.id)}
                 style={{ color: "red", cursor: "pointer" }}
